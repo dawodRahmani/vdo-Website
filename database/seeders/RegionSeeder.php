@@ -1,0 +1,89 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Region;
+use Illuminate\Database\Seeder;
+
+class RegionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $regions = [
+            [
+                'name' => 'North Eastern Region',
+                'slug' => 'north-eastern',
+                'description' => 'The North Eastern region encompasses Badakhshan, known for its mountainous terrain, rich cultural heritage, and stunning natural beauty.',
+                'color' => '#4A90E2',
+                'svg_path' => '',
+                'order' => 1,
+            ],
+            [
+                'name' => 'Northern Region',
+                'slug' => 'northern',
+                'description' => 'The Northern region includes Balkh, Kunduz, Takhar, Samangan, and Sar-e Pol provinces, serving as a vital agricultural and economic zone.',
+                'color' => '#7B68EE',
+                'svg_path' => '',
+                'order' => 2,
+            ],
+            [
+                'name' => 'Western Region',
+                'slug' => 'western',
+                'description' => 'The Western region, including Herat, Badghis, Ghor, Faryab, and Jawzjan, is known for its historical significance and cultural richness.',
+                'color' => '#50C878',
+                'svg_path' => '',
+                'order' => 3,
+            ],
+            [
+                'name' => 'Central Region',
+                'slug' => 'central',
+                'description' => 'The Central region, home to Kabul, Kapisa, Parwan, Panjshir, Wardak, and Logar, is the political and administrative heart of Afghanistan.',
+                'color' => '#FFB347',
+                'svg_path' => '',
+                'order' => 4,
+            ],
+            [
+                'name' => 'Eastern Region',
+                'slug' => 'eastern',
+                'description' => 'The Eastern region includes Nangarhar, Kunar, Laghman, and Nuristan provinces, characterized by diverse communities and mountainous landscapes.',
+                'color' => '#F4A460',
+                'svg_path' => '',
+                'order' => 5,
+            ],
+            [
+                'name' => 'Central Highland Region',
+                'slug' => 'central-highland',
+                'description' => 'The Central Highland, including Bamyan and Daikundi, features stunning mountain landscapes, ancient cultural sites, and rich historical heritage.',
+                'color' => '#E74C3C',
+                'svg_path' => '',
+                'order' => 6,
+            ],
+            [
+                'name' => 'South Eastern Region',
+                'slug' => 'south-eastern',
+                'description' => 'The South Eastern region includes Paktia, Paktika, Khost, and Ghazni provinces, known for their strategic importance and tribal communities.',
+                'color' => '#95A5A6',
+                'svg_path' => '',
+                'order' => 7,
+            ],
+            [
+                'name' => 'Southern Region',
+                'slug' => 'southern',
+                'description' => 'The Southern region, including Kandahar, Helmand, Nimroz, Zabul, Uruzgan, and Farah, is vital for agriculture and has significant historical importance.',
+                'color' => '#F39C12',
+                'svg_path' => '',
+                'order' => 8,
+            ],
+        ];
+
+        foreach ($regions as $region) {
+            Region::updateOrCreate(
+                ['slug' => $region['slug']],
+                array_merge($region, ['is_active' => true])
+            );
+        }
+    }
+}

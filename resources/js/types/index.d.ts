@@ -41,3 +41,16 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Region {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    color: string;
+    svg_path: string;
+    order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}

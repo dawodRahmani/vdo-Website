@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(herd php artisan:*)",
+      "Bash(where:*)",
+      "Bash(C:UsersRahmani.configherdbinphp.bat artisan migrate:*)",
+      "Bash(cmd /c \"cd /d c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite && php artisan migrate --seed\")",
+      "Bash(cmd /c \"php artisan migrate --seed\")",
+      "Bash(php artisan migrate:*)",
+      "Bash(\"/c/Users/Rahmani/.config/herd/bin/php.bat\" artisan migrate --seed)",
+      "Bash(npm run dev:*)",
+      "Bash(php artisan:*)",
+      "Bash(timeout 5 \"/c/Users/Rahmani/.config/herd/bin/php.bat\" artisan db:seed:*)",
+      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan make:migration add_role_to_users_table)",
+      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan migrate)",
+      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan db:seed --class=UserSeeder)",
+      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan tinker --execute=\"echo App\\\\Models\\\\User::where\\(''email'', ''admin@gmail.com''\\)->first\\(\\);\")"
+    ]
+  }
+}
