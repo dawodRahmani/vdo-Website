@@ -3,14 +3,22 @@ import { Icon } from '@/components/icon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
     NavigationMenu,
+    NavigationMenuContent,
     NavigationMenuItem,
+    NavigationMenuLink,
     NavigationMenuList,
+    NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import {
@@ -32,7 +40,16 @@ import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
+import {
+    BookOpen,
+    Building2,
+    ChevronDown,
+    Folder,
+    LayoutGrid,
+    Menu,
+    Search,
+    Users,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -41,6 +58,25 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+];
+
+// About Us dropdown menu items
+const aboutUsItems = [
+    { title: 'Executive Summary', href: '/about/executive-summary' },
+    { title: 'History', href: '/about/history' },
+    { title: 'Looking Ahead', href: '/about/looking-ahead' },
+    { title: 'VDO Best Practices', href: '/about/best-practices' },
+    { title: 'VDO Strength', href: '/about/strength' },
+];
+
+// Organization Capacity dropdown menu items
+const organizationCapacityItems = [
+    { title: 'Our Capacity', href: '/organization/capacity' },
+    { title: 'Policies', href: '/organization/policies' },
+    { title: 'Programmatic Approach', href: '/organization/programmatic-approach' },
+    { title: 'Localization Framework', href: '/organization/localization-framework' },
+    { title: 'Stakeholder Engagement Framework', href: '/organization/stakeholder-engagement' },
+    { title: 'Governance', href: '/organization/governance' },
 ];
 
 const rightNavItems: NavItem[] = [
@@ -97,14 +133,15 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         className="h-8 w-auto object-contain"
                                     />
                                 </SheetHeader>
-                                <div className="flex h-full flex-1 flex-col space-y-4 p-4">
+                                <div className="flex h-full flex-1 flex-col space-y-4 p-4 overflow-y-auto">
                                     <div className="flex h-full flex-col justify-between text-sm">
-                                        <div className="flex flex-col space-y-4">
+                                        <div className="flex flex-col space-y-2">
+                                            {/* Main Nav Items */}
                                             {mainNavItems.map((item) => (
                                                 <Link
                                                     key={item.title}
                                                     href={item.href}
-                                                    className="flex items-center space-x-2 font-medium"
+                                                    className="flex items-center space-x-2 font-medium py-2"
                                                 >
                                                     {item.icon && (
                                                         <Icon
@@ -115,6 +152,50 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     <span>{item.title}</span>
                                                 </Link>
                                             ))}
+
+                                            {/* About Us Collapsible */}
+                                            <Collapsible>
+                                                <CollapsibleTrigger className="flex w-full items-center justify-between py-2 font-medium">
+                                                    <div className="flex items-center space-x-2">
+                                                        <Users className="h-5 w-5" />
+                                                        <span>About Us</span>
+                                                    </div>
+                                                    <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent className="pl-7 space-y-1">
+                                                    {aboutUsItems.map((item) => (
+                                                        <Link
+                                                            key={item.title}
+                                                            href={item.href}
+                                                            className="block py-2 text-muted-foreground hover:text-foreground"
+                                                        >
+                                                            {item.title}
+                                                        </Link>
+                                                    ))}
+                                                </CollapsibleContent>
+                                            </Collapsible>
+
+                                            {/* Organization Capacity Collapsible */}
+                                            <Collapsible>
+                                                <CollapsibleTrigger className="flex w-full items-center justify-between py-2 font-medium">
+                                                    <div className="flex items-center space-x-2">
+                                                        <Building2 className="h-5 w-5" />
+                                                        <span>Organization Capacity</span>
+                                                    </div>
+                                                    <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent className="pl-7 space-y-1">
+                                                    {organizationCapacityItems.map((item) => (
+                                                        <Link
+                                                            key={item.title}
+                                                            href={item.href}
+                                                            className="block py-2 text-muted-foreground hover:text-foreground"
+                                                        >
+                                                            {item.title}
+                                                        </Link>
+                                                    ))}
+                                                </CollapsibleContent>
+                                            </Collapsible>
                                         </div>
 
                                         <div className="flex flex-col space-y-4">
@@ -151,9 +232,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
-                        <NavigationMenu className="flex h-full items-stretch">
-                            <NavigationMenuList className="flex h-full items-stretch space-x-2">
+                    <div className="ml-6 hidden h-full items-center lg:flex">
+                        <NavigationMenu className="flex h-full items-stretch max-w-none">
+                            <NavigationMenuList className="flex h-full items-stretch gap-1">
                                 {mainNavItems.map((item, index) => (
                                     <NavigationMenuItem
                                         key={index}
@@ -183,6 +264,58 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         )}
                                     </NavigationMenuItem>
                                 ))}
+
+                                {/* About Us Dropdown */}
+                                <NavigationMenuItem className="relative flex h-full items-center">
+                                    <NavigationMenuTrigger className="h-9 px-3">
+                                        <Users className="mr-2 h-4 w-4" />
+                                        About Us
+                                    </NavigationMenuTrigger>
+                                    <NavigationMenuContent>
+                                        <ul className="grid w-[220px] gap-1 p-2">
+                                            {aboutUsItems.map((item) => (
+                                                <li key={item.title}>
+                                                    <NavigationMenuLink asChild>
+                                                        <Link
+                                                            href={item.href}
+                                                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                                        >
+                                                            <div className="text-sm font-medium leading-none">
+                                                                {item.title}
+                                                            </div>
+                                                        </Link>
+                                                    </NavigationMenuLink>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </NavigationMenuContent>
+                                </NavigationMenuItem>
+
+                                {/* Organization Capacity Dropdown */}
+                                <NavigationMenuItem className="relative flex h-full items-center">
+                                    <NavigationMenuTrigger className="h-9 px-3">
+                                        <Building2 className="mr-2 h-4 w-4" />
+                                        Organization Capacity
+                                    </NavigationMenuTrigger>
+                                    <NavigationMenuContent>
+                                        <ul className="grid w-[280px] gap-1 p-2">
+                                            {organizationCapacityItems.map((item) => (
+                                                <li key={item.title}>
+                                                    <NavigationMenuLink asChild>
+                                                        <Link
+                                                            href={item.href}
+                                                            className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                                        >
+                                                            <div className="text-sm font-medium leading-none">
+                                                                {item.title}
+                                                            </div>
+                                                        </Link>
+                                                    </NavigationMenuLink>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </NavigationMenuContent>
+                                </NavigationMenuItem>
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>

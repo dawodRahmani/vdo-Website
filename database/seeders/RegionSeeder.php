@@ -12,12 +12,13 @@ class RegionSeeder extends Seeder
      */
     public function run(): void
     {
+        // Colors based on brand palette: #00B7EC (cyan), #23369C (dark blue), #BDBFC1 (gray)
         $regions = [
             [
                 'name' => 'North Eastern Region',
                 'slug' => 'north-eastern',
                 'description' => 'The North Eastern region encompasses Badakhshan, known for its mountainous terrain, rich cultural heritage, and stunning natural beauty.',
-                'color' => '#4A90E2',
+                'color' => '#00B7EC', // Light cyan
                 'svg_path' => '',
                 'order' => 1,
             ],
@@ -25,7 +26,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Northern Region',
                 'slug' => 'northern',
                 'description' => 'The Northern region includes Balkh, Kunduz, Takhar, Samangan, and Sar-e Pol provinces, serving as a vital agricultural and economic zone.',
-                'color' => '#7B68EE',
+                'color' => '#23369C', // Dark blue
                 'svg_path' => '',
                 'order' => 2,
             ],
@@ -33,7 +34,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Western Region',
                 'slug' => 'western',
                 'description' => 'The Western region, including Herat, Badghis, Ghor, Faryab, and Jawzjan, is known for its historical significance and cultural richness.',
-                'color' => '#50C878',
+                'color' => '#00B7EC', // Light cyan
                 'svg_path' => '',
                 'order' => 3,
             ],
@@ -41,7 +42,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Central Region',
                 'slug' => 'central',
                 'description' => 'The Central region, home to Kabul, Kapisa, Parwan, Panjshir, Wardak, and Logar, is the political and administrative heart of Afghanistan.',
-                'color' => '#FFB347',
+                'color' => '#1E5FAF', // Medium blue
                 'svg_path' => '',
                 'order' => 4,
             ],
@@ -49,7 +50,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Eastern Region',
                 'slug' => 'eastern',
                 'description' => 'The Eastern region includes Nangarhar, Kunar, Laghman, and Nuristan provinces, characterized by diverse communities and mountainous landscapes.',
-                'color' => '#F4A460',
+                'color' => '#2B4A9D', // Medium-dark blue
                 'svg_path' => '',
                 'order' => 5,
             ],
@@ -57,7 +58,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Central Highland Region',
                 'slug' => 'central-highland',
                 'description' => 'The Central Highland, including Bamyan and Daikundi, features stunning mountain landscapes, ancient cultural sites, and rich historical heritage.',
-                'color' => '#E74C3C',
+                'color' => '#3498DB', // Medium blue
                 'svg_path' => '',
                 'order' => 6,
             ],
@@ -65,7 +66,7 @@ class RegionSeeder extends Seeder
                 'name' => 'South Eastern Region',
                 'slug' => 'south-eastern',
                 'description' => 'The South Eastern region includes Paktia, Paktika, Khost, and Ghazni provinces, known for their strategic importance and tribal communities.',
-                'color' => '#95A5A6',
+                'color' => '#5BC0DE', // Light-medium cyan
                 'svg_path' => '',
                 'order' => 7,
             ],
@@ -73,7 +74,7 @@ class RegionSeeder extends Seeder
                 'name' => 'Southern Region',
                 'slug' => 'southern',
                 'description' => 'The Southern region, including Kandahar, Helmand, Nimroz, Zabul, Uruzgan, and Farah, is vital for agriculture and has significant historical importance.',
-                'color' => '#F39C12',
+                'color' => '#1A4B8C', // Dark blue variant
                 'svg_path' => '',
                 'order' => 8,
             ],

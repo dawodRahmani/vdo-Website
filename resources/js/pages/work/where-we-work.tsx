@@ -1,54 +1,258 @@
 import { Head } from '@inertiajs/react'
+import { useEffect } from 'react'
 import Header from '@/components/header'
 import Footer from '@/components/footer'
-import { MapPin, Users, Building2, Home } from 'lucide-react'
+import AfghanistanMap from '@/components/afghanistan-map'
+import {
+    MapPin,
+    Users,
+    Building2,
+    Home,
+    GraduationCap,
+    TrendingUp,
+    Building,
+    Heart,
+    Stethoscope,
+    Shield,
+} from 'lucide-react'
 
-export default function WhereWeWork() {
+interface WhereWeWorkProps {
+    scrollTo?: string
+}
+
+export default function WhereWeWork({ scrollTo }: WhereWeWorkProps) {
+    useEffect(() => {
+        if (scrollTo) {
+            const element = document.getElementById(scrollTo)
+            if (element) {
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                }, 100)
+            }
+        }
+
+        const hash = window.location.hash.replace('#', '')
+        if (hash) {
+            const element = document.getElementById(hash)
+            if (element) {
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                }, 100)
+            }
+        }
+    }, [scrollTo])
+
     const regions = [
         {
-            id: 1,
+            id: 'central',
             name: 'Central Region',
-            provinces: ['Kabul', 'Parwan', 'Kapisa', 'Logar', 'Wardak', 'Panjsher'],
+            provinces: [
+                'Kabul',
+                'Parwan',
+                'Kapisa',
+                'Logar',
+                'Wardak',
+                'Panjsher',
+            ],
             beneficiaries: '150,000+',
             projects: 45,
+            color: 'from-blue-600 to-blue-800',
             description:
-                'Our largest operational area with comprehensive programming across all sectors',
+                "VDO is committed to improving lives in the central region through education, economic growth, urban development, and emergency response.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Expands urban school access, ensuring children in underserved areas can learn and thrive.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Supports MSMEs, helping small businesses grow, create jobs, and strengthen local livelihoods.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Addresses challenges like flooding by improving infrastructure and promoting resilient, livable communities.',
+                },
+                {
+                    icon: Shield,
+                    title: 'Emergency Response',
+                    text: 'Provides emergency response support to vulnerable populations, helping communities recover and build resilience.',
+                },
+            ],
+            summary:
+                'Through these integrated efforts, VDO empowers communities, fosters inclusive growth, and strengthens resilience across the central region.',
         },
         {
-            id: 2,
-            name: 'Eastern Region',
-            provinces: ['Nangarhar', 'Laghman', 'Kunar', 'Nuristan'],
-            beneficiaries: '85,000+',
-            projects: 28,
-            description:
-                'Focus on health, education, and livelihood support in hard-to-reach communities',
-        },
-        {
-            id: 3,
+            id: 'northern',
             name: 'Northern Region',
             provinces: ['Balkh', 'Kunduz', 'Takhar', 'Baghlan', 'Samangan'],
             beneficiaries: '120,000+',
             projects: 38,
+            color: 'from-green-600 to-green-800',
             description:
-                'Extensive WASH and protection programs serving displaced populations',
+                "VDO empowers communities in the northern region through integrated interventions in education, economic growth, urban development, and health.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Improves access to schools in underserved rural areas.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Supports MSMEs and TVET training for youth.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Strengthens resilience in drought-prone provinces.',
+                },
+                {
+                    icon: Stethoscope,
+                    title: 'Health & Nutrition',
+                    text: 'Raises awareness on COVID-19, nutrition, and menstrual hygiene, trains frontline workers, conducts nutrition sessions, and provides dignity kits and women- and girls-friendly spaces.',
+                },
+            ],
+            summary:
+                'Through these efforts, VDO enhances livelihoods, health, and community resilience, ensuring no one is left behind.',
         },
         {
-            id: 4,
+            id: 'eastern',
+            name: 'Eastern Region',
+            provinces: ['Nangarhar', 'Laghman', 'Kunar', 'Nuristan'],
+            beneficiaries: '85,000+',
+            projects: 28,
+            color: 'from-orange-600 to-orange-800',
+            description:
+                "VDO empowers communities in the eastern region through integrated programs in education, economic growth, urban development, and health.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Supports children in crisis-affected areas to continue learning.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Provides MSME support and TVET training to boost livelihoods.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Strengthens flood-affected communities through resilient urban development initiatives.',
+                },
+                {
+                    icon: Stethoscope,
+                    title: 'Health & Nutrition',
+                    text: "Integrated Health-Nutrition-Immunization Project addresses vaccine misconceptions, promotes positive health behaviors, and increases caregivers' understanding of immunization and nutrition services.",
+                },
+            ],
+            summary:
+                'Through these interventions, VDO enhances education, economic opportunities, health, and resilience, ensuring that vulnerable populations in the eastern region are supported to thrive.',
+        },
+        {
+            id: 'western',
             name: 'Western Region',
             provinces: ['Herat', 'Badghis', 'Farah', 'Ghor'],
             beneficiaries: '95,000+',
             projects: 32,
+            color: 'from-purple-600 to-purple-800',
             description:
-                'Integrated programming addressing drought resilience and food security',
+                "VDO empowers communities in the western region through integrated programs in education, economic growth, urban development, and health and nutrition.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Provides education support to ensure children and youth access quality learning opportunities.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Equips women and youth with startup kits, small business grants, financial literacy training, TVET and market-aligned skills development. Through mentorship, coaching, and the WAQAR Career Center, participants gain tools and opportunities.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Supports drought-prone provinces through infrastructure improvements and sustainable planning to build resilient communities.',
+                },
+                {
+                    icon: Stethoscope,
+                    title: 'Health & Nutrition',
+                    text: 'Works to improve community well-being by raising awareness on key health issues, providing nutrition services, and supporting families with access to essential health resources.',
+                },
+            ],
+            summary:
+                'Through these integrated efforts, VDO strengthens livelihoods, education, urban resilience, and health, creating lasting impact for vulnerable populations in the western region.',
         },
         {
-            id: 5,
+            id: 'southern',
             name: 'Southern Region',
             provinces: ['Kandahar', 'Helmand', 'Zabul', 'Uruzgan'],
             beneficiaries: '50,000+',
             projects: 18,
+            color: 'from-red-600 to-red-800',
             description:
-                'Emergency response and basic service delivery in conflict-affected areas',
+                "VDO empowers communities in the southern region through integrated programs in education, economic growth, urban development, emergency response, and health and nutrition.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Improves access to learning opportunities for children and youth in underserved and crisis-affected areas.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Supports MSMEs and provides TVET training, startup kits, small business grants, and mentorship.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Strengthens urban development and resilience in drought- and disaster-prone areas through infrastructure improvements, sustainable planning, and community-based risk reduction.',
+                },
+                {
+                    icon: Stethoscope,
+                    title: 'Health & Nutrition',
+                    text: 'Partner-led initiatives raise awareness on vaccines, nutrition, and hygiene, while supporting women and girls with safe spaces and essential services.',
+                },
+            ],
+            summary:
+                'Through these integrated interventions, VDO builds resilient communities, strengthens livelihoods, improves health outcomes, and ensures that vulnerable populations in the southern region are empowered to thrive.',
+        },
+        {
+            id: 'northwestern',
+            name: 'North-Western Region',
+            provinces: ['Faryab', 'Jawzjan', 'Sar-e Pol', 'Badakhshan'],
+            beneficiaries: '75,000+',
+            projects: 24,
+            color: 'from-teal-600 to-teal-800',
+            description:
+                "VDO, through its local partners, supports communities in the north-western region across education, economic growth, urban development, emergency response, and health and nutrition.",
+            details: [
+                {
+                    icon: GraduationCap,
+                    title: 'Education',
+                    text: 'Improves access to learning for children and youth in underserved and crisis-affected areas.',
+                },
+                {
+                    icon: TrendingUp,
+                    title: 'Economic Growth',
+                    text: 'Provides MSME support, TVET training, startup kits, and small business grants, enabling sustainable livelihoods and job opportunities.',
+                },
+                {
+                    icon: Building,
+                    title: 'Urban Development',
+                    text: 'Strengthens urban resilience in drought- and disaster-prone areas through infrastructure improvements and sustainable planning.',
+                },
+                {
+                    icon: Stethoscope,
+                    title: 'Health & Nutrition',
+                    text: 'Partner-led programs address vaccine misconceptions, promote positive health practices, and provide women and girls with safe spaces and essential services.',
+                },
+            ],
+            summary:
+                'Through these efforts, VDO enhances livelihoods, education, health, and community resilience in the north-western region.',
         },
     ]
 
@@ -61,9 +265,9 @@ export default function WhereWeWork() {
         },
         {
             icon: Building2,
-            value: '48',
-            label: 'Districts',
-            description: 'Direct presence in 48 districts nationwide',
+            value: '6',
+            label: 'Regions',
+            description: 'Comprehensive coverage across all major regions',
         },
         {
             icon: Home,
@@ -73,7 +277,7 @@ export default function WhereWeWork() {
         },
         {
             icon: Users,
-            value: '500K+',
+            value: '575K+',
             label: 'Beneficiaries',
             description: 'Total beneficiaries reached across all regions',
         },
@@ -189,60 +393,125 @@ export default function WhereWeWork() {
                                 ))}
                             </div>
 
-                            {/* Regional Presence */}
-                            <div className="mb-20">
+                            {/* Interactive Map Section */}
+                            <div id="map" className="mb-20 scroll-mt-32">
                                 <h2 className="mb-10 text-center text-3xl font-bold text-[#23369C]">
-                                    Regional Presence
+                                    Afghanistan Map
                                 </h2>
-                                <div className="space-y-8">
+                                <div className="rounded-3xl bg-gradient-to-br from-[#23369C]/5 to-[#00B7EC]/5 p-8 shadow-xl">
+                                    <AfghanistanMap />
+                                </div>
+                            </div>
+
+                            {/* Area-Based Information */}
+                            <div id="area-based" className="mb-20 scroll-mt-32">
+                                <h2 className="mb-4 text-center text-3xl font-bold text-[#23369C]">
+                                    Area-Based Information
+                                </h2>
+                                <p className="mx-auto mb-10 max-w-3xl text-center text-gray-600">
+                                    Explore our comprehensive programs across
+                                    Afghanistan's six major regions, each
+                                    tailored to address local needs and
+                                    challenges.
+                                </p>
+                                <div className="space-y-10">
                                     {regions.map((region) => (
                                         <div
                                             key={region.id}
-                                            className="overflow-hidden rounded-2xl border-2 border-gray-100 bg-white shadow-xl transition-all duration-300 hover:border-[#00B7EC] hover:shadow-2xl"
+                                            id={region.id}
+                                            className="scroll-mt-32 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-xl transition-all duration-300 hover:shadow-2xl"
                                         >
-                                            <div className="flex flex-col md:flex-row">
-                                                {/* Region Info */}
-                                                <div className="flex-1 bg-gradient-to-br from-[#23369C] to-[#23369C]/80 p-8 text-white">
-                                                    <h3 className="mb-4 text-2xl font-bold">
-                                                        {region.name}
-                                                    </h3>
-                                                    <p className="mb-6 text-white/90">
-                                                        {region.description}
-                                                    </p>
-                                                    <div className="mb-4 flex flex-wrap gap-2">
-                                                        {region.provinces.map(
-                                                            (province, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm"
-                                                                >
-                                                                    {province}
-                                                                </span>
-                                                            ),
-                                                        )}
+                                            {/* Region Header */}
+                                            <div
+                                                className={`bg-gradient-to-r ${region.color} p-8 text-white`}
+                                            >
+                                                <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                                                    <div>
+                                                        <h3 className="mb-3 text-3xl font-bold">
+                                                            {region.name}
+                                                        </h3>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {region.provinces.map(
+                                                                (
+                                                                    province,
+                                                                    idx,
+                                                                ) => (
+                                                                    <span
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm"
+                                                                    >
+                                                                        {
+                                                                            province
+                                                                        }
+                                                                    </span>
+                                                                ),
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex gap-6">
+                                                        <div className="text-center">
+                                                            <div className="text-3xl font-bold">
+                                                                {
+                                                                    region.beneficiaries
+                                                                }
+                                                            </div>
+                                                            <div className="text-sm text-white/80">
+                                                                Beneficiaries
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <div className="text-3xl font-bold">
+                                                                {region.projects}
+                                                            </div>
+                                                            <div className="text-sm text-white/80">
+                                                                Projects
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                {/* Statistics */}
-                                                <div className="flex flex-col justify-center gap-6 bg-gray-50 p-8 md:w-80">
-                                                    <div className="text-center">
-                                                        <div className="mb-2 text-3xl font-bold text-[#00B7EC]">
-                                                            {
-                                                                region.beneficiaries
-                                                            }
-                                                        </div>
-                                                        <div className="text-sm text-gray-600">
-                                                            Beneficiaries Served
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-center">
-                                                        <div className="mb-2 text-3xl font-bold text-[#00B7EC]">
-                                                            {region.projects}
-                                                        </div>
-                                                        <div className="text-sm text-gray-600">
-                                                            Active Projects
-                                                        </div>
-                                                    </div>
+                                            {/* Region Content */}
+                                            <div className="p-8">
+                                                <p className="mb-8 text-lg text-gray-700">
+                                                    {region.description}
+                                                </p>
+
+                                                {/* Program Areas */}
+                                                <div className="mb-8 grid gap-6 md:grid-cols-2">
+                                                    {region.details.map(
+                                                        (detail, idx) => (
+                                                            <div
+                                                                key={idx}
+                                                                className="flex gap-4 rounded-xl bg-gray-50 p-5"
+                                                            >
+                                                                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#00B7EC]/10 text-[#00B7EC]">
+                                                                    <detail.icon className="h-6 w-6" />
+                                                                </div>
+                                                                <div>
+                                                                    <h4 className="mb-1 font-bold text-[#23369C]">
+                                                                        {
+                                                                            detail.title
+                                                                        }
+                                                                    </h4>
+                                                                    <p className="text-sm text-gray-600">
+                                                                        {
+                                                                            detail.text
+                                                                        }
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    )}
+                                                </div>
+
+                                                {/* Summary */}
+                                                <div className="rounded-xl bg-gradient-to-r from-[#23369C]/10 to-[#00B7EC]/10 p-6">
+                                                    <p className="font-medium text-gray-700">
+                                                        {region.summary}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -251,7 +520,10 @@ export default function WhereWeWork() {
                             </div>
 
                             {/* Office Locations */}
-                            <div className="rounded-3xl bg-gradient-to-br from-[#23369C]/10 to-[#00B7EC]/10 p-10">
+                            <div
+                                id="offices"
+                                className="scroll-mt-32 rounded-3xl bg-gradient-to-br from-[#23369C]/10 to-[#00B7EC]/10 p-10"
+                            >
                                 <h2 className="mb-10 text-center text-3xl font-bold text-[#23369C]">
                                     Our Office Locations
                                 </h2>
@@ -294,7 +566,7 @@ export default function WhereWeWork() {
                                 </div>
                             </div>
 
-                            {/* Access Information */}
+                            {/* Hard-to-Reach Areas */}
                             <div className="mt-20 rounded-3xl bg-gradient-to-br from-[#23369C] to-[#23369C]/80 p-10 text-white shadow-2xl">
                                 <h2 className="mb-8 text-center text-3xl font-bold">
                                     Hard-to-Reach Areas

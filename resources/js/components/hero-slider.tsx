@@ -50,13 +50,16 @@ export default function HeroSlider() {
                         index === currentSlide ? 'opacity-100' : 'opacity-0'
                     }`}
                 >
-                    {/* Background Image */}
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: `url(${slideItem.image})`,
-                        }}
-                    >
+                    {/* Background Image with Zoom Effect */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div
+                            className={`absolute inset-0 bg-cover bg-center transition-transform duration-[5000ms] ease-linear ${
+                                index === currentSlide ? 'scale-110' : 'scale-100'
+                            }`}
+                            style={{
+                                backgroundImage: `url(${slideItem.image})`,
+                            }}
+                        />
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-black/50" />
                     </div>

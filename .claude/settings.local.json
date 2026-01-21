@@ -14,7 +14,17 @@
       "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan make:migration add_role_to_users_table)",
       "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan migrate)",
       "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan db:seed --class=UserSeeder)",
-      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan tinker --execute=\"echo App\\\\Models\\\\User::where\\(''email'', ''admin@gmail.com''\\)->first\\(\\);\")"
+      "Bash(\"C:\\\\Users\\\\Rahmani\\\\.config\\\\herd\\\\bin\\\\php.bat\" artisan tinker --execute=\"echo App\\\\Models\\\\User::where\\(''email'', ''admin@gmail.com''\\)->first\\(\\);\")",
+      "Bash(npm run types:*)",
+      "Bash(copy \"About Us.docx\" \"AboutUs.zip\")",
+      "Bash(cmd /c \"cd /d \"\"c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite\"\" && php artisan db:seed --class=RegionSeeder\")",
+      "Bash(cmd /c \"cd /d \"\"c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite\"\" && php artisan db:seed --class=RegionSeeder 2>&1\")",
+      "Bash(powershell -Command \"cd ''c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite''; php artisan db:seed --class=RegionSeeder\")",
+      "Bash(powershell -Command \"Get-Content ''c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite\\\\public\\\\images\\\\af.svg'' | Select-Object -First 20\")",
+      "Bash(powershell:*)",
+      "Bash(python:*)",
+      "Bash(dir /B \"c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite\")",
+      "Bash(findstr:*)"
     ]
   }
 }

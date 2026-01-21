@@ -1,9 +1,96 @@
+import { useEffect, useRef, useState } from 'react'
+
+interface CountUpProps {
+    end: number
+    duration?: number
+    suffix?: string
+    prefix?: string
+    separator?: string
+}
+
+function CountUp({
+    end,
+    duration = 2000,
+    suffix = '',
+    prefix = '',
+    separator = ',',
+}: CountUpProps) {
+    const [count, setCount] = useState(0)
+    const [hasStarted, setHasStarted] = useState(false)
+    const ref = useRef<HTMLSpanElement>(null)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && !hasStarted) {
+                    setHasStarted(true)
+                }
+            },
+            { threshold: 0.3 }
+        )
+
+        if (ref.current) {
+            observer.observe(ref.current)
+        }
+
+        return () => observer.disconnect()
+    }, [hasStarted])
+
+    useEffect(() => {
+        if (!hasStarted) return
+
+        let startTime: number | null = null
+        const startValue = 0
+
+        const animate = (currentTime: number) => {
+            if (startTime === null) startTime = currentTime
+            const progress = Math.min((currentTime - startTime) / duration, 1)
+
+            // Easing function for smooth animation
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+            const currentCount = Math.floor(
+                startValue + (end - startValue) * easeOutQuart
+            )
+
+            setCount(currentCount)
+
+            if (progress < 1) {
+                requestAnimationFrame(animate)
+            }
+        }
+
+        requestAnimationFrame(animate)
+    }, [hasStarted, end, duration])
+
+    // Format number with separator
+    const formatNumber = (num: number) => {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator)
+    }
+
+    return (
+        <span ref={ref}>
+            {prefix}
+            {formatNumber(count)}
+            {suffix}
+        </span>
+    )
+}
+
+interface ImpactItem {
+    id: number
+    title: string
+    value: number
+    suffix?: string
+    prefix?: string
+    icon: React.ReactNode
+}
+
 export default function ImpactStats() {
-    const impactData = [
+    const impactData: ImpactItem[] = [
         {
             id: 1,
             title: 'Education',
-            value: '320,000',
+            value: 320000,
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -23,7 +110,8 @@ export default function ImpactStats() {
         {
             id: 2,
             title: 'Economic Growth',
-            value: '760 Families',
+            value: 760,
+            suffix: ' Families',
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -43,7 +131,8 @@ export default function ImpactStats() {
         {
             id: 3,
             title: 'Urban Development',
-            value: '218 Areas',
+            value: 218,
+            suffix: ' Areas',
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -63,7 +152,7 @@ export default function ImpactStats() {
         {
             id: 4,
             title: 'Health and Nutrition',
-            value: '18,000',
+            value: 18000,
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -83,7 +172,7 @@ export default function ImpactStats() {
         {
             id: 5,
             title: 'Emergency Response',
-            value: '135,400',
+            value: 135400,
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -103,7 +192,7 @@ export default function ImpactStats() {
         {
             id: 6,
             title: 'Water & Sanitation',
-            value: '45,200',
+            value: 45200,
             icon: (
                 <svg
                     className="h-10 w-10"
@@ -123,88 +212,93 @@ export default function ImpactStats() {
     ]
 
     return (
-        <section
-            className="relative overflow-hidden bg-gradient-to-br from-[#23369C] via-[#23369C]/90 to-[#23369C]/80 py-20"
-            style={{
-                backgroundImage: 'url(/images/1.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundBlendMode: 'overlay',
-            }}
-        >
-            {/* Overlay for better card visibility */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#23369C]/90 via-[#23369C]/85 to-[#23369C]/80" />
+        <section className="relative overflow-hidden bg-white py-20 md:py-28">
+            {/* Background Pattern */}
+            <div className="absolute inset-0">
+                {/* Gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-gray-50" />
 
-            {/* Scattered background images (decorative) */}
-            <div className="absolute inset-0 opacity-20">
-                <div className="absolute left-[10%] top-[15%] h-32 w-32 overflow-hidden rounded-lg shadow-lg">
-                    <img
-                        src="/images/2.jpg"
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
-                </div>
-                <div className="absolute right-[15%] top-[10%] h-24 w-24 overflow-hidden rounded-lg shadow-lg">
-                    <img
-                        src="/images/3.jpg"
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
-                </div>
-                <div className="absolute bottom-[20%] left-[20%] h-28 w-28 overflow-hidden rounded-lg shadow-lg">
-                    <img
-                        src="/images/1.jpg"
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
-                </div>
-                <div className="absolute bottom-[15%] right-[10%] h-32 w-32 overflow-hidden rounded-lg shadow-lg">
-                    <img
-                        src="/images/2.jpg"
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
-                </div>
+                {/* Decorative circles */}
+                <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[#23369C]/5" />
+                <div className="absolute -right-40 -bottom-40 h-96 w-96 rounded-full bg-[#00B7EC]/5" />
+                <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-[#23369C]/3 to-[#00B7EC]/3" />
             </div>
 
             <div className="container relative z-10 mx-auto px-4">
-                <h2 className="mb-16 text-center text-4xl font-bold text-white">
-                    Our Impact in Numbers
-                </h2>
+                {/* Section Header */}
+                <div className="mb-16 text-center">
+                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#00B7EC]">
+                        Making a Difference
+                    </span>
+                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl lg:text-5xl">
+                        Our Impact in Numbers
+                    </h2>
+                    <p className="mx-auto max-w-2xl text-gray-600">
+                        Through dedication and community partnership, we've achieved remarkable milestones in transforming lives across Afghanistan
+                    </p>
+                </div>
 
                 {/* Impact Cards Grid */}
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                    {impactData.map((item, index) => (
+                    {impactData.map((item) => (
                         <div
                             key={item.id}
-                            className={`group relative transform transition-all duration-300 hover:-translate-y-2 hover:scale-105 ${
-                                index % 2 === 0 ? 'lg:mt-0' : 'lg:mt-8'
-                            }`}
+                            className="group relative"
                         >
-                            <div className="h-full rounded-2xl bg-gradient-to-br from-[#00B7EC] to-[#00B7EC]/80 p-8 shadow-2xl transition-shadow duration-300 hover:shadow-cyan-500/50">
+                            <div className="h-full rounded-2xl border border-gray-100 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                                 {/* Icon */}
                                 <div className="mb-6 flex justify-center">
-                                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 group-hover:bg-white/30 group-hover:scale-110">
+                                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-[#00B7EC] to-[#23369C] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                                         {item.icon}
                                     </div>
                                 </div>
 
+                                {/* Value with Count Animation */}
+                                <p className="mb-2 text-center text-4xl font-extrabold text-[#23369C]">
+                                    <CountUp
+                                        end={item.value}
+                                        suffix={item.suffix}
+                                        prefix={item.prefix}
+                                        duration={2500}
+                                    />
+                                </p>
+
                                 {/* Title */}
-                                <h3 className="mb-4 text-center text-xl font-bold text-white">
+                                <h3 className="text-center text-lg font-semibold text-gray-700">
                                     {item.title}
                                 </h3>
 
-                                {/* Value */}
-                                <p className="text-center text-3xl font-extrabold text-white">
-                                    {item.value}
-                                </p>
-
-                                {/* Decorative element */}
-                                <div className="absolute -right-2 -top-2 h-16 w-16 rounded-full bg-white/10 blur-xl" />
-                                <div className="absolute -bottom-2 -left-2 h-20 w-20 rounded-full bg-white/10 blur-xl" />
+                                {/* Bottom accent line */}
+                                <div className="absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#00B7EC] to-[#23369C] transition-all duration-300 group-hover:w-1/2" />
                             </div>
                         </div>
                     ))}
+                </div>
+
+                {/* Bottom CTA */}
+                <div className="mt-16 text-center">
+                    <p className="mb-6 text-gray-600">
+                        Want to be part of our journey?
+                    </p>
+                    <a
+                        href="/donate"
+                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#00B7EC] to-[#23369C] px-8 py-4 font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110"
+                    >
+                        Support Our Mission
+                        <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>

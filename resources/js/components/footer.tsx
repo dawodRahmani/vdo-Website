@@ -9,7 +9,7 @@ export default function Footer() {
                             <img
                                 src="/images/logo.png"
                                 alt="Vision Logo"
-                                className="h-16 w-auto object-contain"
+                                className="h-24 w-auto object-contain"
                             />
                         </div>
 
@@ -137,18 +137,26 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href="/who-we-are"
+                                    href="/about"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
-                                    Who We Are
+                                    About Us
                                 </a>
                             </li>
                             <li>
                                 <a
-                                    href="/what-we-do"
+                                    href="/organization-capacity"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
-                                    What We Do
+                                    Organization Capacity
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/strategic-priorities"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                >
+                                    Strategic Priorities
                                 </a>
                             </li>
                             <li>
@@ -157,6 +165,14 @@ export default function Footer() {
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
                                     Where We Work
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/our-commitment"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                >
+                                    Our Commitment
                                 </a>
                             </li>
                             <li>
@@ -178,7 +194,7 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li>
                                 <a
-                                    href="/jobs"
+                                    href="/opportunities/jobs"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
                                     Jobs
@@ -186,7 +202,15 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href="/news"
+                                    href="/opportunities/bids"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                >
+                                    Bids
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/media/news"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
                                     News
@@ -194,15 +218,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href="/multimedia"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
-                                >
-                                    Multimedia
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="/publications"
+                                    href="/media/publications"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
                                     Publications
@@ -210,10 +226,18 @@ export default function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href="/safeguarding"
+                                    href="/our-commitment#safeguarding"
                                     className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                 >
-                                    Our safeguarding commitment
+                                    Safeguarding
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="/our-commitment#humanitarian-principles"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                >
+                                    Humanitarian Principles
                                 </a>
                             </li>
                         </ul>

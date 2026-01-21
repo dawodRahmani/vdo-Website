@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import {
     Facebook,
     Linkedin,
@@ -30,80 +30,148 @@ interface NavigationItem {
     items: MenuItem[]
 }
 
+// Custom NavLink component that handles hash-based navigation
+function NavLink({
+    href,
+    className,
+    children,
+    onClick,
+}: {
+    href: string
+    className?: string
+    children: React.ReactNode
+    onClick?: () => void
+}) {
+    const hasHash = href.includes('#')
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (hasHash) {
+            e.preventDefault()
+            const [path, hash] = href.split('#')
+
+            // Check if we're already on the target page
+            if (window.location.pathname === path || path === '') {
+                // Same page, just scroll to the element
+                const element = document.getElementById(hash)
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                }
+            } else {
+                // Different page, navigate first then scroll
+                router.visit(path, {
+                    onSuccess: () => {
+                        setTimeout(() => {
+                            const element = document.getElementById(hash)
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' })
+                            }
+                        }, 100)
+                    },
+                })
+            }
+            onClick?.()
+        } else {
+            onClick?.()
+        }
+    }
+
+    if (hasHash) {
+        return (
+            <a href={href} className={className} onClick={handleClick}>
+                {children}
+            </a>
+        )
+    }
+
+    return (
+        <Link href={href} className={className} onClick={onClick}>
+            {children}
+        </Link>
+    )
+}
+
 const navigationItems: NavigationItem[] = [
     {
         title: 'About Us',
         items: [
-            { title: 'History', href: '/about/history' },
-            { title: 'Policies', href: '/about/policies' },
-            { title: "VDO's Capacity", href: '/about/capacity' },
-            {
-                title: "VDO's Outreach and Contribution",
-                href: '/about/outreach-contribution',
-            },
-            {
-                title: 'Our Commitment',
-                items: [
-                    {
-                        title: 'Commitment to Humanitarian Principles',
-                        href: '/about/humanitarian-principles',
-                    },
-                    {
-                        title: 'Prevention from Aid Diversion',
-                        href: '/about/aid-diversion',
-                    },
-                    {
-                        title: "VDO's Commitment to Accountability to Affected population (AAP)",
-                        href: '/about/aap',
-                    },
-                    {
-                        title: 'Safeguarding Beneficiaries',
-                        href: '/about/safeguarding-beneficiaries',
-                    },
-                    {
-                        title: "VDO's Commitment to Zero tolerance and PSEAH",
-                        href: '/about/zero-tolerance-pseah',
-                    },
-                ],
-            },
+            { title: 'Executive Summary', href: '/about#executive-summary' },
+            { title: 'History', href: '/about#history' },
+            { title: 'Looking Ahead', href: '/about#looking-ahead' },
+            { title: 'VDO Best Practices', href: '/about#best-practices' },
+            { title: 'VDO Strength', href: '/about#strength' },
         ],
     },
     {
-        title: 'Our Work',
+        title: 'Organization Capacity',
         items: [
-            { title: 'Programmatic Approach', href: '/work/programmatic-approach' },
-            { title: 'Where we work', href: '/work/where-we-work' },
-            { title: 'Target Groups', href: '/work/target-groups' },
-            {
-                title: 'Thematic area',
-                items: [
-                    { title: 'Education', href: '/work/thematic/education' },
-                    { title: 'Economic Growth', href: '/work/thematic/economic-growth' },
-                    { title: 'Urban Development', href: '/work/thematic/urban-development' },
-                    { title: 'Health and Nutrition', href: '/work/thematic/health-nutrition' },
-                    { title: 'Emergency Response', href: '/work/thematic/emergency-response' },
-                ],
-            },
+            { title: 'Our Capacity', href: '/organization-capacity#our-capacity' },
+            { title: 'Policies', href: '/organization-capacity#policies' },
+            { title: 'Programmatic Approach', href: '/organization-capacity#programmatic-approach' },
+            { title: 'Localization Framework', href: '/organization-capacity#localization-framework' },
+            { title: 'Stakeholder Engagement', href: '/organization-capacity#stakeholder-engagement' },
+            { title: 'Governance', href: '/organization-capacity#governance' },
+        ],
+    },
+    {
+        title: 'Strategic Priorities',
+        items: [
+            { title: 'Education', href: '/strategic-priorities#education' },
+            { title: 'Health and Nutrition', href: '/strategic-priorities#health-nutrition' },
+            { title: 'Economic Growth', href: '/strategic-priorities#economic-growth' },
+            { title: 'Urban Development', href: '/strategic-priorities#urban-development' },
+            { title: 'Emergency Response', href: '/strategic-priorities#emergency-response' },
+            { title: 'Target Groups', href: '/strategic-priorities#target-groups' },
+            { title: 'VDO Contribution', href: '/strategic-priorities#vdo-contribution' },
+        ],
+    },
+    {
+        title: 'Where We Work',
+        items: [
+            { title: 'Overview', href: '/where-we-work' },
+            { title: 'Map', href: '/where-we-work/map' },
+            { title: 'Area-Based Information', href: '/where-we-work/area-based' },
+            { title: 'Central Region', href: '/where-we-work/central' },
+            { title: 'Northern Region', href: '/where-we-work/northern' },
+            { title: 'Eastern Region', href: '/where-we-work/eastern' },
+            { title: 'Western Region', href: '/where-we-work/western' },
+            { title: 'Southern Region', href: '/where-we-work/southern' },
+            { title: 'North-Western Region', href: '/where-we-work/northwestern' },
+            { title: 'Our Offices', href: '/where-we-work/offices' },
+        ],
+    },
+    {
+        title: 'Our Commitment',
+        items: [
+            { title: 'Inclusivity', href: '/our-commitment#inclusivity' },
+            { title: 'Accountability to Affected Population (AAP)', href: '/our-commitment#aap' },
+            { title: 'Safeguarding', href: '/our-commitment#safeguarding' },
+            { title: 'PSEAH', href: '/our-commitment#pseah' },
+            { title: 'Anti-fraud and Transparency', href: '/our-commitment#anti-fraud' },
+            { title: 'Effectiveness and Efficiency', href: '/our-commitment#effectiveness' },
+            { title: 'Impact and Sustainability', href: '/our-commitment#impact' },
+            { title: 'Prevention from Aid Diversion', href: '/our-commitment#aid-diversion' },
+            { title: 'Humanitarian Principles', href: '/our-commitment#humanitarian-principles' },
         ],
     },
     {
         title: 'Media',
         items: [
-            { title: 'News', href: '/media/news' },
-            { title: 'Press Release', href: '/media/press-release' },
             { title: 'Publications', href: '/media/publications' },
-            { title: 'Project Snapshot', href: '/media/project-snapshot' },
+            { title: 'News', href: '/media/news' },
             { title: 'Documentary', href: '/media/documentary' },
+            { title: 'Success Story', href: '/media/success-story' },
+            { title: 'Project Snapshot', href: '/media/project-snapshot' },
+            { title: 'Press Release', href: '/media/press-release' },
         ],
     },
     {
         title: 'Opportunities',
         items: [
-            { title: 'Jobs', href: '/opportunities/jobs' },
+            { title: 'All Opportunities', href: '/opportunities' },
             { title: 'Bids', href: '/opportunities/bids' },
+            { title: 'Jobs', href: '/opportunities/jobs' },
+            { title: 'Volunteer', href: '/opportunities/volunteers' },
             { title: 'Participation', href: '/opportunities/participation' },
-            { title: 'Volunteers', href: '/opportunities/volunteers' },
-            { title: 'Vacancy Announcement', href: '/opportunities/vacancy-announcement' },
         ],
     },
 ]
@@ -137,7 +205,7 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
             <div className="container mx-auto px-4">
-                <div className="flex h-20 items-center justify-between">
+                <div className="flex h-24 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex-shrink-0">
                         <img
@@ -194,7 +262,7 @@ export default function Header() {
                                                                                             nestedItem.title
                                                                                         }
                                                                                     >
-                                                                                        <Link
+                                                                                        <NavLink
                                                                                             href={
                                                                                                 nestedItem.href!
                                                                                             }
@@ -203,7 +271,7 @@ export default function Header() {
                                                                                             {
                                                                                                 nestedItem.title
                                                                                             }
-                                                                                        </Link>
+                                                                                        </NavLink>
                                                                                     </li>
                                                                                 ),
                                                                             )}
@@ -213,14 +281,14 @@ export default function Header() {
                                                             </>
                                                         ) : (
                                                             // Regular link
-                                                            <Link
+                                                            <NavLink
                                                                 href={
                                                                     subItem.href!
                                                                 }
                                                                 className="block rounded-md px-3 py-2 text-sm leading-relaxed text-gray-700 transition-colors hover:bg-gray-100 hover:text-[#23369C]"
                                                             >
                                                                 {subItem.title}
-                                                            </Link>
+                                                            </NavLink>
                                                         )}
                                                     </li>
                                                 ))}
@@ -266,10 +334,12 @@ export default function Header() {
                         </button>
 
                         {/* Donate Button */}
-                        <Button className="hidden gap-2 bg-[#00B7EC] px-6 hover:bg-[#00B7EC]/90 md:inline-flex">
-                            <span>Donate</span>
-                            <Heart className="h-4 w-4" />
-                        </Button>
+                        <Link href="/donate">
+                            <Button className="hidden gap-2 bg-[#00B7EC] px-6 hover:bg-[#00B7EC]/90 md:inline-flex">
+                                <span>Donate</span>
+                                <Heart className="h-4 w-4" />
+                            </Button>
+                        </Link>
 
                         {/* Mobile Menu Button */}
                         <Sheet
@@ -294,7 +364,7 @@ export default function Header() {
                                         <img
                                             src="/images/logo.png"
                                             alt="Vision Logo"
-                                            className="h-16 w-auto object-contain"
+                                            className="h-20 w-auto object-contain"
                                         />
                                     </SheetTitle>
                                 </SheetHeader>
@@ -369,7 +439,7 @@ export default function Header() {
                                                                                     (
                                                                                         nestedItem,
                                                                                     ) => (
-                                                                                        <Link
+                                                                                        <NavLink
                                                                                             key={
                                                                                                 nestedItem.title
                                                                                             }
@@ -386,7 +456,7 @@ export default function Header() {
                                                                                             {
                                                                                                 nestedItem.title
                                                                                             }
-                                                                                        </Link>
+                                                                                        </NavLink>
                                                                                     ),
                                                                                 )}
                                                                             </div>
@@ -394,7 +464,7 @@ export default function Header() {
                                                                     </>
                                                                 ) : (
                                                                     // Regular link
-                                                                    <Link
+                                                                    <NavLink
                                                                         href={
                                                                             subItem.href!
                                                                         }
@@ -408,7 +478,7 @@ export default function Header() {
                                                                         {
                                                                             subItem.title
                                                                         }
-                                                                    </Link>
+                                                                    </NavLink>
                                                                 )}
                                                             </div>
                                                         ),
@@ -419,10 +489,12 @@ export default function Header() {
                                     ))}
 
                                     {/* Mobile Donate Button */}
-                                    <Button className="mt-4 gap-2 bg-[#00B7EC] hover:bg-[#00B7EC]/90">
-                                        <span>Donate</span>
-                                        <Heart className="h-4 w-4" />
-                                    </Button>
+                                    <Link href="/donate" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button className="mt-4 w-full gap-2 bg-[#00B7EC] hover:bg-[#00B7EC]/90">
+                                            <span>Donate</span>
+                                            <Heart className="h-4 w-4" />
+                                        </Button>
+                                    </Link>
 
                                     {/* Mobile Social Icons */}
                                     <div className="mt-6 flex items-center gap-4 border-t pt-6">

@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react'
 import Header from '@/components/header'
 import HeroSlider from '@/components/hero-slider'
+import LatestWork from '@/components/latest-work'
 import AfghanistanMap from '@/components/afghanistan-map'
 import InfoSlider from '@/components/info-slider'
 import ImpactStats from '@/components/impact-stats'
@@ -22,6 +23,9 @@ export default function Home({ canRegister, regions }: HomeProps) {
 
                 {/* Hero Slider Section */}
                 <HeroSlider />
+
+                {/* Latest Work Section */}
+                <LatestWork />
 
                 {/* Afghanistan Map Section */}
                 <section
@@ -108,7 +112,7 @@ export default function Home({ canRegister, regions }: HomeProps) {
                 <section className="bg-gray-50 py-16">
                     <div className="container mx-auto px-4">
                         <h2 className="mb-8 text-center text-4xl font-bold text-[#23369C]">
-                            Our Story in Pictures
+                            Success Story
                         </h2>
                         <InfoSlider />
                     </div>
@@ -128,7 +132,7 @@ export default function Home({ canRegister, regions }: HomeProps) {
                             <div className="relative overflow-hidden rounded-2xl shadow-2xl" style={{ paddingBottom: '56.25%' }}>
                                 <iframe
                                     className="absolute inset-0 h-full w-full"
-                                    src="https://www.youtube.com/embed/Oa9FFx0_uLA"
+                                    src="https://drive.google.com/file/d/1qNke9K8gYIsLT0e4D5MLByKsb46WNak8/preview"
                                     title="VDO Video"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
@@ -158,7 +162,7 @@ export default function Home({ canRegister, regions }: HomeProps) {
                                     <img
                                         src="/images/logo.png"
                                         alt="Vision Logo"
-                                        className="h-16 w-auto object-contain"
+                                        className="h-24 w-auto object-contain"
                                     />
                                 </div>
 
@@ -285,10 +289,10 @@ export default function Home({ canRegister, regions }: HomeProps) {
                                     </li>
                                     <li>
                                         <a
-                                            href="/who-we-are"
+                                            href="/history"
                                             className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
                                         >
-                                            Who We Are
+                                            History
                                         </a>
                                     </li>
                                     <li>
