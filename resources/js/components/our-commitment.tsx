@@ -1,0 +1,68 @@
+import {
+    HandHeart,
+    Leaf,
+    Scale,
+    ShieldCheck,
+    Users,
+    type LucideIcon,
+} from 'lucide-react'
+
+interface CommitmentItem {
+    title: string
+    icon: LucideIcon
+}
+
+const items: CommitmentItem[] = [
+    { title: 'Inclusivity', icon: Users },
+    { title: 'Accountability to Affected People', icon: Scale },
+    { title: 'Humanitarian Principles', icon: HandHeart },
+    { title: 'Impact & Sustainability', icon: Leaf },
+    { title: 'Prevention from Aid Diversion', icon: ShieldCheck },
+]
+
+export default function OurCommitment() {
+    return (
+        <section className="bg-gray-100 py-12 md:py-16">
+            <div className="container mx-auto px-4">
+                <h2 className="mb-10 text-center text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
+                    Our Commitment:
+                </h2>
+
+                <div className="relative">
+                    {/* Items */}
+                    <div className="grid grid-cols-2 gap-y-8 sm:grid-cols-3 md:grid-cols-5">
+                        {items.map((item) => {
+                            const Icon = item.icon
+                            return (
+                                <div
+                                    key={item.title}
+                                    className="flex flex-col items-center px-2 text-center"
+                                >
+                                    <Icon className="h-10 w-10 text-[rgb(0,175,239)]" />
+                                    <p className="mt-3 text-xs font-medium leading-snug text-[#23369C] md:text-sm">
+                                        {item.title}
+                                    </p>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    {/* Dotted timeline with square markers */}
+                    <div className="relative mt-6 hidden md:block">
+                        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dotted border-[rgb(0,175,239)]" />
+                        <div className="relative grid grid-cols-5">
+                            {items.map((item) => (
+                                <div
+                                    key={item.title}
+                                    className="flex justify-center"
+                                >
+                                    <span className="h-2.5 w-2.5 bg-[rgb(0,175,239)]" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
