@@ -31,7 +31,7 @@ function SectionHeading({
     return (
         <div className="mb-4 flex items-center gap-3">
             <Icon className="h-8 w-8 text-[rgb(0,175,239)]" />
-            <h2 className="text-2xl font-semibold text-[#23369C] md:text-3xl">
+            <h2 className="text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                 {title}
             </h2>
         </div>
@@ -94,7 +94,7 @@ function DonutChart({
             >
                 <div className="absolute inset-[22%] flex items-center justify-center rounded-full bg-gray-100">
                     {centerLabel && (
-                        <span className="text-center text-base font-bold text-[#23369C]">
+                        <span className="text-center text-base font-bold text-[rgb(62,64,149)]">
                             {centerLabel}
                         </span>
                     )}
@@ -109,7 +109,7 @@ function DonutChart({
                         />
                         <span className="text-gray-700">
                             {seg.label}{' '}
-                            <span className="font-semibold text-[#23369C]">
+                            <span className="font-semibold text-[rgb(62,64,149)]">
                                 {seg.value}%
                             </span>
                         </span>
@@ -139,7 +139,7 @@ function HorizontalBars({ items }: { items: BarItem[] }) {
                     <span
                         className={`font-medium ${
                             item.highlight
-                                ? 'text-[#23369C]'
+                                ? 'text-[rgb(62,64,149)]'
                                 : 'text-gray-700'
                         }`}
                     >
@@ -155,7 +155,7 @@ function HorizontalBars({ items }: { items: BarItem[] }) {
                             }}
                         />
                     </div>
-                    <span className="min-w-[70px] text-right font-semibold text-[#23369C]">
+                    <span className="min-w-[70px] text-right font-semibold text-[rgb(62,64,149)]">
                         {item.value}
                     </span>
                     <span className="min-w-[40px] text-right text-xs text-gray-500">
@@ -268,7 +268,7 @@ export default function StrategicPriorities() {
                                         className="flex flex-col items-center px-2 text-center"
                                     >
                                         <span className="h-3 w-3 rounded-full bg-[rgb(0,175,239)]" />
-                                        <p className="mt-3 text-xs font-semibold text-[#23369C] md:text-sm">
+                                        <p className="mt-3 text-xs font-semibold text-[rgb(62,64,149)] md:text-sm">
                                             {tg}
                                         </p>
                                     </div>
@@ -278,12 +278,12 @@ export default function StrategicPriorities() {
                             </div>
                         </div>
 
-                        <p className="mt-10 text-sm font-semibold text-[#23369C]">
+                        <p className="mt-10 text-sm font-semibold text-[rgb(62,64,149)]">
                             To date, the following percentages of beneficiaries
                             have been reached across education coverage areas:
                         </p>
 
-                        <h3 className="mt-8 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-8 text-base font-bold text-[rgb(62,64,149)]">
                             Coverage Areas in Education:
                         </h3>
                         <div className="mt-4 grid gap-6 md:grid-cols-2">
@@ -295,7 +295,7 @@ export default function StrategicPriorities() {
                                 />
                                 <ul className="mt-4 space-y-2 text-sm text-gray-700">
                                     <li className="flex items-start gap-2">
-                                        <span className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#2ECC71]" />
+                                        <span className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[rgb(0,175,239)]" />
                                         <span>
                                             <strong>Kabul</strong> — Urban
                                             expansion and increased schooling
@@ -303,7 +303,7 @@ export default function StrategicPriorities() {
                                         </span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[#E67E22]" />
+                                        <span className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[rgb(62,64,149)]" />
                                         <span>
                                             <strong>
                                                 Northeastern Regions
@@ -333,7 +333,7 @@ export default function StrategicPriorities() {
                                         {
                                             label: 'Girls',
                                             value: 30,
-                                            color: '#23369C',
+                                            color: 'rgb(62,64,149)',
                                         },
                                         {
                                             label: 'Adolescents',
@@ -373,9 +373,9 @@ export default function StrategicPriorities() {
                                 By constructing schools, distributing learning
                                 materials, and supporting adolescent girls'
                                 education, VDO contributes directly to{' '}
-                                <strong className="text-[#23369C]">SDG 4</strong>{' '}
+                                <strong className="text-[rgb(62,64,149)]">SDG 4</strong>{' '}
                                 (Quality Education) and{' '}
-                                <strong className="text-[#23369C]">SDG 5</strong>{' '}
+                                <strong className="text-[rgb(62,64,149)]">SDG 5</strong>{' '}
                                 (Gender Equality). Our work ensures that
                                 education remains a right, not a privilege, even
                                 for those in the most remote and
@@ -383,7 +383,7 @@ export default function StrategicPriorities() {
                             </Paragraph>
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Number of Beneficiaries Reached:
                         </h3>
                         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
@@ -399,7 +399,7 @@ export default function StrategicPriorities() {
                                         label: 'Male',
                                         value: '153,080',
                                         percent: 52,
-                                        color: '#23369C',
+                                        color: 'rgb(62,64,149)',
                                     },
                                     {
                                         label: 'Total',
@@ -412,7 +412,7 @@ export default function StrategicPriorities() {
                             />
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Key Achievements:
                         </h3>
                         <Bullets
@@ -455,16 +455,16 @@ export default function StrategicPriorities() {
                                 resilience and inclusive growth. Linking
                                 grassroots practices with national frameworks,
                                 we contribute to{' '}
-                                <strong className="text-[#23369C]">SDG 1</strong>{' '}
+                                <strong className="text-[rgb(62,64,149)]">SDG 1</strong>{' '}
                                 (No Poverty) and{' '}
-                                <strong className="text-[#23369C]">SDG 8</strong>{' '}
+                                <strong className="text-[rgb(62,64,149)]">SDG 8</strong>{' '}
                                 (Decent Work & Economic Growth). Our integrated
                                 approach helps displaced and marginalized
                                 households secure food, income, and dignity.
                             </Paragraph>
                         </div>
 
-                        <h3 className="mt-8 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-8 text-base font-bold text-[rgb(62,64,149)]">
                             Geographic Coverage of Economic Growth Initiatives:
                         </h3>
                         <div className="mt-4 grid gap-6 md:grid-cols-2">
@@ -484,7 +484,7 @@ export default function StrategicPriorities() {
                                         {
                                             label: 'Men',
                                             value: 40,
-                                            color: '#23369C',
+                                            color: 'rgb(62,64,149)',
                                         },
                                         {
                                             label: 'Children / Youth',
@@ -496,7 +496,7 @@ export default function StrategicPriorities() {
                             </div>
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Number of Beneficiaries Reached:
                         </h3>
                         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
@@ -512,7 +512,7 @@ export default function StrategicPriorities() {
                                         label: 'Men',
                                         value: '32,400',
                                         percent: 40,
-                                        color: '#23369C',
+                                        color: 'rgb(62,64,149)',
                                     },
                                     {
                                         label: 'Children / Youth',
@@ -531,7 +531,7 @@ export default function StrategicPriorities() {
                             />
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Key Achievements:
                         </h3>
                         <Bullets
@@ -570,7 +570,7 @@ export default function StrategicPriorities() {
                             </Paragraph>
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Our interventions include:
                         </h3>
                         <Bullets
@@ -592,22 +592,22 @@ export default function StrategicPriorities() {
                                 for climate resilience, VDO bridges local
                                 adaptation practices with global sustainability
                                 frameworks, contributing directly to{' '}
-                                <strong className="text-[#23369C]">
+                                <strong className="text-[rgb(62,64,149)]">
                                     SDG 11
                                 </strong>{' '}
                                 (Sustainable Cities and Communities),{' '}
-                                <strong className="text-[#23369C]">
+                                <strong className="text-[rgb(62,64,149)]">
                                     SDG 13
                                 </strong>{' '}
                                 (Climate Action), and{' '}
-                                <strong className="text-[#23369C]">
+                                <strong className="text-[rgb(62,64,149)]">
                                     SDG 15
                                 </strong>{' '}
                                 (Life on Land).
                             </span>
                         </Paragraph>
 
-                        <h3 className="mt-8 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-8 text-base font-bold text-[rgb(62,64,149)]">
                             Geographic Coverage of Urban Development
                             Initiatives:
                         </h3>
@@ -646,7 +646,7 @@ export default function StrategicPriorities() {
                                         <p className="text-xs font-medium text-gray-700">
                                             {r.region}
                                         </p>
-                                        <p className="mt-1 text-lg font-bold text-[#23369C]">
+                                        <p className="mt-1 text-lg font-bold text-[rgb(62,64,149)]">
                                             {r.num}
                                         </p>
                                         <p className="text-xs font-semibold text-[rgb(0,175,239)]">
@@ -657,7 +657,7 @@ export default function StrategicPriorities() {
                             </div>
                         </div>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             The below number of beneficiaries reached through
                             Urban Development initiatives:
                         </h3>
@@ -674,7 +674,7 @@ export default function StrategicPriorities() {
                                         label: 'Women',
                                         value: '17,080',
                                         percent: 35,
-                                        color: '#23369C',
+                                        color: 'rgb(62,64,149)',
                                     },
                                     {
                                         label: 'IDPs',
@@ -716,7 +716,7 @@ export default function StrategicPriorities() {
                             nutrition teams, and emergency response approaches.
                         </Paragraph>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             VDO's interventions in Health sector include:
                         </h3>
                         <div className="mt-4 grid gap-6 md:grid-cols-2">
@@ -732,7 +732,7 @@ export default function StrategicPriorities() {
                                         {
                                             label: 'Nutrition for children & pregnant women',
                                             value: 30,
-                                            color: '#23369C',
+                                            color: 'rgb(62,64,149)',
                                         },
                                         {
                                             label: 'Nutrition assistance to households',
@@ -761,13 +761,13 @@ export default function StrategicPriorities() {
                                 health workers and deploying mobile services
                                 reflects Afghanistan's urgent need for equitable
                                 healthcare access, advancing{' '}
-                                <strong className="text-[#23369C]">SDG 3</strong>{' '}
+                                <strong className="text-[rgb(62,64,149)]">SDG 3</strong>{' '}
                                 (Good Health & Wellbeing) and reducing
                                 inequalities for the most at-risk.
                             </span>
                         </Paragraph>
 
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             Number of Beneficiaries Reached:
                         </h3>
                         <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6">
@@ -783,7 +783,7 @@ export default function StrategicPriorities() {
                                         label: 'Women',
                                         value: '234,000',
                                         percent: 30,
-                                        color: '#23369C',
+                                        color: 'rgb(62,64,149)',
                                     },
                                     {
                                         label: 'Others',
@@ -860,7 +860,7 @@ export default function StrategicPriorities() {
                             underserved groups across Afghanistan who directly
                             and indirectly receive support through its programs:
                         </Paragraph>
-                        <h3 className="mt-6 text-base font-bold text-[#23369C]">
+                        <h3 className="mt-6 text-base font-bold text-[rgb(62,64,149)]">
                             VDO's Primary Beneficiaries
                         </h3>
                         <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
@@ -869,10 +869,10 @@ export default function StrategicPriorities() {
                                     key={p.title}
                                     className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
                                 >
-                                    <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#23369C] text-xs font-bold text-white">
+                                    <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[rgb(62,64,149)] text-xs font-bold text-white">
                                         {i + 1}
                                     </span>
-                                    <h4 className="text-sm font-bold text-[#23369C]">
+                                    <h4 className="text-sm font-bold text-[rgb(62,64,149)]">
                                         {p.title}
                                     </h4>
                                     <p className="mt-1 text-xs leading-relaxed text-gray-600">

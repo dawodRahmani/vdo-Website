@@ -13,7 +13,22 @@ interface AfghanistanMapProps {
     className?: string
 }
 
-// Pin locations for major cities (percentage-based positioning based on SVG viewBox 1000x762)
+// Pin locations for major cities (percentage-based, SVG viewBox 1000x762)
+const PIN_RED = '#E74C3C'
+const PIN_YELLOW = '#F1C40F'
+
+// Region label positions (centroid of region's provinces, % of 1000x762 viewBox)
+const regionLabels: { name: string; x: number; y: number; twoLine?: boolean }[] = [
+    { name: 'North\nEastern', x: 72, y: 22, twoLine: true },
+    { name: 'Northern', x: 52, y: 31 },
+    { name: 'Western', x: 24, y: 47 },
+    { name: 'Central Highland', x: 43, y: 47 },
+    { name: 'Central', x: 59, y: 46 },
+    { name: 'Eastern', x: 67, y: 46 },
+    { name: 'South\nEastern', x: 57, y: 61, twoLine: true },
+    { name: 'Southern', x: 33, y: 73 },
+]
+
 const cityPins = [
     {
         id: 'kabul',
@@ -21,21 +36,39 @@ const cityPins = [
         region: 'Central Region',
         description: 'Head Office',
         stats: '150,000+ beneficiaries',
-        x: 59.2, // SVG cx=591.7 / 1000
-        y: 44.6, // SVG cy=339.5 / 762
-        pinColor: '#23369C',
-        dotColor: '#E74C3C',
+        x: 59.2,
+        y: 44.6,
+        pinColor: PIN_RED,
     },
     {
-        id: 'mazar',
-        name: 'Mazar-e-Sharif',
+        id: 'badakhshan',
+        name: 'Badakhshan',
+        region: 'North Eastern Region',
+        description: 'Regional Office',
+        stats: '60,000+ beneficiaries',
+        x: 69.6, // SVG cx=695.9 / 1000
+        y: 21.4, // SVG cy=163.4 / 762
+        pinColor: PIN_RED,
+    },
+    {
+        id: 'kunduz',
+        name: 'Kunduz',
         region: 'Northern Region',
         description: 'Regional Office',
         stats: '120,000+ beneficiaries',
-        x: 45.8, // SVG cx=458.3 / 1000 (Balkh province)
-        y: 22.2, // SVG cy=169.1 / 762
-        pinColor: '#FF6B35',
-        dotColor: '#FF6B35',
+        x: 56.7, // SVG cx=567.3 / 1000
+        y: 21.2, // SVG cy=161.4 / 762
+        pinColor: PIN_RED,
+    },
+    {
+        id: 'faryab',
+        name: 'Faryab',
+        region: 'North Western Region',
+        description: 'Field Office',
+        stats: '40,000+ beneficiaries',
+        x: 30.8,
+        y: 32.3,
+        pinColor: PIN_RED,
     },
     {
         id: 'jalalabad',
@@ -43,10 +76,9 @@ const cityPins = [
         region: 'Eastern Region',
         description: 'Regional Office',
         stats: '85,000+ beneficiaries',
-        x: 67.5, // SVG cx=675.4 / 1000 (Nangarhar province)
-        y: 48.1, // SVG cy=366.7 / 762
-        pinColor: '#E74C3C',
-        dotColor: '#2ECC71',
+        x: 67.5,
+        y: 48.1,
+        pinColor: PIN_RED,
     },
     {
         id: 'herat',
@@ -54,10 +86,9 @@ const cityPins = [
         region: 'Western Region',
         description: 'Regional Office',
         stats: '95,000+ beneficiaries',
-        x: 13.7, // SVG cx=136.6 / 1000
-        y: 47.1, // SVG cy=359.1 / 762
-        pinColor: '#E74C3C',
-        dotColor: '#2ECC71',
+        x: 13.7,
+        y: 47.1,
+        pinColor: PIN_RED,
     },
     {
         id: 'kandahar',
@@ -65,28 +96,16 @@ const cityPins = [
         region: 'Southern Region',
         description: 'Regional Office',
         stats: '50,000+ beneficiaries',
-        x: 36.5, // SVG cx=364.8 / 1000
-        y: 79.1, // SVG cy=602.4 / 762
-        pinColor: '#E74C3C',
-        dotColor: '#F1C40F',
-    },
-    {
-        id: 'faryab',
-        name: 'Faryab',
-        region: 'North-Western Region',
-        description: 'Field Office',
-        stats: '40,000+ beneficiaries',
-        x: 30.8, // SVG cx=307.6 / 1000
-        y: 32.3, // SVG cy=245.8 / 762
-        pinColor: '#9B59B6',
-        dotColor: '#9B59B6',
+        x: 36.5,
+        y: 79.1,
+        pinColor: PIN_YELLOW,
     },
 ]
 
 // Colors for unmapped provinces (brand palette)
-const unmappedColors = ['#00B7EC', '#23369C', '#BDBFC1']
+const unmappedColors = ['rgb(0,175,239)', 'rgb(62,64,149)', 'rgb(189,191,193)']
 
-// Mapping of province codes to region slugs
+// Mapping of province codes (as they appear in af.svg) to region slugs
 const provinceToRegion: Record<string, string> = {
     // North Eastern Region
     AFBDS: 'north-eastern', // Badakhshan
@@ -95,46 +114,47 @@ const provinceToRegion: Record<string, string> = {
     AFTAK: 'northern', // Takhar
     AFKDZ: 'northern', // Kunduz
     AFBAL: 'northern', // Balkh
-    AFSMN: 'northern', // Samangan
+    AFSAM: 'northern', // Samangan
     AFSAR: 'northern', // Sar-e Pol
+    AFBGL: 'northern', // Baghlan
 
     // Western Region
-    AFHRH: 'western', // Herat
+    AFHER: 'western', // Herat
     AFBDG: 'western', // Badghis
-    AFGHR: 'western', // Ghor
+    AFGHO: 'western', // Ghor
     AFFYB: 'western', // Faryab
     AFJOW: 'western', // Jawzjan
 
     // Central Region
-    AFKBL: 'central', // Kabul
+    AFKAB: 'central', // Kabul
     AFKAP: 'central', // Kapisa
-    AFPRW: 'central', // Parwan
+    AFPAR: 'central', // Parwan
     AFPAN: 'central', // Panjshir
-    AFWDM: 'central', // Wardak
+    AFWAR: 'central', // Wardak
     AFLOG: 'central', // Logar
 
     // Eastern Region
-    AFNGR: 'eastern', // Nangarhar
-    AFKNT: 'eastern', // Kunar
+    AFNAN: 'eastern', // Nangarhar
+    AFKNR: 'eastern', // Kunar
     AFLAG: 'eastern', // Laghman
-    AFNRH: 'eastern', // Nuristan
+    AFNUR: 'eastern', // Nuristan
 
     // Central Highland Region
-    AFBMN: 'central-highland', // Bamyan
-    AFDGH: 'central-highland', // Daikundi
+    AFBAM: 'central-highland', // Bamyan
+    AFDAY: 'central-highland', // Daikundi
 
     // South Eastern Region
-    AFPAK: 'south-eastern', // Paktia
-    AFPKI: 'south-eastern', // Paktika
-    AFKST: 'south-eastern', // Khost
-    AFGHZ: 'south-eastern', // Ghazni
+    AFPKA: 'south-eastern', // Paktia
+    AFPIA: 'south-eastern', // Paktika
+    AFKHO: 'south-eastern', // Khost
+    AFGHA: 'south-eastern', // Ghazni
 
     // Southern Region
-    AFKHD: 'southern', // Kandahar
-    AFHMD: 'southern', // Helmand
-    AFNMR: 'southern', // Nimroz
-    AFZBL: 'southern', // Zabul
-    AFRGH: 'southern', // Uruzgan
+    AFKAN: 'southern', // Kandahar
+    AFHEL: 'southern', // Helmand
+    AFNIM: 'southern', // Nimroz
+    AFZAB: 'southern', // Zabul
+    AFURU: 'southern', // Uruzgan
     AFFRA: 'southern', // Farah
 }
 
@@ -206,34 +226,30 @@ export default function AfghanistanMap({
                     const regionSlug = provinceToRegion[provinceCode]
                     const region = regionSlug ? regionMap[regionSlug] : null
 
+                    const baseClass =
+                        'transition-all duration-300 cursor-pointer'
+                    const hoverClass =
+                        'transition-all duration-300 cursor-pointer drop-shadow-lg'
+
                     if (region) {
-                        // Apply region color
                         path.setAttribute('fill', region.color)
                         path.setAttribute('stroke', '#ffffff')
                         path.setAttribute('stroke-width', '0.8')
-                        path.setAttribute(
-                            'class',
-                            'transition-all duration-300 cursor-pointer opacity-90 hover:opacity-100',
-                        )
+                        path.setAttribute('class', baseClass)
                         path.setAttribute('data-region-slug', regionSlug)
                         path.setAttribute('data-province-name', provinceName || '')
 
-                        // Add hover effects
                         path.addEventListener('mouseenter', (e) => {
                             setHoveredRegion(regionSlug)
                             setTooltipContent({
                                 name: region.name,
                                 description: region.description,
                             })
-
-                            // Get cursor position
                             const event = e as MouseEvent
                             setTooltipPosition({ x: event.clientX, y: event.clientY })
-
-                            // Highlight all provinces in the same region
                             paths.forEach((p) => {
                                 if (p.getAttribute('data-region-slug') === regionSlug) {
-                                    p.setAttribute('class', 'transition-all duration-300 cursor-pointer opacity-100 drop-shadow-lg')
+                                    p.setAttribute('class', hoverClass)
                                 }
                             })
                         })
@@ -241,12 +257,9 @@ export default function AfghanistanMap({
                         path.addEventListener('mouseleave', () => {
                             setHoveredRegion(null)
                             setTooltipContent(null)
-
-                            // Reset all provinces
                             paths.forEach((p) => {
-                                const slug = p.getAttribute('data-region-slug')
-                                if (slug) {
-                                    p.setAttribute('class', 'transition-all duration-300 cursor-pointer opacity-90 hover:opacity-100')
+                                if (p.getAttribute('data-region-slug')) {
+                                    p.setAttribute('class', baseClass)
                                 }
                             })
                         })
@@ -256,13 +269,13 @@ export default function AfghanistanMap({
                             setTooltipPosition({ x: event.clientX, y: event.clientY })
                         })
                     } else {
-                        // Province not mapped to any region - use brand colors
+                        // Fallback for any unmapped province — still palette-aligned
                         const color = unmappedColors[unmappedIndex % unmappedColors.length]
                         unmappedIndex++
                         path.setAttribute('fill', color)
                         path.setAttribute('stroke', '#ffffff')
                         path.setAttribute('stroke-width', '0.8')
-                        path.setAttribute('class', 'transition-all duration-300 opacity-70 hover:opacity-85')
+                        path.setAttribute('class', baseClass)
                     }
                 })
 
@@ -303,6 +316,25 @@ export default function AfghanistanMap({
                     )}
                 />
 
+                {/* Region name labels */}
+                {!isLoading && (
+                    <div className="pointer-events-none absolute inset-0">
+                        {regionLabels.map((label) => (
+                            <div
+                                key={label.name}
+                                className="absolute -translate-x-1/2 -translate-y-1/2 text-center text-[9px] font-semibold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)] md:text-[10px]"
+                                style={{ left: `${label.x}%`, top: `${label.y}%` }}
+                            >
+                                {label.twoLine
+                                    ? label.name.split('\n').map((line) => (
+                                          <div key={line}>{line}</div>
+                                      ))
+                                    : label.name}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {/* City Pin Markers */}
                 {!isLoading && (
                     <div className="absolute inset-0 pointer-events-none">
@@ -317,37 +349,36 @@ export default function AfghanistanMap({
                             >
                                 {/* Pin SVG */}
                                 <svg
-                                    width="28"
-                                    height="36"
+                                    width="22"
+                                    height="29"
                                     viewBox="0 0 24 32"
-                                    className="drop-shadow-lg transition-transform group-hover:scale-125 group-hover:-translate-y-1"
+                                    className="drop-shadow-lg transition-transform group-hover:scale-110 group-hover:-translate-y-0.5"
                                 >
-                                    {/* Pin body */}
                                     <path
                                         d="M12 0C5.373 0 0 5.373 0 12c0 7.5 12 20 12 20s12-12.5 12-20c0-6.627-5.373-12-12-12z"
                                         fill={pin.pinColor}
                                     />
-                                    {/* Inner dot */}
                                     <circle
                                         cx="12"
                                         cy="11"
-                                        r="5"
-                                        fill={pin.dotColor}
+                                        r="4"
+                                        fill="#ffffff"
+                                        fillOpacity="0.35"
                                     />
                                 </svg>
                                 {/* Detailed Tooltip on hover */}
                                 <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-white px-4 py-3 rounded-lg shadow-xl border border-gray-100 min-w-[180px] pointer-events-none z-50">
                                     <div className="text-center">
-                                        <h4 className="font-bold text-sm text-[#23369C] mb-1">
+                                        <h4 className="font-bold text-sm text-[rgb(62,64,149)] mb-1">
                                             {pin.name}
                                         </h4>
                                         <p className="text-xs text-gray-500 mb-2">
                                             {pin.region}
                                         </p>
-                                        <div className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-2" style={{ backgroundColor: `${pin.pinColor}20`, color: pin.pinColor }}>
+                                        <div className="inline-block px-2 py-0.5 rounded-full text-xs font-medium mb-2 bg-[rgb(62,64,149)]/10 text-[rgb(62,64,149)]">
                                             {pin.description}
                                         </div>
-                                        <p className="text-xs font-semibold text-[#00B7EC]">
+                                        <p className="text-xs font-semibold text-[rgb(0,175,239)]">
                                             {pin.stats}
                                         </p>
                                     </div>

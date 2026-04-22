@@ -31,7 +31,7 @@ export default function EmergencyResponseSection() {
                     <span className="mb-4 inline-block rounded-full bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-600">
                         Humanitarian Response
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Emergency Response
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -70,7 +70,7 @@ export default function EmergencyResponseSection() {
                                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-500">
                                     <item.icon className="h-7 w-7 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">
@@ -92,20 +92,20 @@ export default function EmergencyResponseSection() {
                     {/* Guiding Principles */}
                     <div className="rounded-xl bg-gray-50 p-8">
                         <div className="flex items-center justify-center gap-3">
-                            <Users className="h-6 w-6 text-[#23369C]" />
+                            <Users className="h-6 w-6 text-[rgb(62,64,149)]" />
                             <p className="text-center leading-relaxed text-gray-700">
                                 Guided by local knowledge and rooted in strong
                                 community networks, VDO's emergency response
                                 programs are designed to{' '}
-                                <span className="font-semibold text-[#23369C]">
+                                <span className="font-semibold text-[rgb(62,64,149)]">
                                     save lives
                                 </span>
                                 ,{' '}
-                                <span className="font-semibold text-[#23369C]">
+                                <span className="font-semibold text-[rgb(62,64,149)]">
                                     reduce suffering
                                 </span>
                                 , and help communities{' '}
-                                <span className="font-semibold text-[#23369C]">
+                                <span className="font-semibold text-[rgb(62,64,149)]">
                                     recover with strength and hope
                                 </span>
                                 .

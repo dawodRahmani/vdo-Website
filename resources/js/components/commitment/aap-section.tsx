@@ -38,10 +38,10 @@ export default function AapSection() {
         <section id="aap" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         AAP
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Accountability to Affected Populations
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -52,7 +52,7 @@ export default function AapSection() {
 
                 <div className="mx-auto max-w-6xl">
                     {/* Main Statement */}
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C] to-[#00B7EC] p-8 text-center text-white">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-center text-white">
                         <p className="text-lg leading-relaxed">
                             Accountability to Affected Populations is central to
                             our mandate and guides how communities shape our
@@ -67,10 +67,10 @@ export default function AapSection() {
                                 key={index}
                                 className="rounded-xl bg-white p-6 shadow-md transition-all hover:-translate-y-1 hover:shadow-lg"
                             >
-                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#23369C]/10">
-                                    <item.icon className="h-6 w-6 text-[#23369C]" />
+                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[rgb(62,64,149)]/10">
+                                    <item.icon className="h-6 w-6 text-[rgb(62,64,149)]" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">
@@ -84,11 +84,11 @@ export default function AapSection() {
                     <div className="rounded-xl border border-gray-100 bg-white p-8 text-center shadow-md">
                         <p className="leading-relaxed text-gray-700">
                             For VDO, AAP is both a{' '}
-                            <span className="font-semibold text-[#23369C]">
+                            <span className="font-semibold text-[rgb(62,64,149)]">
                                 responsibility
                             </span>{' '}
                             and a{' '}
-                            <span className="font-semibold text-[#23369C]">
+                            <span className="font-semibold text-[rgb(62,64,149)]">
                                 moral obligation
                             </span>
                             . We strive to build trust-based relationships and

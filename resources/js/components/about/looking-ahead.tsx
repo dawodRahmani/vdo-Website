@@ -35,10 +35,10 @@ export default function LookingAhead() {
         <section id="looking-ahead" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Future Outlook
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Looking Ahead: Crisis and Possibility
                     </h2>
                 </div>
@@ -102,7 +102,7 @@ export default function LookingAhead() {
                     </div>
 
                     {/* Strategic Focus */}
-                    <div className="rounded-2xl bg-gradient-to-r from-[#23369C] to-[#00B7EC] p-8 text-white shadow-xl">
+                    <div className="rounded-2xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-white shadow-xl">
                         <h3 className="mb-4 text-2xl font-bold">
                             Our Strategic Focus
                         </h3>

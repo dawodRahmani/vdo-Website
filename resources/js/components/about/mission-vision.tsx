@@ -2,17 +2,17 @@ import { Target, Eye } from 'lucide-react'
 
 export default function MissionVision() {
     return (
-        <section className="bg-gradient-to-br from-[#FFF9E6] to-[#FFF2CC] py-20">
+        <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20">
             <div className="container mx-auto px-4">
                 <div className="mx-auto max-w-5xl">
                     <div className="grid gap-8 md:grid-cols-2">
                         {/* Mission */}
                         <div className="rounded-2xl bg-white p-8 shadow-xl">
                             <div className="mb-6 flex items-center gap-4">
-                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#23369C]">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[rgb(62,64,149)]">
                                     <Target className="h-7 w-7 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-[#23369C]">
+                                <h3 className="text-2xl font-bold text-[rgb(62,64,149)]">
                                     Our Mission
                                 </h3>
                             </div>
@@ -32,10 +32,10 @@ export default function MissionVision() {
                         </div>
 
                         {/* Vision */}
-                        <div className="rounded-2xl bg-[#23369C] p-8 shadow-xl">
+                        <div className="rounded-2xl bg-[rgb(62,64,149)] p-8 shadow-xl">
                             <div className="mb-6 flex items-center gap-4">
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white">
-                                    <Eye className="h-7 w-7 text-[#23369C]" />
+                                    <Eye className="h-7 w-7 text-[rgb(62,64,149)]" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-white">
                                     Our Vision

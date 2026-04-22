@@ -1,0 +1,1 @@
+import{c as e,j as r}from"./app-DGBpp1BN.js";import{S as i}from"./site-layout-BwlNSOJc.js";/* empty css            */import"./site-footer-BpQeKrMD.js";import"./utils-BaHOUNG5.js";import"./x-C_31mSGu.js";function l(){const o=e.c(1);let t;return o[0]===Symbol.for("react.memo_cache_sentinel")?(t=r.jsx(i,{title:"Donate"}),o[0]=t):t=o[0],t}export{l as default};

@@ -53,10 +53,10 @@ export default function HistorySection() {
         <section id="history" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         Our Journey
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         History
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -69,7 +69,7 @@ export default function HistorySection() {
                 <div className="mx-auto mb-16 max-w-4xl">
                     <div className="relative">
                         {/* Timeline line */}
-                        <div className="absolute left-4 top-0 h-full w-0.5 bg-[#23369C]/20 md:left-1/2 md:-translate-x-1/2"></div>
+                        <div className="absolute left-4 top-0 h-full w-0.5 bg-[rgb(62,64,149)]/20 md:left-1/2 md:-translate-x-1/2"></div>
 
                         {milestones.map((milestone, index) => (
                             <div
@@ -89,10 +89,10 @@ export default function HistorySection() {
                                     }`}
                                 >
                                     <div className="rounded-lg bg-white p-6 shadow-lg">
-                                        <span className="mb-2 inline-block rounded bg-[#00B7EC] px-3 py-1 text-sm font-bold text-white">
+                                        <span className="mb-2 inline-block rounded bg-[rgb(0,175,239)] px-3 py-1 text-sm font-bold text-white">
                                             {milestone.year}
                                         </span>
-                                        <h3 className="mb-2 text-xl font-bold text-[#23369C]">
+                                        <h3 className="mb-2 text-xl font-bold text-[rgb(62,64,149)]">
                                             {milestone.title}
                                         </h3>
                                         <p className="text-gray-600">
@@ -102,7 +102,7 @@ export default function HistorySection() {
                                 </div>
 
                                 {/* Dot */}
-                                <div className="absolute left-4 top-6 flex h-8 w-8 items-center justify-center rounded-full bg-[#23369C] md:left-1/2 md:-translate-x-1/2">
+                                <div className="absolute left-4 top-6 flex h-8 w-8 items-center justify-center rounded-full bg-[rgb(62,64,149)] md:left-1/2 md:-translate-x-1/2">
                                     <Calendar className="h-4 w-4 text-white" />
                                 </div>
                             </div>
@@ -121,7 +121,7 @@ export default function HistorySection() {
                         humanitarian and development policy.
                     </p>
 
-                    <h3 className="mb-6 text-center text-xl font-bold text-[#23369C]">
+                    <h3 className="mb-6 text-center text-xl font-bold text-[rgb(62,64,149)]">
                         Leadership & Memberships
                     </h3>
                     <p className="mb-6 text-center text-gray-600">
@@ -137,11 +137,11 @@ export default function HistorySection() {
                                 className="rounded-lg border border-gray-100 bg-gray-50 p-6 text-center transition-shadow hover:shadow-md"
                             >
                                 <div className="mb-4 flex justify-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#23369C]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)]">
                                         <membership.icon className="h-6 w-6 text-white" />
                                     </div>
                                 </div>
-                                <h4 className="mb-2 font-bold text-[#23369C]">
+                                <h4 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {membership.title}
                                 </h4>
                                 <p className="text-sm text-gray-600">

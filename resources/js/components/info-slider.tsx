@@ -115,14 +115,14 @@ export default function InfoSlider() {
                 {/* Navigation Arrows */}
                 <button
                     onClick={prevSlide}
-                    className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-[#23369C] transition-colors hover:bg-white"
+                    className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-[rgb(62,64,149)] transition-colors hover:bg-white"
                     aria-label="Previous slide"
                 >
                     <ChevronLeft className="h-6 w-6" />
                 </button>
                 <button
                     onClick={nextSlide}
-                    className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-[#23369C] transition-colors hover:bg-white"
+                    className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/80 p-2 text-[rgb(62,64,149)] transition-colors hover:bg-white"
                     aria-label="Next slide"
                 >
                     <ChevronRight className="h-6 w-6" />
@@ -136,7 +136,7 @@ export default function InfoSlider() {
                             onClick={() => setCurrentIndex(index)}
                             className={`h-2 rounded-full transition-all ${
                                 index === currentIndex
-                                    ? 'w-8 bg-[#23369C]'
+                                    ? 'w-8 bg-[rgb(62,64,149)]'
                                     : 'w-2 bg-gray-300'
                             }`}
                             aria-label={`Go to slide ${index + 1}`}

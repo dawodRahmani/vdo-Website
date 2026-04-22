@@ -140,20 +140,21 @@ export default function Header() {
     const isActive = useIsActive()
 
     return (
-        <header className="sticky top-0 z-50 w-full bg-gray-50 py-3">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center gap-4">
-                    {/* Logo */}
-                    <Link href="/" className="-ml-4 flex-shrink-0 md:-ml-10">
-                        <img
-                            src="/images/logo.png"
-                            alt="VDO Vision"
-                            className="h-16 w-auto object-contain md:h-20"
-                        />
-                    </Link>
+        <header className="sticky top-0 z-50 w-full bg-gray-100 py-3">
+            <div className="mx-auto flex w-full max-w-[1360px] items-start gap-4 px-4 md:px-6 lg:px-8">
+                {/* Logo sits outside nav container */}
+                <Link href="/" className="flex-shrink-0">
+                    <img
+                        src="/images/logo.png"
+                        alt="VDO Vision"
+                        className="h-16 w-auto object-contain md:h-[72px]"
+                    />
+                </Link>
 
-                    {/* Blue bar */}
-                    <div className="flex h-12 flex-1 items-center justify-between gap-4 rounded-md bg-[#23369C] px-3 shadow-md">
+                <div className="min-w-0 flex-1">
+                    <div className="mx-auto max-w-[1240px]">
+                        {/* Blue bar */}
+                        <div className="mt-2 flex h-8 w-full items-center justify-between gap-4 bg-[rgb(62,64,149)] px-3 shadow-sm md:h-10">
                         {/* Desktop nav */}
                         <nav className="hidden lg:flex">
                             <ul className="flex items-center gap-1 xl:gap-2">
@@ -168,7 +169,7 @@ export default function Header() {
                                             <Link
                                                 href={item.href}
                                                 className={cn(
-                                                    'relative flex items-center gap-1 px-3 py-2 text-sm font-medium text-white transition-colors hover:text-white/90',
+                                                    'relative flex items-center gap-1 px-2 py-1 text-xs font-medium text-white transition-colors hover:text-white/90 xl:px-3',
                                                     active &&
                                                         "after:absolute after:bottom-1 after:left-3 after:right-3 after:h-[2px] after:bg-[rgb(0,175,239)] after:content-['']",
                                                 )}
@@ -212,114 +213,114 @@ export default function Header() {
                             </ul>
                         </nav>
 
-                        {/* Right icons */}
-                        <div className="flex items-center gap-1">
+                            {/* Right icons */}
+                            <div className="flex items-center gap-0.5">
                             <button
                                 aria-label="Account"
-                                className="hidden h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:inline-flex"
+                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
                             >
-                                <User className="h-5 w-5" />
+                                <User className="h-4 w-4" />
                             </button>
                             <button
                                 aria-label="Menu"
-                                className="hidden h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:inline-flex"
+                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
                             >
-                                <Menu className="h-5 w-5" />
+                                <Menu className="h-4 w-4" />
                             </button>
                             <button
                                 aria-label="Search"
-                                className="hidden h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:inline-flex"
+                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
                             >
-                                <Search className="h-5 w-5" />
+                                <Search className="h-4 w-4" />
                             </button>
 
-                            {/* Mobile toggle */}
-                            <button
-                                aria-label="Toggle navigation"
-                                onClick={() => setMobileOpen((v) => !v)}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 lg:hidden"
-                            >
-                                {mobileOpen ? (
-                                    <X className="h-6 w-6" />
-                                ) : (
-                                    <Menu className="h-6 w-6" />
-                                )}
-                            </button>
+                                {/* Mobile toggle */}
+                                <button
+                                    aria-label="Toggle navigation"
+                                    onClick={() => setMobileOpen((v) => !v)}
+                                    className="inline-flex h-10 w-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 lg:hidden"
+                                >
+                                    {mobileOpen ? (
+                                        <X className="h-6 w-6" />
+                                    ) : (
+                                        <Menu className="h-6 w-6" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Mobile nav */}
-                {mobileOpen && (
-                    <nav className="mt-2 rounded-md bg-[#23369C] py-2 lg:hidden">
-                        <ul className="flex flex-col gap-1 px-2">
-                            {navItems.map((item) => {
-                                const active = isActive(item.href)
-                                const hasChildren = !!item.items?.length
-                                const expanded = mobileExpanded === item.title
-                                return (
-                                    <li key={item.title}>
-                                        <div className="flex items-center">
-                                            <Link
-                                                href={item.href}
-                                                className={cn(
-                                                    'flex-1 rounded px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10',
-                                                    active &&
-                                                        'bg-white/10 border-l-2 border-[rgb(0,175,239)]',
-                                                )}
-                                                onClick={() =>
-                                                    setMobileOpen(false)
-                                                }
-                                            >
-                                                {item.title}
-                                            </Link>
-                                            {hasChildren && (
-                                                <button
+                    {/* Mobile nav */}
+                    {mobileOpen && (
+                        <nav className="mt-2 rounded-md bg-[rgb(62,64,149)] py-2 lg:hidden">
+                            <ul className="flex flex-col gap-1 px-2">
+                                {navItems.map((item) => {
+                                    const active = isActive(item.href)
+                                    const hasChildren = !!item.items?.length
+                                    const expanded = mobileExpanded === item.title
+                                    return (
+                                        <li key={item.title}>
+                                            <div className="flex items-center">
+                                                <Link
+                                                    href={item.href}
+                                                    className={cn(
+                                                        'flex-1 rounded px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10',
+                                                        active &&
+                                                            'bg-white/10 border-l-2 border-[rgb(0,175,239)]',
+                                                    )}
                                                     onClick={() =>
-                                                        setMobileExpanded(
-                                                            expanded
-                                                                ? null
-                                                                : item.title,
-                                                        )
+                                                        setMobileOpen(false)
                                                     }
-                                                    aria-label="Expand submenu"
-                                                    className="p-2 text-white"
                                                 >
-                                                    <ChevronDown
-                                                        className={cn(
-                                                            'h-4 w-4 transition-transform',
-                                                            expanded &&
-                                                                'rotate-180',
-                                                        )}
-                                                    />
-                                                </button>
+                                                    {item.title}
+                                                </Link>
+                                                {hasChildren && (
+                                                    <button
+                                                        onClick={() =>
+                                                            setMobileExpanded(
+                                                                expanded
+                                                                    ? null
+                                                                    : item.title,
+                                                            )
+                                                        }
+                                                        aria-label="Expand submenu"
+                                                        className="p-2 text-white"
+                                                    >
+                                                        <ChevronDown
+                                                            className={cn(
+                                                                'h-4 w-4 transition-transform',
+                                                                expanded &&
+                                                                    'rotate-180',
+                                                            )}
+                                                        />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            {hasChildren && expanded && (
+                                                <ul className="ml-4 border-l border-white/20 pl-2">
+                                                    {item.items!.map((sub) => (
+                                                        <li key={sub.title}>
+                                                            <Link
+                                                                href={sub.href}
+                                                                className="block rounded px-3 py-1.5 text-xs text-white/90 hover:bg-white/10"
+                                                                onClick={() =>
+                                                                    setMobileOpen(
+                                                                        false,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {sub.title}
+                                                            </Link>
+                                                        </li>
+                                                    ))}
+                                                </ul>
                                             )}
-                                        </div>
-                                        {hasChildren && expanded && (
-                                            <ul className="ml-4 border-l border-white/20 pl-2">
-                                                {item.items!.map((sub) => (
-                                                    <li key={sub.title}>
-                                                        <Link
-                                                            href={sub.href}
-                                                            className="block rounded px-3 py-1.5 text-xs text-white/90 hover:bg-white/10"
-                                                            onClick={() =>
-                                                                setMobileOpen(
-                                                                    false,
-                                                                )
-                                                            }
-                                                        >
-                                                            {sub.title}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </nav>
-                )}
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        </nav>
+                    )}
+                </div>
             </div>
         </header>
     )

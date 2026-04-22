@@ -4,3 +4,6 @@ rgb(189,191,193)
 # z4ixZH&p^Bku
 # ssh -p 65002 u584253098@72.60.19.149
 # ssh -p 65002 u584253098@72.60.19.149
+
+
+add this bg to all the home page bg-gray-100

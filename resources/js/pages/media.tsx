@@ -82,7 +82,7 @@ export default function Media() {
             {/* Documentaries */}
             <section id="documentaries" className="bg-gray-100 py-8 scroll-mt-24">
                 <div className="container mx-auto px-4">
-                    <h2 className="mb-6 text-xl font-semibold text-[#23369C] md:text-2xl">
+                    <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Documentaries:
                     </h2>
                     <div className="relative">
@@ -99,7 +99,7 @@ export default function Media() {
             {/* Photographs */}
             <section id="photographs" className="bg-gray-100 py-8 scroll-mt-24">
                 <div className="container mx-auto px-4">
-                    <h2 className="mb-6 text-xl font-semibold text-[#23369C] md:text-2xl">
+                    <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Photographs:
                     </h2>
                     <div className="relative">
@@ -130,7 +130,7 @@ export default function Media() {
             {/* Publications */}
             <section id="publications" className="bg-gray-100 pb-14 pt-8 scroll-mt-24">
                 <div className="container mx-auto px-4">
-                    <h2 className="mb-6 text-xl font-semibold text-[#23369C] md:text-2xl">
+                    <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Publications:
                     </h2>
                     <div className="relative">
@@ -143,7 +143,7 @@ export default function Media() {
                                 >
                                     <div className="flex flex-1 flex-col items-center justify-center">
                                         <FileText className="mb-3 h-12 w-12 text-[rgb(0,175,239)]" />
-                                        <h3 className="text-sm font-bold text-[#23369C]">
+                                        <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
                                             {pub.title}
                                         </h3>
                                         {pub.year && (

@@ -12,16 +12,16 @@ export default function InclusivitySection() {
         <section id="inclusivity" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Leave No One Behind
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Promoting Inclusivity
                     </h2>
                 </div>
 
                 <div className="mx-auto max-w-5xl">
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C]/5 to-[#00B7EC]/5 p-8">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)]/5 to-[rgb(0,175,239)]/5 p-8">
                         <p className="mb-6 leading-relaxed text-gray-700">
                             VDO is committed to fostering inclusive development
                             that leaves no one behind. The organization ensures
@@ -44,7 +44,7 @@ export default function InclusivitySection() {
                         {groups.map((group, index) => (
                             <div
                                 key={index}
-                                className="flex items-center gap-3 rounded-full bg-[#23369C] px-5 py-3 text-white"
+                                className="flex items-center gap-3 rounded-full bg-[rgb(62,64,149)] px-5 py-3 text-white"
                             >
                                 <group.icon className="h-5 w-5" />
                                 <span className="font-medium">{group.label}</span>
@@ -53,7 +53,7 @@ export default function InclusivitySection() {
                     </div>
 
                     {/* Key Points */}
-                    <div className="rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <div className="mb-4 flex items-center gap-3">
                             <Globe className="h-6 w-6" />
                             <h3 className="text-xl font-bold">

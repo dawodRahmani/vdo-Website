@@ -158,7 +158,7 @@ function HeroSlideContent({ slide }: { slide: HeroSlide }) {
             {slide.cta && (
                 <a
                     href={slide.cta.link}
-                    className="mt-6 inline-block rounded-md bg-[#00B7EC] px-6 py-3 text-base font-semibold text-white transition-all hover:bg-[#00B7EC]/90 hover:shadow-lg md:mt-8 md:px-8 md:py-4 md:text-lg"
+                    className="mt-6 inline-block rounded-md bg-[rgb(0,175,239)] px-6 py-3 text-base font-semibold text-white transition-all hover:bg-[rgb(0,175,239)]/90 hover:shadow-lg md:mt-8 md:px-8 md:py-4 md:text-lg"
                 >
                     {slide.cta.text}
                 </a>

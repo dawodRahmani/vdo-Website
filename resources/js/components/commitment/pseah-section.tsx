@@ -17,7 +17,7 @@ export default function PseahSection() {
                     <span className="mb-4 inline-block rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-600">
                         Zero Tolerance
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         PSEA Commitment
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -55,7 +55,7 @@ export default function PseahSection() {
                             or legal action.
                         </p>
 
-                        <h4 className="mb-4 font-bold text-[#23369C]">
+                        <h4 className="mb-4 font-bold text-[rgb(62,64,149)]">
                             Our Commitments Include:
                         </h4>
                         <div className="grid gap-3 sm:grid-cols-2">
@@ -72,7 +72,7 @@ export default function PseahSection() {
                     </div>
 
                     {/* Leadership Commitment */}
-                    <div className="rounded-xl bg-[#23369C] p-8 text-center text-white">
+                    <div className="rounded-xl bg-[rgb(62,64,149)] p-8 text-center text-white">
                         <p className="leading-relaxed text-white/90">
                             VDO's leadership is dedicated to maintaining a safe,
                             respectful, and accountable environment, ensuring

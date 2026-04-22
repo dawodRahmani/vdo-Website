@@ -50,7 +50,7 @@ export default function AidDiversionSection() {
                     <span className="mb-4 inline-block rounded-full bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-600">
                         Integrity
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Prevention from Aid Diversion
                     </h2>
                 </div>
@@ -84,7 +84,7 @@ export default function AidDiversionSection() {
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500">
                                     <item.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">
@@ -95,7 +95,7 @@ export default function AidDiversionSection() {
                     </div>
 
                     {/* Zero Tolerance Statement */}
-                    <div className="mb-8 rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="mb-8 rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <p className="leading-relaxed text-white/90">
                             VDO upholds a{' '}
                             <span className="font-bold">
@@ -110,7 +110,7 @@ export default function AidDiversionSection() {
                     </div>
 
                     {/* Reporting CTA */}
-                    <div className="rounded-xl border-2 border-dashed border-[#23369C]/30 bg-white p-8 text-center">
+                    <div className="rounded-xl border-2 border-dashed border-[rgb(62,64,149)]/30 bg-white p-8 text-center">
                         <p className="mb-4 text-gray-700">
                             In case of any suspected diversion or misuse of aid,
                             please use our confidential reporting channels or
@@ -118,7 +118,7 @@ export default function AidDiversionSection() {
                         </p>
                         <a
                             href="/contact"
-                            className="inline-block rounded-lg bg-[#23369C] px-6 py-3 font-medium text-white transition-colors hover:bg-[#23369C]/90"
+                            className="inline-block rounded-lg bg-[rgb(62,64,149)] px-6 py-3 font-medium text-white transition-colors hover:bg-[rgb(62,64,149)]/90"
                         >
                             Report a Concern
                         </a>

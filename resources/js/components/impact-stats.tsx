@@ -219,18 +219,18 @@ export default function ImpactStats() {
                 <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-gray-50" />
 
                 {/* Decorative circles */}
-                <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[#23369C]/5" />
-                <div className="absolute -right-40 -bottom-40 h-96 w-96 rounded-full bg-[#00B7EC]/5" />
-                <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-[#23369C]/3 to-[#00B7EC]/3" />
+                <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[rgb(62,64,149)]/5" />
+                <div className="absolute -right-40 -bottom-40 h-96 w-96 rounded-full bg-[rgb(0,175,239)]/5" />
+                <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-[rgb(62,64,149)]/3 to-[rgb(0,175,239)]/3" />
             </div>
 
             <div className="container relative z-10 mx-auto px-4">
                 {/* Section Header */}
                 <div className="mb-16 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-[rgb(0,175,239)]">
                         Making a Difference
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl lg:text-5xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl lg:text-5xl">
                         Our Impact in Numbers
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -248,13 +248,13 @@ export default function ImpactStats() {
                             <div className="h-full rounded-2xl border border-gray-100 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                                 {/* Icon */}
                                 <div className="mb-6 flex justify-center">
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-[#00B7EC] to-[#23369C] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
+                                    <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-[rgb(0,175,239)] to-[rgb(62,64,149)] text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
                                         {item.icon}
                                     </div>
                                 </div>
 
                                 {/* Value with Count Animation */}
-                                <p className="mb-2 text-center text-4xl font-extrabold text-[#23369C]">
+                                <p className="mb-2 text-center text-4xl font-extrabold text-[rgb(62,64,149)]">
                                     <CountUp
                                         end={item.value}
                                         suffix={item.suffix}
@@ -269,7 +269,7 @@ export default function ImpactStats() {
                                 </h3>
 
                                 {/* Bottom accent line */}
-                                <div className="absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-[#00B7EC] to-[#23369C] transition-all duration-300 group-hover:w-1/2" />
+                                <div className="absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-[rgb(0,175,239)] to-[rgb(62,64,149)] transition-all duration-300 group-hover:w-1/2" />
                             </div>
                         </div>
                     ))}
@@ -282,7 +282,7 @@ export default function ImpactStats() {
                     </p>
                     <a
                         href="/donate"
-                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#00B7EC] to-[#23369C] px-8 py-4 font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110"
+                        className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[rgb(0,175,239)] to-[rgb(62,64,149)] px-8 py-4 font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:brightness-110"
                     >
                         Support Our Mission
                         <svg

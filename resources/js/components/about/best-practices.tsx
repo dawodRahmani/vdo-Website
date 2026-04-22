@@ -65,10 +65,10 @@ export default function BestPractices() {
         <section id="best-practices" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         Our Standards
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         VDO Best Practices
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -85,10 +85,10 @@ export default function BestPractices() {
                                 key={index}
                                 className="group rounded-xl bg-white p-6 shadow-md transition-all hover:-translate-y-1 hover:shadow-xl"
                             >
-                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#23369C]/10 transition-colors group-hover:bg-[#23369C]">
-                                    <practice.icon className="h-6 w-6 text-[#23369C] transition-colors group-hover:text-white" />
+                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[rgb(62,64,149)]/10 transition-colors group-hover:bg-[rgb(62,64,149)]">
+                                    <practice.icon className="h-6 w-6 text-[rgb(62,64,149)] transition-colors group-hover:text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {practice.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">

@@ -81,7 +81,7 @@ export default function Publications() {
             <div className="container mx-auto px-4">
                 {/* Header */}
                 <div className="mb-8 flex flex-col items-center gap-6">
-                    <h2 className="text-2xl font-bold text-[#23369C] md:text-3xl">
+                    <h2 className="text-2xl font-bold text-[rgb(62,64,149)] md:text-3xl">
                         Publications
                     </h2>
 
@@ -91,7 +91,7 @@ export default function Publications() {
                             <button
                                 onClick={() => scroll('left')}
                                 disabled={!canScrollLeft}
-                                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-[#00B7EC] hover:text-[#00B7EC] disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-[rgb(0,175,239)] hover:text-[rgb(0,175,239)] disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
                                 aria-label="Scroll left"
                             >
                                 <ChevronLeft className="h-5 w-5" />
@@ -99,7 +99,7 @@ export default function Publications() {
                             <button
                                 onClick={() => scroll('right')}
                                 disabled={!canScrollRight}
-                                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-[#00B7EC] hover:text-[#00B7EC] disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+                                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-all hover:border-[rgb(0,175,239)] hover:text-[rgb(0,175,239)] disabled:opacity-40 disabled:hover:border-gray-200 disabled:hover:text-gray-600"
                                 aria-label="Scroll right"
                             >
                                 <ChevronRight className="h-5 w-5" />
@@ -107,7 +107,7 @@ export default function Publications() {
                         </div>
                         <a
                             href="/publications"
-                            className="rounded-lg bg-[#23369C] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#23369C]/90"
+                            className="rounded-lg bg-[rgb(62,64,149)] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[rgb(62,64,149)]/90"
                         >
                             View All
                         </a>
@@ -140,7 +140,7 @@ export default function Publications() {
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
                                         {/* Icon */}
-                                        <div className="absolute right-3 top-3 rounded-lg bg-[#00B7EC] p-1.5">
+                                        <div className="absolute right-3 top-3 rounded-lg bg-[rgb(0,175,239)] p-1.5">
                                             <FileText className="h-4 w-4 text-white" />
                                         </div>
 
@@ -151,7 +151,7 @@ export default function Publications() {
                                             </h3>
                                             <a
                                                 href={publication.link}
-                                                className="inline-flex items-center gap-1 text-xs font-semibold text-[#00B7EC] transition-colors hover:text-white"
+                                                className="inline-flex items-center gap-1 text-xs font-semibold text-[rgb(0,175,239)] transition-colors hover:text-white"
                                             >
                                                 Read More
                                                 <ChevronRight className="h-3 w-3" />

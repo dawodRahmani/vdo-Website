@@ -44,10 +44,10 @@ export default function GovernanceSection() {
         <section id="governance" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         Leadership & Oversight
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Governance
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -64,10 +64,10 @@ export default function GovernanceSection() {
                                 key={index}
                                 className="rounded-xl bg-white p-6 shadow-md transition-all hover:shadow-lg"
                             >
-                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[#23369C]">
+                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-[rgb(62,64,149)]">
                                     <element.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 text-lg font-bold text-[#23369C]">
+                                <h3 className="mb-2 text-lg font-bold text-[rgb(62,64,149)]">
                                     {element.title}
                                 </h3>
                                 <p className="text-gray-600">
@@ -78,7 +78,7 @@ export default function GovernanceSection() {
                     </div>
 
                     {/* Governance Statement */}
-                    <div className="mt-12 rounded-xl bg-gradient-to-r from-[#23369C] to-[#1a2875] p-8 text-white">
+                    <div className="mt-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(62,64,149)] p-8 text-white">
                         <h3 className="mb-4 text-xl font-bold">
                             Our Governance Commitment
                         </h3>

@@ -68,7 +68,7 @@ export default function Opportunities() {
                                     <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[rgb(0,175,239)] text-white shadow-md">
                                         <Icon className="h-7 w-7" />
                                     </div>
-                                    <h2 className="mb-3 text-xl font-semibold text-[#23369C] md:text-2xl">
+                                    <h2 className="mb-3 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                                         {op.title}
                                     </h2>
                                     <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
@@ -84,7 +84,7 @@ export default function Opportunities() {
             {/* Current listings placeholder */}
             <section className="bg-gray-100 pb-14">
                 <div className="container mx-auto px-4">
-                    <h3 className="mb-4 text-base font-bold text-[#23369C]">
+                    <h3 className="mb-4 text-base font-bold text-[rgb(62,64,149)]">
                         Current Listings
                     </h3>
                     <div className="space-y-2">

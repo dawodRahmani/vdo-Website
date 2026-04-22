@@ -23,7 +23,7 @@ const items: CommitmentItem[] = [
 export default function OurCommitment() {
     return (
         <section className="bg-gray-100 py-12 md:py-16">
-            <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <h2 className="mb-10 text-center text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                     Our Commitment:
                 </h2>
@@ -39,7 +39,7 @@ export default function OurCommitment() {
                                     className="flex flex-col items-center px-2 text-center"
                                 >
                                     <Icon className="h-10 w-10 text-[rgb(0,175,239)]" />
-                                    <p className="mt-3 text-xs font-medium leading-snug text-[#23369C] md:text-sm">
+                                    <p className="mt-3 text-xs font-medium leading-snug text-[rgb(62,64,149)] md:text-sm">
                                         {item.title}
                                     </p>
                                 </div>

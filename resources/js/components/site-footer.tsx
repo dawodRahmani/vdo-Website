@@ -34,7 +34,7 @@ export default function SiteFooter() {
 
     return (
         <footer className="pb-6 pt-4">
-            <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <div className="rounded-md bg-[rgb(0,175,239)] px-6 py-6 text-white md:px-8">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
                         {/* Back to Home Page */}

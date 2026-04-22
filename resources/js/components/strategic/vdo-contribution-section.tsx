@@ -5,17 +5,17 @@ export default function VdoContributionSection() {
         <section id="vdo-contribution" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Our Impact
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         VDO Contribution Project
                     </h2>
                 </div>
 
                 <div className="mx-auto max-w-5xl">
                     {/* Main Content */}
-                    <div className="mb-12 rounded-2xl bg-gradient-to-br from-[#23369C] to-[#00B7EC] p-8 text-white shadow-xl md:p-12">
+                    <div className="mb-12 rounded-2xl bg-gradient-to-br from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-white shadow-xl md:p-12">
                         <p className="mb-8 text-lg leading-relaxed text-white/90">
                             VDO's contribution projects represent our commitment
                             to creating lasting, sustainable impact across

@@ -202,7 +202,7 @@ export default function VdoResilience() {
                 <div className="container mx-auto px-4">
                     <h2
                         id="our-capacity"
-                        className="mb-6 scroll-mt-24 text-2xl font-semibold text-[#23369C] md:text-3xl"
+                        className="mb-6 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Our Capacity:
                     </h2>
@@ -213,7 +213,7 @@ export default function VdoResilience() {
                                 className="flex aspect-[3/4] flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-5 text-center shadow-sm"
                             >
                                 <FileText className="mb-4 h-14 w-14 text-[rgb(0,175,239)]" />
-                                <h3 className="text-sm font-bold text-[#23369C]">
+                                <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
                                     {b.title}
                                 </h3>
                                 <p className="mt-1 text-xs text-gray-500">
@@ -230,7 +230,7 @@ export default function VdoResilience() {
                 <div className="container mx-auto px-4">
                     <h2
                         id="policies"
-                        className="mb-6 scroll-mt-24 text-2xl font-semibold text-[#23369C] md:text-3xl"
+                        className="mb-6 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Policies:
                     </h2>
@@ -242,7 +242,7 @@ export default function VdoResilience() {
                             >
                                 <div className="mb-2 flex items-start gap-2">
                                     <FileText className="mt-0.5 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]" />
-                                    <h3 className="text-sm font-bold text-[#23369C]">
+                                    <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
                                         {p.title}
                                     </h3>
                                 </div>
@@ -260,7 +260,7 @@ export default function VdoResilience() {
                 <div className="container mx-auto px-4">
                     <h2
                         id="programmatic-approach"
-                        className="mb-4 scroll-mt-24 text-2xl font-semibold text-[#23369C] md:text-3xl"
+                        className="mb-4 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Programmatic Approach:
                     </h2>
@@ -298,7 +298,7 @@ export default function VdoResilience() {
 
                     {/* 4 Pillars */}
                     <div className="mt-10">
-                        <h3 className="mb-8 text-center text-base font-bold text-[#23369C] md:text-lg">
+                        <h3 className="mb-8 text-center text-base font-bold text-[rgb(62,64,149)] md:text-lg">
                             Afghanistan's four pillars:
                             <br />
                             <span className="text-sm font-medium text-gray-600">
@@ -316,7 +316,7 @@ export default function VdoResilience() {
                                             className="flex gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
                                         >
                                             <div className="flex-shrink-0">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#23369C] text-white">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)] text-white">
                                                     <Icon className="h-6 w-6" />
                                                 </div>
                                                 <p className="mt-1 text-center text-xs font-bold text-[rgb(0,175,239)]">
@@ -324,7 +324,7 @@ export default function VdoResilience() {
                                                 </p>
                                             </div>
                                             <div>
-                                                <h4 className="text-sm font-bold text-[#23369C]">
+                                                <h4 className="text-sm font-bold text-[rgb(62,64,149)]">
                                                     {p.title}:
                                                 </h4>
                                                 <p className="mt-1 text-xs leading-relaxed text-gray-600">
@@ -350,7 +350,7 @@ export default function VdoResilience() {
                 <div className="container mx-auto px-4">
                     <h2
                         id="collective-resilience"
-                        className="mb-4 scroll-mt-24 text-2xl font-semibold text-[#23369C] md:text-3xl"
+                        className="mb-4 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Contributing to Collective Resilience
                     </h2>

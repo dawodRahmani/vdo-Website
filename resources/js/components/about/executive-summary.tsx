@@ -4,10 +4,10 @@ export default function ExecutiveSummary() {
             <div className="container mx-auto px-4">
                 <div className="mx-auto max-w-4xl">
                     <div className="mb-8 text-center">
-                        <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                        <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                             Executive Summary
                         </span>
-                        <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                        <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                             Message from the Senior Management Team
                         </h2>
                     </div>

@@ -45,10 +45,10 @@ export default function LatestWork() {
             <div className="container mx-auto px-4">
                 {/* Section Header */}
                 <div className="mb-12 text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#00B7EC]">
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-[rgb(0,175,239)]">
                         Our Projects
                     </p>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Latest Work
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -72,7 +72,7 @@ export default function LatestWork() {
                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
                                 {/* Category Badge */}
-                                <span className="absolute left-4 top-4 rounded-full bg-[#00B7EC] px-4 py-1 text-xs font-semibold text-white">
+                                <span className="absolute left-4 top-4 rounded-full bg-[rgb(0,175,239)] px-4 py-1 text-xs font-semibold text-white">
                                     {item.category}
                                 </span>
                                 {/* Overlay on hover */}
@@ -81,7 +81,7 @@ export default function LatestWork() {
 
                             {/* Content */}
                             <div className="p-6">
-                                <h3 className="mb-2 text-xl font-bold text-[#23369C] transition-colors group-hover:text-[#00B7EC]">
+                                <h3 className="mb-2 text-xl font-bold text-[rgb(62,64,149)] transition-colors group-hover:text-[rgb(0,175,239)]">
                                     {item.title}
                                 </h3>
                                 <p className="mb-4 text-sm leading-relaxed text-gray-600">
@@ -89,7 +89,7 @@ export default function LatestWork() {
                                 </p>
                                 <a
                                     href={item.link}
-                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[#00B7EC] transition-colors hover:text-[#23369C]"
+                                    className="inline-flex items-center gap-2 text-sm font-semibold text-[rgb(0,175,239)] transition-colors hover:text-[rgb(62,64,149)]"
                                 >
                                     Learn More
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -103,7 +103,7 @@ export default function LatestWork() {
                 <div className="mt-12 text-center">
                     <a
                         href="/projects"
-                        className="inline-flex items-center gap-2 rounded-lg bg-[#23369C] px-8 py-3 font-semibold text-white transition-all hover:bg-[#23369C]/90 hover:shadow-lg"
+                        className="inline-flex items-center gap-2 rounded-lg bg-[rgb(62,64,149)] px-8 py-3 font-semibold text-white transition-all hover:bg-[rgb(62,64,149)]/90 hover:shadow-lg"
                     >
                         View All Projects
                         <ArrowRight className="h-5 w-5" />

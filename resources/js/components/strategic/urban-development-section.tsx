@@ -53,10 +53,10 @@ export default function UrbanDevelopmentSection() {
         <section id="urban-development" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         SDG 11, SDG 13 & SDG 15
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Urban Development
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -78,7 +78,7 @@ export default function UrbanDevelopmentSection() {
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 transition-colors group-hover:bg-green-600">
                                     <item.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">

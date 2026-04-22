@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className="bg-[#0a1628] py-12 text-white">
+        <footer className="bg-[rgb(62,64,149)] py-12 text-white">
             <div className="container mx-auto px-4">
                 <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* Logo and Contact Info */}
@@ -16,7 +16,7 @@ export default function Footer() {
                         <div className="mb-6 space-y-3 text-sm">
                             <div className="flex items-start gap-3">
                                 <svg
-                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[#00B7EC]"
+                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -34,7 +34,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-start gap-3">
                                 <svg
-                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[#00B7EC]"
+                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -52,7 +52,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-start gap-3">
                                 <svg
-                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[#00B7EC]"
+                                    className="mt-1 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -81,7 +81,7 @@ export default function Footer() {
                         <div className="flex gap-3">
                             <a
                                 href="#"
-                                className="flex h-9 w-9 items-center justify-center rounded bg-[#00B7EC] transition-colors hover:bg-[#00B7EC]/90"
+                                className="flex h-9 w-9 items-center justify-center rounded bg-[rgb(0,175,239)] transition-colors hover:bg-[rgb(0,175,239)]/90"
                                 aria-label="Twitter/X"
                             >
                                 <svg
@@ -94,7 +94,7 @@ export default function Footer() {
                             </a>
                             <a
                                 href="#"
-                                className="flex h-9 w-9 items-center justify-center rounded bg-[#00B7EC] transition-colors hover:bg-[#00B7EC]/90"
+                                className="flex h-9 w-9 items-center justify-center rounded bg-[rgb(0,175,239)] transition-colors hover:bg-[rgb(0,175,239)]/90"
                                 aria-label="YouTube"
                             >
                                 <svg
@@ -107,7 +107,7 @@ export default function Footer() {
                             </a>
                             <a
                                 href="#"
-                                className="flex h-9 w-9 items-center justify-center rounded bg-[#00B7EC] transition-colors hover:bg-[#00B7EC]/90"
+                                className="flex h-9 w-9 items-center justify-center rounded bg-[rgb(0,175,239)] transition-colors hover:bg-[rgb(0,175,239)]/90"
                                 aria-label="LinkedIn"
                             >
                                 <svg
@@ -123,14 +123,14 @@ export default function Footer() {
 
                     {/* Main Pages */}
                     <div>
-                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[#00B7EC]">
+                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[rgb(0,175,239)]">
                             Main Pages
                         </h4>
                         <ul className="space-y-3">
                             <li>
                                 <a
                                     href="/"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Home
                                 </a>
@@ -138,7 +138,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/about"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     About Us
                                 </a>
@@ -146,7 +146,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/organization-capacity"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Organization Capacity
                                 </a>
@@ -154,7 +154,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/strategic-priorities"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Strategic Priorities
                                 </a>
@@ -162,7 +162,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/where-we-work"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Where We Work
                                 </a>
@@ -170,7 +170,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/our-commitment"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Our Commitment
                                 </a>
@@ -178,7 +178,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/contact"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Contact Us
                                 </a>
@@ -188,14 +188,14 @@ export default function Footer() {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[#00B7EC]">
+                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[rgb(0,175,239)]">
                             Quick Links
                         </h4>
                         <ul className="space-y-3">
                             <li>
                                 <a
                                     href="/opportunities/jobs"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Jobs
                                 </a>
@@ -203,7 +203,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/opportunities/bids"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Bids
                                 </a>
@@ -211,7 +211,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/media/news"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     News
                                 </a>
@@ -219,7 +219,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/media/publications"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Publications
                                 </a>
@@ -227,7 +227,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/our-commitment#safeguarding"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Safeguarding
                                 </a>
@@ -235,7 +235,7 @@ export default function Footer() {
                             <li>
                                 <a
                                     href="/our-commitment#humanitarian-principles"
-                                    className="text-sm text-gray-300 transition-colors hover:text-[#00B7EC]"
+                                    className="text-sm text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
                                 >
                                     Humanitarian Principles
                                 </a>
@@ -245,7 +245,7 @@ export default function Footer() {
 
                     {/* Donation */}
                     <div>
-                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[#00B7EC]">
+                        <h4 className="mb-6 text-base font-bold uppercase tracking-wider text-[rgb(0,175,239)]">
                             Donation
                         </h4>
                         <p className="mb-6 text-sm leading-relaxed text-gray-300">
@@ -254,7 +254,7 @@ export default function Footer() {
                         </p>
                         <a
                             href="/donate"
-                            className="inline-block rounded bg-[#00B7EC] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00B7EC]/90"
+                            className="inline-block rounded bg-[rgb(0,175,239)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[rgb(0,175,239)]/90"
                         >
                             Donate Now
                         </a>
@@ -263,7 +263,7 @@ export default function Footer() {
 
                 {/* Bottom Copyright */}
                 <div className="mt-12 border-t border-gray-700 pt-8 text-center">
-                    <p className="text-sm text-[#00B7EC]">
+                    <p className="text-sm text-[rgb(0,175,239)]">
                         All Right Reserved By VDO © {new Date().getFullYear()}
                     </p>
                 </div>

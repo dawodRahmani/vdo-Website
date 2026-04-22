@@ -16,7 +16,7 @@ export default function Home({ canRegister, regions }: HomeProps) {
         <>
             <Head title="Home" />
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-gray-100">
                 <Header />
 
                 {/* Hero / First Section */}

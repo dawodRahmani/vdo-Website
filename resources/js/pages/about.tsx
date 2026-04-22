@@ -25,7 +25,7 @@ const historyParagraphs = [
 
 const leadershipRoles = [
     {
-        color: '#3B3B8C',
+        color: 'rgb(62,64,149)',
         title: 'UN Humanitarian Country Team (HCT)',
         body: 'Elected member, representing national NGO voices and elected for 3 years in 3 consecutive terms.',
     },
@@ -35,7 +35,7 @@ const leadershipRoles = [
         body: 'Steering Committee Member and currently Chairperson (2025–2026 term).',
     },
     {
-        color: 'rgb(120,195,230)',
+        color: 'rgb(189,191,193)',
         title: 'Strategic working groups and clusters',
         body: 'across protection, education, and humanitarian coordination platforms.',
     },
@@ -88,7 +88,7 @@ export default function About() {
                     <div className="flex items-start gap-4 md:gap-6">
                         <Files className="mt-1 h-10 w-10 flex-shrink-0 text-[rgb(0,175,239)] md:h-12 md:w-12" />
                         <div className="flex-1">
-                            <h2 className="mb-3 text-2xl font-semibold text-[#23369C] md:text-3xl">
+                            <h2 className="mb-3 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 Executive Summary:
                             </h2>
                             <h3 className="mb-4 text-sm font-bold text-gray-900 md:text-base">
@@ -110,7 +110,7 @@ export default function About() {
                     <div className="flex items-start gap-4 md:gap-6">
                         <Flag className="mt-1 h-10 w-10 flex-shrink-0 text-[rgb(0,175,239)] md:h-12 md:w-12" />
                         <div className="flex-1">
-                            <h2 className="mb-3 text-2xl font-semibold text-[#23369C] md:text-3xl">
+                            <h2 className="mb-3 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 History:
                             </h2>
                             <div className="space-y-4 text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
@@ -164,7 +164,7 @@ export default function About() {
                     <div className="flex items-start gap-4 md:gap-6">
                         <Compass className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
                         <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
-                            <strong className="font-bold text-[#23369C]">
+                            <strong className="font-bold text-[rgb(62,64,149)]">
                                 Our mission
                             </strong>{' '}
                             is to deliver impactful humanitarian assistance and
@@ -184,7 +184,7 @@ export default function About() {
                     <div className="flex items-start gap-4 md:gap-6">
                         <Eye className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
                         <p className="text-sm leading-relaxed text-gray-700 md:text-[15px]">
-                            <strong className="font-bold text-[#23369C]">
+                            <strong className="font-bold text-[rgb(62,64,149)]">
                                 Our vision
                             </strong>{' '}
                             is a prosperous and inclusive Afghanistan where
@@ -197,7 +197,7 @@ export default function About() {
                     <div className="flex items-start gap-4 md:gap-6">
                         <TrendingUp className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
                         <div className="flex-1">
-                            <h2 className="mb-4 text-2xl font-semibold text-[#23369C] md:text-3xl">
+                            <h2 className="mb-4 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 Looking Ahead
                             </h2>
                             <h3 className="mb-4 text-sm font-bold text-gray-900 md:text-base">

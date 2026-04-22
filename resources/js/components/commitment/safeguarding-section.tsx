@@ -28,17 +28,17 @@ export default function SafeguardingSection() {
         <section id="safeguarding" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Protection
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Safeguarding
                     </h2>
                 </div>
 
                 <div className="mx-auto max-w-5xl">
                     {/* Main Content */}
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C]/5 to-[#00B7EC]/5 p-8">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)]/5 to-[rgb(0,175,239)]/5 p-8">
                         <p className="leading-relaxed text-gray-700">
                             VDO is fully committed to preventing and responding
                             to harm through its Safeguarding Policy, which
@@ -52,15 +52,15 @@ export default function SafeguardingSection() {
 
                     {/* Protected Groups */}
                     <div className="mb-12 flex flex-wrap justify-center gap-4">
-                        <div className="flex items-center gap-2 rounded-full bg-[#23369C] px-5 py-3 text-white">
+                        <div className="flex items-center gap-2 rounded-full bg-[rgb(62,64,149)] px-5 py-3 text-white">
                             <Baby className="h-5 w-5" />
                             <span>Children</span>
                         </div>
-                        <div className="flex items-center gap-2 rounded-full bg-[#23369C] px-5 py-3 text-white">
+                        <div className="flex items-center gap-2 rounded-full bg-[rgb(62,64,149)] px-5 py-3 text-white">
                             <Users className="h-5 w-5" />
                             <span>Adults at Risk</span>
                         </div>
-                        <div className="flex items-center gap-2 rounded-full bg-[#23369C] px-5 py-3 text-white">
+                        <div className="flex items-center gap-2 rounded-full bg-[rgb(62,64,149)] px-5 py-3 text-white">
                             <Heart className="h-5 w-5" />
                             <span>Community Members</span>
                         </div>
@@ -73,10 +73,10 @@ export default function SafeguardingSection() {
                                 key={index}
                                 className="rounded-xl border border-gray-100 bg-white p-6 text-center shadow-md"
                             >
-                                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#23369C]">
+                                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)]">
                                     <item.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">
@@ -87,7 +87,7 @@ export default function SafeguardingSection() {
                     </div>
 
                     {/* Closing Statement */}
-                    <div className="rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <p className="leading-relaxed text-white/90">
                             Safeguarding is central to VDO's work, ensuring that
                             all beneficiaries—especially women, children, and

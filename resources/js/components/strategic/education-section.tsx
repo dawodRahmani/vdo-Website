@@ -21,10 +21,10 @@ export default function EducationSection() {
         <section id="education" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         SDG 4 & SDG 5
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Education
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -36,7 +36,7 @@ export default function EducationSection() {
 
                 <div className="mx-auto max-w-6xl">
                     {/* Main Content */}
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C]/5 to-[#00B7EC]/5 p-8">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)]/5 to-[rgb(0,175,239)]/5 p-8">
                         <p className="leading-relaxed text-gray-700">
                             By working in the country's most underserved
                             communities, VDO strives to ensure that every
@@ -53,14 +53,14 @@ export default function EducationSection() {
 
                     {/* Target Groups */}
                     <div className="mb-12">
-                        <h3 className="mb-6 text-center text-xl font-bold text-[#23369C]">
+                        <h3 className="mb-6 text-center text-xl font-bold text-[rgb(62,64,149)]">
                             Priority Target Groups
                         </h3>
                         <div className="flex flex-wrap justify-center gap-4">
                             {targetGroups.map((group, index) => (
                                 <div
                                     key={index}
-                                    className="flex items-center gap-2 rounded-full bg-[#23369C] px-4 py-2 text-white"
+                                    className="flex items-center gap-2 rounded-full bg-[rgb(62,64,149)] px-4 py-2 text-white"
                                 >
                                     <group.icon className="h-4 w-4" />
                                     <span className="text-sm font-medium">
@@ -81,7 +81,7 @@ export default function EducationSection() {
                     </div>
 
                     {/* Key Achievements */}
-                    <div className="rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <h3 className="mb-6 text-xl font-bold">
                             Key Achievements
                         </h3>
@@ -91,7 +91,7 @@ export default function EducationSection() {
                                     key={index}
                                     className="flex items-start gap-3"
                                 >
-                                    <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#00B7EC]" />
+                                    <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]" />
                                     <p className="text-white/90">{item}</p>
                                 </div>
                             ))}

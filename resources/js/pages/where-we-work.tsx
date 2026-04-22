@@ -125,7 +125,7 @@ export default function WhereWeWork() {
                             id={region.id}
                             className="scroll-mt-24"
                         >
-                            <h2 className="text-2xl font-semibold text-[#23369C] md:text-3xl">
+                            <h2 className="text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 {region.title}
                             </h2>
                             <h3 className="mt-1 text-sm font-bold text-gray-900 md:text-base">

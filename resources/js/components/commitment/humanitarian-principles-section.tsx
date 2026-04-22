@@ -36,10 +36,10 @@ export default function HumanitarianPrinciplesSection() {
         <section id="humanitarian-principles" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Core Values
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Humanitarian Principles
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -51,7 +51,7 @@ export default function HumanitarianPrinciplesSection() {
 
                 <div className="mx-auto max-w-5xl">
                     {/* Intro Statement */}
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C]/5 to-[#00B7EC]/5 p-8 text-center">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)]/5 to-[rgb(0,175,239)]/5 p-8 text-center">
                         <p className="leading-relaxed text-gray-700">
                             These principles guide every aspect of our work and
                             are essential for maintaining trust, protecting
@@ -75,7 +75,7 @@ export default function HumanitarianPrinciplesSection() {
                                 >
                                     <principle.icon className="h-7 w-7 text-white" />
                                 </div>
-                                <h3 className="mb-3 text-xl font-bold text-[#23369C]">
+                                <h3 className="mb-3 text-xl font-bold text-[rgb(62,64,149)]">
                                     {principle.title}
                                 </h3>
                                 <p className="leading-relaxed text-gray-600">
@@ -86,7 +86,7 @@ export default function HumanitarianPrinciplesSection() {
                     </div>
 
                     {/* Closing Statement */}
-                    <div className="rounded-xl bg-gradient-to-r from-[#23369C] to-[#00B7EC] p-8 text-white">
+                    <div className="rounded-xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-white">
                         <p className="text-center text-lg leading-relaxed">
                             These principles define VDO's identity as a trusted
                             and principled organization. VDO Management is

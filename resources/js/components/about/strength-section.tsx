@@ -57,10 +57,10 @@ export default function StrengthSection() {
         <section id="strength" className="bg-white py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-semibold text-[#00B7EC]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-semibold text-[rgb(0,175,239)]">
                         Why Choose VDO
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         VDO Strength
                     </h2>
                     <p className="mx-auto max-w-2xl text-gray-600">
@@ -87,7 +87,7 @@ export default function StrengthSection() {
                                     <strength.icon className="h-7 w-7 text-white" />
                                 </div>
 
-                                <h3 className="mb-3 text-xl font-bold text-[#23369C]">
+                                <h3 className="mb-3 text-xl font-bold text-[rgb(62,64,149)]">
                                     {strength.title}
                                 </h3>
 
@@ -99,7 +99,7 @@ export default function StrengthSection() {
                     </div>
 
                     {/* Bottom CTA */}
-                    <div className="mt-12 rounded-2xl bg-gradient-to-r from-[#23369C] to-[#00B7EC] p-8 text-center text-white">
+                    <div className="mt-12 rounded-2xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-center text-white">
                         <h3 className="mb-4 text-2xl font-bold">
                             Partner With Us
                         </h3>
@@ -110,7 +110,7 @@ export default function StrengthSection() {
                         </p>
                         <a
                             href="/contact"
-                            className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-[#23369C] transition-transform hover:scale-105"
+                            className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-[rgb(62,64,149)] transition-transform hover:scale-105"
                         >
                             Get in Touch
                         </a>

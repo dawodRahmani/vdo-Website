@@ -66,7 +66,7 @@ function SectionTitle({ id, title }: { id: string; title: string }) {
     return (
         <h2
             id={id}
-            className="scroll-mt-24 text-xl font-semibold text-[#23369C] md:text-2xl"
+            className="scroll-mt-24 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl"
         >
             {title}
         </h2>
@@ -114,10 +114,10 @@ export default function OurCommitmentPage() {
                                     href={`#${card.id}`}
                                     className="group flex items-center gap-4 rounded-lg bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                                 >
-                                    <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#23369C] text-white shadow-md">
+                                    <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[rgb(62,64,149)] text-white shadow-md">
                                         <Icon className="h-6 w-6" />
                                     </span>
-                                    <span className="text-sm font-semibold leading-snug text-[#23369C] group-hover:text-[rgb(0,175,239)] md:text-base">
+                                    <span className="text-sm font-semibold leading-snug text-[rgb(62,64,149)] group-hover:text-[rgb(0,175,239)] md:text-base">
                                         {card.title}
                                     </span>
                                 </a>
@@ -186,7 +186,7 @@ export default function OurCommitmentPage() {
                                 is central to our mandate and guides how
                                 communities shape our programs and decisions.
                             </Body>
-                            <p className="text-sm font-semibold text-[#23369C]">
+                            <p className="text-sm font-semibold text-[rgb(62,64,149)]">
                                 Our commitment includes:
                             </p>
                             <Bullets
@@ -267,7 +267,7 @@ export default function OurCommitmentPage() {
                                 immediate investigation and appropriate
                                 disciplinary or legal action.
                             </Body>
-                            <p className="text-sm font-semibold text-[#23369C]">
+                            <p className="text-sm font-semibold text-[rgb(62,64,149)]">
                                 Our commitments include:
                             </p>
                             <Bullets
@@ -452,7 +452,7 @@ export default function OurCommitmentPage() {
                             <Body>
                                 Vision Development Organization (VDO) is firmly
                                 committed to the Humanitarian Principles of{' '}
-                                <strong className="text-[#23369C]">
+                                <strong className="text-[rgb(62,64,149)]">
                                     Humanity, Neutrality, Impartiality, and
                                     Independence
                                 </strong>
@@ -491,7 +491,7 @@ export default function OurCommitmentPage() {
                                 >
                                     <div className="mb-2 flex items-center gap-2">
                                         <BookOpen className="h-5 w-5 text-[rgb(0,175,239)]" />
-                                        <h4 className="text-sm font-bold text-[#23369C]">
+                                        <h4 className="text-sm font-bold text-[rgb(62,64,149)]">
                                             {p.title}
                                         </h4>
                                     </div>

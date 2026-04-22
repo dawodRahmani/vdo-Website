@@ -45,10 +45,10 @@ export default function TargetGroupsSection() {
         <section id="target-groups" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         Who We Serve
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Target Groups
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -61,7 +61,7 @@ export default function TargetGroupsSection() {
                 <div className="mx-auto max-w-6xl">
                     {/* Primary Beneficiaries */}
                     <div className="mb-12">
-                        <h3 className="mb-6 text-center text-xl font-bold text-[#23369C]">
+                        <h3 className="mb-6 text-center text-xl font-bold text-[rgb(62,64,149)]">
                             Primary Beneficiaries
                         </h3>
                         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
@@ -70,7 +70,7 @@ export default function TargetGroupsSection() {
                                     key={index}
                                     className="flex flex-col items-center rounded-xl bg-white p-6 shadow-md transition-all hover:-translate-y-1 hover:shadow-lg"
                                 >
-                                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#23369C]">
+                                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)]">
                                         <group.icon className="h-6 w-6 text-white" />
                                     </div>
                                     <span className="text-center text-sm font-medium text-gray-700">
@@ -91,7 +91,7 @@ export default function TargetGroupsSection() {
                     </div>
 
                     {/* Secondary Beneficiaries */}
-                    <div className="mb-12 rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="mb-12 rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <h3 className="mb-6 text-xl font-bold">
                             Secondary Beneficiaries
                         </h3>
@@ -115,8 +115,8 @@ export default function TargetGroupsSection() {
                     {/* Tertiary Audience */}
                     <div className="rounded-xl border border-gray-100 bg-white p-8 shadow-md">
                         <div className="mb-4 flex items-center gap-3">
-                            <Globe className="h-6 w-6 text-[#00B7EC]" />
-                            <h3 className="text-xl font-bold text-[#23369C]">
+                            <Globe className="h-6 w-6 text-[rgb(0,175,239)]" />
+                            <h3 className="text-xl font-bold text-[rgb(62,64,149)]">
                                 Tertiary Audience
                             </h3>
                         </div>
@@ -128,7 +128,7 @@ export default function TargetGroupsSection() {
                             {tertiaryAudience.map((item, index) => (
                                 <span
                                     key={index}
-                                    className="rounded-full bg-[#00B7EC]/10 px-4 py-2 text-sm font-medium text-[#00B7EC]"
+                                    className="rounded-full bg-[rgb(0,175,239)]/10 px-4 py-2 text-sm font-medium text-[rgb(0,175,239)]"
                                 >
                                     {item}
                                 </span>

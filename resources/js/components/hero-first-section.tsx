@@ -33,14 +33,14 @@ const stats: { value: string; label: string; icon: LucideIcon }[] = [
 
 export default function HeroFirstSection() {
     return (
-        <section className="bg-gray-100 pb-10 pt-6">
-            <div className="container mx-auto px-4">
+        <section className="bg-gray-100 pb-6 pt-3 md:pb-8">
+            <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 {/* 3-image strip */}
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-1">
                     {photos.map((photo) => (
                         <div
                             key={photo.src}
-                            className="relative aspect-[4/3] overflow-hidden rounded-lg md:aspect-[5/3]"
+                            className="relative aspect-[16/10] overflow-hidden md:aspect-[16/9]"
                         >
                             <img
                                 src={encodeURI(photo.src)}
@@ -53,10 +53,10 @@ export default function HeroFirstSection() {
                 </div>
 
                 {/* Key Impact Numbers card */}
-                <div className="mt-6 rounded-2xl bg-gray-200/70 p-6 shadow-sm md:p-8">
+                <div className="mt-6 rounded-2xl bg-[rgb(189,191,193)]/50 p-6 shadow-sm md:p-8">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex-1">
-                            <h2 className="mb-5 text-lg font-bold text-[#23369C] md:text-xl">
+                            <h2 className="mb-5 text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                                 Key Impact Numbers:
                             </h2>
 
@@ -69,14 +69,14 @@ export default function HeroFirstSection() {
                                             className="flex flex-col items-center text-center"
                                         >
                                             <div className="flex items-center gap-2">
-                                                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[rgb(0,175,239)] text-white shadow-sm">
-                                                    <Icon className="h-5 w-5" />
+                                                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgb(0,175,239)] text-white ring-1 ring-white/30">
+                                                    <Icon className="h-4.5 w-4.5" />
                                                 </span>
                                                 <span className="text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                                                     {stat.value}
                                                 </span>
                                             </div>
-                                            <span className="mt-1.5 text-xs font-medium text-gray-700 md:text-sm">
+                                            <span className="mt-1.5 text-xs font-medium text-white/90 md:text-sm">
                                                 {stat.label}
                                             </span>
                                         </li>
@@ -88,7 +88,7 @@ export default function HeroFirstSection() {
                         <div className="flex-shrink-0 lg:pl-6">
                             <a
                                 href="/donate"
-                                className="inline-flex min-w-[260px] items-center justify-center gap-2 rounded-md border-2 border-[rgb(0,175,239)] bg-gray-400 px-10 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-500"
+                                className="inline-flex min-w-[300px] items-center justify-center gap-2 rounded-md border-2 border-[rgb(0,175,239)] bg-[rgb(189,191,193)]/60 px-10 py-2 text-sm font-semibold text-white transition-colors hover:bg-[rgb(189,191,193)]/60"
                             >
                                 Donate
                                 <Heart className="h-4 w-4 fill-white text-white" />

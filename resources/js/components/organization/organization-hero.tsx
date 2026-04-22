@@ -1,6 +1,6 @@
 export default function OrganizationHero() {
     return (
-        <section className="relative bg-gradient-to-br from-[#23369C] to-[#1a2875] py-24">
+        <section className="relative bg-gradient-to-br from-[rgb(62,64,149)] to-[rgb(62,64,149)] py-24">
             <div className="absolute inset-0 bg-[url('/images/pattern.png')] opacity-5"></div>
             <div className="container relative z-10 mx-auto px-4">
                 <div className="mx-auto max-w-4xl text-center">

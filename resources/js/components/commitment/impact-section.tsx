@@ -31,7 +31,7 @@ export default function ImpactSection() {
                     <span className="mb-4 inline-block rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-600">
                         Long-term Change
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Impact & Sustainability
                     </h2>
                 </div>
@@ -66,7 +66,7 @@ export default function ImpactSection() {
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500">
                                     <pillar.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {pillar.title}
                                 </h3>
                                 <p className="text-gray-600">
@@ -77,7 +77,7 @@ export default function ImpactSection() {
                     </div>
 
                     {/* Legacy Statement */}
-                    <div className="rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <div className="mb-4 flex items-center justify-center gap-3">
                             <Globe className="h-6 w-6" />
                             <h3 className="text-xl font-bold">

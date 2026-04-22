@@ -38,17 +38,17 @@ export default function EffectivenessSection() {
         <section id="effectiveness" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         Performance
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Effectiveness & Efficiency
                     </h2>
                 </div>
 
                 <div className="mx-auto max-w-5xl">
                     {/* Main Statement */}
-                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[#23369C] to-[#00B7EC] p-8 text-white">
+                    <div className="mb-12 rounded-xl bg-gradient-to-r from-[rgb(62,64,149)] to-[rgb(0,175,239)] p-8 text-white">
                         <p className="text-lg leading-relaxed">
                             VDO is committed to delivering programs that are
                             both effective and efficient, ensuring that
@@ -64,10 +64,10 @@ export default function EffectivenessSection() {
                                 key={index}
                                 className="rounded-xl bg-white p-6 shadow-md transition-all hover:-translate-y-1 hover:shadow-lg"
                             >
-                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[#23369C] to-[#00B7EC]">
+                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[rgb(62,64,149)] to-[rgb(0,175,239)]">
                                     <item.icon className="h-6 w-6 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {item.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">

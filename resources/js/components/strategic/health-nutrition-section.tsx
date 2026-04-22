@@ -45,10 +45,10 @@ export default function HealthNutritionSection() {
         <section id="health-nutrition" className="bg-gray-50 py-20">
             <div className="container mx-auto px-4">
                 <div className="mb-12 text-center">
-                    <span className="mb-4 inline-block rounded-full bg-[#23369C]/10 px-4 py-2 text-sm font-semibold text-[#23369C]">
+                    <span className="mb-4 inline-block rounded-full bg-[rgb(62,64,149)]/10 px-4 py-2 text-sm font-semibold text-[rgb(62,64,149)]">
                         SDG 3
                     </span>
-                    <h2 className="mb-4 text-3xl font-bold text-[#23369C] md:text-4xl">
+                    <h2 className="mb-4 text-3xl font-bold text-[rgb(62,64,149)] md:text-4xl">
                         Health and Nutrition
                     </h2>
                     <p className="mx-auto max-w-3xl text-gray-600">
@@ -69,7 +69,7 @@ export default function HealthNutritionSection() {
                                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-500">
                                     <service.icon className="h-7 w-7 text-white" />
                                 </div>
-                                <h3 className="mb-2 font-bold text-[#23369C]">
+                                <h3 className="mb-2 font-bold text-[rgb(62,64,149)]">
                                     {service.title}
                                 </h3>
                                 <p className="text-sm text-gray-600">
@@ -80,7 +80,7 @@ export default function HealthNutritionSection() {
                     </div>
 
                     {/* Geographic Presence */}
-                    <div className="mb-12 rounded-xl bg-[#23369C] p-8 text-white">
+                    <div className="mb-12 rounded-xl bg-[rgb(62,64,149)] p-8 text-white">
                         <h3 className="mb-4 text-xl font-bold">
                             Health and Nutrition Geographic Presence
                         </h3>
@@ -112,7 +112,7 @@ export default function HealthNutritionSection() {
 
                     {/* Key Achievements */}
                     <div className="rounded-xl border border-gray-100 bg-white p-8 shadow-md">
-                        <h3 className="mb-6 text-xl font-bold text-[#23369C]">
+                        <h3 className="mb-6 text-xl font-bold text-[rgb(62,64,149)]">
                             Key Achievements
                         </h3>
                         <div className="space-y-3">
