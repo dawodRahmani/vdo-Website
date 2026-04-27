@@ -10,7 +10,7 @@ interface PhotoStripProps {
 export default function PhotoStrip({ photos }: PhotoStripProps) {
     return (
         <section className="bg-gray-100 pb-10 pt-6">
-            <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
                     {photos.map((photo) => (
                         <div

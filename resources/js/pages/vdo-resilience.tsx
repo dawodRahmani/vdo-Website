@@ -1,13 +1,49 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
-import {
-    FileText,
-    Handshake,
-    KeyRound,
-    ShieldCheck,
-    Users,
-    type LucideIcon,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+
+const RESILIENCE_BASE = '/svg/VDO_s Resilience'
+const RESILIENCE_BASE_ENCODED = encodeURI(RESILIENCE_BASE)
+
+function CapacitySvg({ num }: { num: string }) {
+    const [html, setHtml] = useState('')
+
+    useEffect(() => {
+        let cancelled = false
+        fetch(`${RESILIENCE_BASE_ENCODED}/${num}.svg`)
+            .then((r) => r.text())
+            .then((text) => {
+                if (cancelled) return
+                const fixed = text.replace(
+                    /xlink:href="([^"]+)"/g,
+                    (_, raw: string) => {
+                        if (raw.startsWith('#') || /^https?:\/\//.test(raw)) {
+                            return `xlink:href="${raw}"`
+                        }
+                        const normalized = raw.replace(/\\/g, '/')
+                        const absolute = `${RESILIENCE_BASE_ENCODED}/${normalized
+                            .split('/')
+                            .map((p) => encodeURIComponent(p))
+                            .join('/')}`
+                        return `xlink:href="${absolute}"`
+                    },
+                )
+                setHtml(fixed)
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [num])
+
+    return (
+        <div
+            className="[&_svg]:h-auto [&_svg]:w-full"
+            style={{ mixBlendMode: 'multiply' }}
+            dangerouslySetInnerHTML={{ __html: html }}
+        />
+    )
+}
 
 const photos = [
     { src: '/Header and Gallary Photos/08.jpg', alt: 'Organizational capacity' },
@@ -15,20 +51,48 @@ const photos = [
     { src: '/Header and Gallary Photos/21.jpg', alt: 'Field operations' },
 ]
 
-const capacityBooklets = [
-    {
-        title: 'Audit & Governance',
-        subtitle: 'Annual Report',
-    },
-    {
-        title: 'Strategic Plan',
-        subtitle: 'Policy Framework',
-    },
-    {
-        title: 'Programmatic Approach',
-        subtitle: 'Operating Manual',
-    },
-]
+const capacitySlides = ['01', '02', '03', '04']
+
+function CarouselArrowButton({
+    direction,
+    onClick,
+}: {
+    direction: 'prev' | 'next'
+    onClick: () => void
+}) {
+    const Icon = direction === 'prev' ? ChevronLeft : ChevronRight
+    return (
+        <button
+            type="button"
+            aria-label={direction === 'prev' ? 'Previous' : 'Next'}
+            onClick={onClick}
+            className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-gray-300 bg-white text-gray-500 shadow hover:bg-gray-100"
+        >
+            <Icon className="h-5 w-5" />
+        </button>
+    )
+}
+
+function useHorizontalScroll() {
+    const ref = useRef<HTMLDivElement>(null)
+    const scrollBy = (direction: 'prev' | 'next') => {
+        const el = ref.current
+        if (!el) return
+        const firstChild = el.firstElementChild as HTMLElement | null
+        const step = firstChild
+            ? firstChild.getBoundingClientRect().width + 24
+            : el.clientWidth
+        el.scrollBy({
+            left: direction === 'next' ? step : -step,
+            behavior: 'smooth',
+        })
+    }
+    return {
+        ref,
+        onPrev: () => scrollBy('prev'),
+        onNext: () => scrollBy('next'),
+    }
+}
 
 interface Policy {
     title: string
@@ -158,106 +222,102 @@ const policies: Policy[] = [
     },
 ]
 
-interface Pillar {
-    number: number
-    title: string
-    body: string
-    icon: LucideIcon
-}
-
-const pillars: Pillar[] = [
-    {
-        number: 1,
-        title: 'Negotiated Access',
-        body: 'Building trust and agreement with local community stakeholders.',
-        icon: Handshake,
-    },
-    {
-        number: 2,
-        title: 'Localized Risk Management',
-        body: 'Managing risks locally and ensuring compliance with national authorities.',
-        icon: ShieldCheck,
-    },
-    {
-        number: 3,
-        title: 'Rapid Pivot Capabilities',
-        body: 'Flexible response through decentralized support systems.',
-        icon: KeyRound,
-    },
-    {
-        number: 4,
-        title: 'Female Staff Engagement',
-        body: "Ensuring women's participation and using discreet operational arrangement.",
-        icon: Users,
-    },
-]
-
 export default function VdoResilience() {
+    const capacity = useHorizontalScroll()
+
     return (
         <SiteLayout title="VDO's Resilience">
             <PhotoStrip photos={photos} />
 
             {/* Our Capacity + booklets */}
             <section className="bg-gray-100 py-8">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2
                         id="our-capacity"
                         className="mb-6 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Our Capacity:
                     </h2>
-                    <div className="grid gap-4 sm:grid-cols-3">
-                        {capacityBooklets.map((b) => (
-                            <div
-                                key={b.title}
-                                className="flex aspect-[3/4] flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-5 text-center shadow-sm"
-                            >
-                                <FileText className="mb-4 h-14 w-14 text-[rgb(0,175,239)]" />
-                                <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
-                                    {b.title}
-                                </h3>
-                                <p className="mt-1 text-xs text-gray-500">
-                                    {b.subtitle}
-                                </p>
-                            </div>
-                        ))}
+                    <div className="flex items-center gap-3 md:gap-4">
+                        <CarouselArrowButton
+                            direction="prev"
+                            onClick={capacity.onPrev}
+                        />
+                        <div
+                            ref={capacity.ref}
+                            className="flex flex-1 snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                        >
+                            {capacitySlides.map((num) => (
+                                <div
+                                    key={num}
+                                    className="flex w-[90%] flex-none snap-start flex-col items-center sm:w-[calc(50%-4px)] md:w-[calc(33.333%-6px)] lg:w-[calc(25%-6px)]"
+                                >
+                                    <CapacitySvg num={num} />
+                                    <a
+                                        href={encodeURI(
+                                            `${RESILIENCE_BASE}/${num}.svg`,
+                                        )}
+                                        download
+                                        aria-label={`Download capacity booklet ${num}`}
+                                        className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
+                                    >
+                                        <Download
+                                            className="h-6 w-6"
+                                            strokeWidth={1.5}
+                                        />
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                        <CarouselArrowButton
+                            direction="next"
+                            onClick={capacity.onNext}
+                        />
                     </div>
                 </div>
             </section>
 
             {/* Policies grid */}
             <section className="bg-gray-100 py-8">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2
                         id="policies"
                         className="mb-6 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                     >
                         Policies:
                     </h2>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {policies.map((p) => (
-                            <div
-                                key={p.title}
-                                className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
-                            >
-                                <div className="mb-2 flex items-start gap-2">
-                                    <FileText className="mt-0.5 h-5 w-5 flex-shrink-0 text-[rgb(0,175,239)]" />
+                    <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
+                        {policies.map((p, i) => {
+                            const iconNum = String(i + 6).padStart(2, '0')
+                            return (
+                                <div
+                                    key={p.title}
+                                    className="md:border-l-2 md:border-dotted md:border-[rgb(0,175,239)]/70 md:pl-6 md:[&:nth-child(2n+1)]:border-l-0 md:[&:nth-child(2n+1)]:pl-0 lg:[&:nth-child(2n+1)]:border-l-2 lg:[&:nth-child(2n+1)]:pl-6 lg:[&:nth-child(3n+1)]:border-l-0 lg:[&:nth-child(3n+1)]:pl-0"
+                                >
+                                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[rgb(0,175,239)] shadow-sm">
+                                        <img
+                                            src={`${RESILIENCE_BASE}/${iconNum}.svg`}
+                                            alt=""
+                                            className="h-8 w-8"
+                                            draggable={false}
+                                        />
+                                    </div>
                                     <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
                                         {p.title}
                                     </h3>
+                                    <p className="mt-2 text-justify text-xs leading-relaxed text-gray-700 md:text-sm">
+                                        {p.body}
+                                    </p>
                                 </div>
-                                <p className="text-xs leading-relaxed text-gray-600">
-                                    {p.body}
-                                </p>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
             </section>
 
             {/* Programmatic Approach */}
             <section className="bg-gray-100 py-8">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2
                         id="programmatic-approach"
                         className="mb-4 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
@@ -296,45 +356,15 @@ export default function VdoResilience() {
                         </p>
                     </div>
 
-                    {/* 4 Pillars */}
+                    {/* 4 Pillars diagram */}
                     <div className="mt-10">
-                        <h3 className="mb-8 text-center text-base font-bold text-[rgb(62,64,149)] md:text-lg">
-                            Afghanistan's four pillars:
-                            <br />
-                            <span className="text-sm font-medium text-gray-600">
-                                Navigating the evolving context
-                            </span>
-                        </h3>
-
-                        <div className="relative mx-auto max-w-3xl">
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                {pillars.map((p) => {
-                                    const Icon = p.icon
-                                    return (
-                                        <div
-                                            key={p.number}
-                                            className="flex gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
-                                        >
-                                            <div className="flex-shrink-0">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)] text-white">
-                                                    <Icon className="h-6 w-6" />
-                                                </div>
-                                                <p className="mt-1 text-center text-xs font-bold text-[rgb(0,175,239)]">
-                                                    {p.number}
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <h4 className="text-sm font-bold text-[rgb(62,64,149)]">
-                                                    {p.title}:
-                                                </h4>
-                                                <p className="mt-1 text-xs leading-relaxed text-gray-600">
-                                                    {p.body}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
+                        <div className="mx-auto flex w-full items-center justify-center">
+                            <img
+                                src={encodeURI(`${RESILIENCE_BASE}/36.svg`)}
+                                alt="Afghanistan's four pillars: Negotiated Access, Female Staff Engagement, Localized Risk Management, and Rapid Pivot Capabilities"
+                                className="h-auto w-full"
+                                draggable={false}
+                            />
                         </div>
 
                         <p className="mt-6 text-sm italic text-gray-600">
@@ -347,7 +377,7 @@ export default function VdoResilience() {
 
             {/* Contributing to Collective Resilience */}
             <section className="bg-gray-100 py-8 pb-14">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2
                         id="collective-resilience"
                         className="mb-4 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"

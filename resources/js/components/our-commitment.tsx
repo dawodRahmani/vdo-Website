@@ -1,23 +1,14 @@
-import {
-    HandHeart,
-    Leaf,
-    Scale,
-    ShieldCheck,
-    Users,
-    type LucideIcon,
-} from 'lucide-react'
-
 interface CommitmentItem {
     title: string
-    icon: LucideIcon
+    svg: string
 }
 
 const items: CommitmentItem[] = [
-    { title: 'Inclusivity', icon: Users },
-    { title: 'Accountability to Affected People', icon: Scale },
-    { title: 'Humanitarian Principles', icon: HandHeart },
-    { title: 'Impact & Sustainability', icon: Leaf },
-    { title: 'Prevention from Aid Diversion', icon: ShieldCheck },
+    { title: 'Inclusivity', svg: '/svg/Home Page/14.svg' },
+    { title: 'Accountability to Affected People', svg: '/svg/Home Page/15.svg' },
+    { title: 'Humanitarian Principles', svg: '/svg/Home Page/16.svg' },
+    { title: 'Impact & Sustainability', svg: '/svg/Home Page/17.svg' },
+    { title: 'Prevention from Aid Diversion', svg: '/svg/Home Page/18.svg' },
 ]
 
 export default function OurCommitment() {
@@ -31,20 +22,21 @@ export default function OurCommitment() {
                 <div className="relative">
                     {/* Items */}
                     <div className="grid grid-cols-2 gap-y-8 sm:grid-cols-3 md:grid-cols-5">
-                        {items.map((item) => {
-                            const Icon = item.icon
-                            return (
-                                <div
-                                    key={item.title}
-                                    className="flex flex-col items-center px-2 text-center"
-                                >
-                                    <Icon className="h-10 w-10 text-[rgb(0,175,239)]" />
-                                    <p className="mt-3 text-xs font-medium leading-snug text-[rgb(62,64,149)] md:text-sm">
-                                        {item.title}
-                                    </p>
-                                </div>
-                            )
-                        })}
+                        {items.map((item) => (
+                            <div
+                                key={item.title}
+                                className="flex flex-col items-center px-2 text-center"
+                            >
+                                <img
+                                    src={item.svg}
+                                    alt={item.title}
+                                    className="h-10 w-10 object-contain"
+                                />
+                                <p className="mt-3 text-xs font-medium leading-snug text-[rgb(62,64,149)] md:text-sm">
+                                    {item.title}
+                                </p>
+                            </div>
+                        ))}
                     </div>
 
                     {/* Dotted timeline with square markers */}

@@ -1,6 +1,7 @@
+import { Fragment } from 'react'
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
-import { ImageIcon, Play } from 'lucide-react'
+import { Play } from 'lucide-react'
 
 const photos = [
     {
@@ -21,7 +22,9 @@ interface Region {
     id: string
     title: string
     subtitle: string
+    mapSvg: string
     paragraphs: string[]
+    mapOnRight?: boolean
 }
 
 const regions: Region[] = [
@@ -29,6 +32,7 @@ const regions: Region[] = [
         id: 'central',
         title: 'Central Region:',
         subtitle: "VDO's Work in the Central Region",
+        mapSvg: '/svg/Where We Work/01.svg',
         paragraphs: [
             'VDO is committed to improving lives in the central region through education, economic growth, urban development, and emergency response.',
             'In education, VDO expands urban school access, ensuring children in underserved areas can learn and thrive. For economic growth, the organization supports MSMEs, helping small businesses grow, create jobs, and strengthen local livelihoods. In urban development, VDO addresses challenges like flooding by improving infrastructure and promoting resilient, livable communities. Additionally, VDO provides emergency response support to vulnerable populations, helping communities recover and build resilience.',
@@ -39,6 +43,8 @@ const regions: Region[] = [
         id: 'northeastern',
         title: 'North Eastern Region:',
         subtitle: "VDO's Impact in the Northern Region",
+        mapSvg: '/svg/Where We Work/02.svg',
+        mapOnRight: true,
         paragraphs: [
             'VDO empowers communities in the northern region through integrated interventions in education, economic growth, urban development, and health. The organization improves access to schools in underserved rural areas, supports MSMEs and TVET training for youth, and strengthens resilience in drought-prone provinces. In health and nutrition, VDO raises awareness on COVID-19, nutrition, and menstrual hygiene, trains frontline workers, conducts nutrition sessions, and provides dignity kits and women- and girls-friendly spaces for recreational activities and GBV awareness. Through these efforts, VDO enhances livelihoods, health, and community resilience, ensuring no one is left behind.',
         ],
@@ -47,6 +53,7 @@ const regions: Region[] = [
         id: 'eastern',
         title: 'Eastern Region:',
         subtitle: "VDO's Work in the Eastern Region",
+        mapSvg: '/svg/Where We Work/03.svg',
         paragraphs: [
             'VDO empowers communities in the eastern region through integrated programs in education, economic growth, urban development, and health. The organization supports children in crisis-affected areas to continue learning, provides MSME support and TVET training to boost livelihoods, and strengthens flood-affected communities through resilient urban development initiatives.',
             "In health and nutrition, VDO's Integrated Health–Nutrition–Immunization Project addresses vaccine misconceptions, promotes positive health behaviors, and increases caregivers' understanding and acceptance of immunization and nutrition services, improving child health outcomes.",
@@ -57,6 +64,8 @@ const regions: Region[] = [
         id: 'western',
         title: 'Western Region:',
         subtitle: "VDO's Work in the Western Region",
+        mapSvg: '/svg/Where We Work/04.svg',
+        mapOnRight: true,
         paragraphs: [
             'VDO empowers communities in the western region through integrated programs in education, economic growth, urban development, and health and nutrition. The organization provides education support to ensure children and youth access quality learning opportunities, helping them build knowledge and skills for the future.',
             'In economic growth, VDO equips women and youth with startup kits, small business grants, financial literacy training, and TVET and market-aligned skills development. Through mentorship, coaching, and the WAQAR Career Center, participants gain the tools, guidance, and opportunities needed to launch or expand businesses and secure meaningful employment, strengthening local economies and promoting financial independence.',
@@ -69,6 +78,7 @@ const regions: Region[] = [
         id: 'southern',
         title: 'Southern Region:',
         subtitle: "VDO's Work in the Southern Region",
+        mapSvg: '/svg/Where We Work/05.svg',
         paragraphs: [
             'VDO empowers communities in the southern region through integrated programs in education, economic growth, urban development, emergency response, and health and nutrition. Working with local partners, the organization ensures that vulnerable populations, especially women, youth, and children, receive the support they need to thrive.',
             'In education, VDO improves access to learning opportunities for children and youth in underserved and crisis-affected areas. In economic growth, the organization supports MSMEs and provides TVET training, startup kits, small business grants, and mentorship, helping participants launch sustainable businesses and gain meaningful employment.',
@@ -80,6 +90,8 @@ const regions: Region[] = [
         id: 'northwestern',
         title: 'North-Western Region:',
         subtitle: "VDO's Work in the North-Western Region",
+        mapSvg: '/svg/Where We Work/06.svg',
+        mapOnRight: true,
         paragraphs: [
             'VDO, through its local partners, supports communities in the north-western region across education, economic growth, urban development, emergency response, and health and nutrition. The organization focuses on empowering women, youth, and children, helping communities become more resilient.',
             'In education, VDO improves access to learning for children and youth in underserved and crisis-affected areas. In economic growth, it provides MSME support, TVET training, startup kits, and small business grants, enabling sustainable livelihoods and job opportunities.',
@@ -89,24 +101,17 @@ const regions: Region[] = [
     },
 ]
 
-function MapPlaceholder({ label }: { label: string }) {
-    return (
-        <div className="flex min-h-[180px] flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-white/60 p-4 text-center">
-            <ImageIcon className="h-7 w-7 text-gray-400" />
-            <p className="text-xs font-semibold text-gray-500">{label}</p>
-        </div>
-    )
-}
-
 function VideoPlaceholder() {
     return (
-        <div className="flex min-h-[180px] items-center justify-center rounded-lg border border-gray-200 bg-gray-200/70">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-300/80 shadow-sm">
             <button
                 type="button"
                 aria-label="Play video"
-                className="flex h-14 w-14 items-center justify-center rounded-md bg-red-600 text-white shadow-md transition-transform hover:scale-105"
+                className="absolute inset-0 flex items-center justify-center"
             >
-                <Play className="h-6 w-6 fill-current" />
+                <span className="flex h-12 w-16 items-center justify-center rounded-lg bg-red-600 text-white shadow-md transition-transform hover:scale-105">
+                    <Play className="h-6 w-6 fill-current" />
+                </span>
             </button>
         </div>
     )
@@ -118,12 +123,24 @@ export default function WhereWeWork() {
             <PhotoStrip photos={photos} />
 
             <section className="bg-gray-100 pb-14">
-                <div className="container mx-auto space-y-14 px-4 py-8">
-                    {regions.map((region) => (
-                        <article
-                            key={region.id}
-                            id={region.id}
-                            className="scroll-mt-24"
+                <div className="mx-auto max-w-[1240px] space-y-8 px-6 py-8 md:px-10 lg:px-14">
+                    {regions.map((region, index) => (
+                        <Fragment key={region.id}>
+                            {index > 0 && (
+                                <div
+                                    aria-hidden
+                                    className="border-t-2 border-dotted border-[rgb(0,175,239)]"
+                                />
+                            )}
+                            <article
+                                id={region.id}
+                                className="relative scroll-mt-24 overflow-hidden rounded-xl px-4 py-6 md:px-6 md:py-8"
+                            style={{
+                                backgroundImage: 'url(/svg/Map.svg)',
+                                backgroundSize: '100% auto',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                            }}
                         >
                             <h2 className="text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 {region.title}
@@ -141,13 +158,29 @@ export default function WhereWeWork() {
                                     </p>
                                 ))}
                             </div>
-                            <div className="mt-6 grid gap-4 md:grid-cols-2">
-                                <MapPlaceholder
-                                    label={`Afghanistan — ${region.title.replace(':', '')} highlighted`}
-                                />
-                                <VideoPlaceholder />
+                            <div className="mt-6 grid items-center gap-4 md:grid-cols-2">
+                                {region.mapOnRight ? (
+                                    <>
+                                        <VideoPlaceholder />
+                                        <img
+                                            src={region.mapSvg}
+                                            alt={`Afghanistan — ${region.title.replace(':', '')} highlighted`}
+                                            className="h-auto w-full"
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <img
+                                            src={region.mapSvg}
+                                            alt={`Afghanistan — ${region.title.replace(':', '')} highlighted`}
+                                            className="h-auto w-full"
+                                        />
+                                        <VideoPlaceholder />
+                                    </>
+                                )}
                             </div>
-                        </article>
+                            </article>
+                        </Fragment>
                     ))}
                 </div>
             </section>

@@ -1,30 +1,16 @@
-import {
-    AlertTriangle,
-    BookOpen,
-    Building2,
-    HeartPulse,
-    TrendingUp,
-    type LucideIcon,
-} from 'lucide-react'
-import AfghanistanMap from '@/components/afghanistan-map'
-import { Region } from '@/types'
-
-interface HomeSecondSectionProps {
-    regions: Region[]
-}
+import HomeAfghanistanMap from '@/components/home-afghanistan-map'
 
 interface PriorityArea {
     title: string
-    value: string
-    icon: LucideIcon
+    svg: string
 }
 
 const priorityAreas: PriorityArea[] = [
-    { title: 'Education', value: '320,000', icon: BookOpen },
-    { title: 'Economic Growth', value: '760 Families', icon: TrendingUp },
-    { title: 'Rural Development', value: '218 Areas', icon: Building2 },
-    { title: 'Health and Nutrition', value: '18,000', icon: HeartPulse },
-    { title: 'Emergency Response', value: '135,400', icon: AlertTriangle },
+    { title: 'Education — 320,000', svg: '/svg/Home Page/09.svg' },
+    { title: 'Economic Growth — 760 Families', svg: '/svg/Home Page/10.svg' },
+    { title: 'Rural Development — 218 Areas', svg: '/svg/Home Page/11.svg' },
+    { title: 'Health and Nutrition — 18,000', svg: '/svg/Home Page/12.svg' },
+    { title: 'Emergency Response — 135,400', svg: '/svg/Home Page/13.svg' },
 ]
 
 const regionRows = [
@@ -52,12 +38,12 @@ const newsItems = [
     },
 ]
 
-export default function HomeSecondSection({ regions }: HomeSecondSectionProps) {
+export default function HomeSecondSection() {
     return (
         <section
             className="relative bg-gray-100 pb-10 pt-2 md:pb-14 md:pt-4"
             style={{
-                backgroundImage: 'url(/images/map.png)',
+                backgroundImage: 'url(/svg/Map.svg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -72,17 +58,18 @@ export default function HomeSecondSection({ regions }: HomeSecondSectionProps) {
                         <h2 className="mb-4 text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                             Where We Work:
                         </h2>
-                        <AfghanistanMap regions={regions} />
+                        <div className="mx-auto">
+                            <HomeAfghanistanMap />
+                        </div>
                     </div>
 
                     {/* Row 1 — Right: Strategic Priority Areas */}
                     <div>
-                        <h2 className="mb-4 text-lg font-bold text-[rgb(62,64,149)] md:text-xl">
+                        <h2 className="mb-4 text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                             Strategic Priority Areas:
                         </h2>
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
                             {priorityAreas.map((area, index) => {
-                                const Icon = area.icon
                                 const cardSpanClass =
                                     index < 3
                                         ? 'col-span-1 md:col-span-2'
@@ -90,17 +77,13 @@ export default function HomeSecondSection({ regions }: HomeSecondSectionProps) {
                                 return (
                                     <div
                                         key={area.title}
-                                        className={`${cardSpanClass} rounded-xl border border-white/70 bg-white/75 p-5 shadow-sm transition-shadow hover:shadow-md`}
+                                        className={`${cardSpanClass} overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-md`}
                                     >
-                                        <div className="mb-4 flex justify-center">
-                                            <Icon className="h-12 w-12 text-gray-300" />
-                                        </div>
-                                        <p className="font-['Times_New_Roman',serif] text-center text-[15px] leading-tight font-medium text-[rgb(62,64,149)] md:text-[15px]">
-                                            {area.title}
-                                        </p>
-                                        <p className="mt-1 text-center text-[20px] leading-none font-bold text-[rgb(62,64,149)] md:text-[20px]">
-                                            {area.value}
-                                        </p>
+                                        <img
+                                            src={area.svg}
+                                            alt={area.title}
+                                            className="h-full w-full object-contain"
+                                        />
                                     </div>
                                 )
                             })}
@@ -109,7 +92,7 @@ export default function HomeSecondSection({ regions }: HomeSecondSectionProps) {
 
                     {/* Row 2 — Left: Regions + Provinces */}
                     <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
-                        <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-[rgb(62,64,149)]">
+                        <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-[rgb(0,175,239)]">
                             Regions
                         </h3>
                         <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-[rgb(0,175,239)]">
@@ -120,7 +103,7 @@ export default function HomeSecondSection({ regions }: HomeSecondSectionProps) {
                                 key={row.region}
                                 className="contents"
                             >
-                                <div className="flex items-center gap-2 text-[rgb(62,64,149)]">
+                                <div className="flex items-center gap-2 text-[rgb(0,175,239)]">
                                     <span
                                         className="h-2 w-2 flex-shrink-0 rounded-full"
                                         style={{ backgroundColor: row.dotColor }}

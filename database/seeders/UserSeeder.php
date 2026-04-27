@@ -12,12 +12,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('123456789'),
-            'role' => 'admin',
-            'email_verified_at' => now(),
-        ]);
+        \App\Models\User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('1234'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }

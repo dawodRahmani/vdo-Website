@@ -2,6 +2,13 @@ import { useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import { ChevronDown, Menu, Search, User, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet'
+import { login } from '@/routes'
 
 interface NavChild {
     title: string
@@ -10,7 +17,7 @@ interface NavChild {
 
 interface NavItem {
     title: string
-    href: string
+    href?: string
     items?: NavChild[]
 }
 
@@ -18,7 +25,6 @@ const navItems: NavItem[] = [
     { title: 'About Us', href: '/about' },
     {
         title: 'Strategic Priorities',
-        href: '/strategic-priorities',
         items: [
             { title: 'Education', href: '/strategic-priorities/education' },
             {
@@ -135,9 +141,17 @@ function useIsActive() {
 }
 
 export default function Header() {
-    const [mobileOpen, setMobileOpen] = useState(false)
-    const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
+    const [drawerOpen, setDrawerOpen] = useState(false)
+    const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
+    const [searchOpen, setSearchOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [openMenu, setOpenMenu] = useState<string | null>(null)
     const isActive = useIsActive()
+
+    const closeDrawer = () => {
+        setDrawerOpen(false)
+        setDrawerExpanded(null)
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full bg-gray-100 py-3">
@@ -155,173 +169,289 @@ export default function Header() {
                     <div className="mx-auto max-w-[1240px]">
                         {/* Blue bar */}
                         <div className="mt-2 flex h-8 w-full items-center justify-between gap-4 bg-[rgb(62,64,149)] px-3 shadow-sm md:h-10">
-                        {/* Desktop nav */}
-                        <nav className="hidden lg:flex">
-                            <ul className="flex items-center gap-1 xl:gap-2">
-                                {navItems.map((item) => {
-                                    const active = isActive(item.href)
-                                    const hasChildren = !!item.items?.length
-                                    return (
-                                        <li
-                                            key={item.title}
-                                            className="group relative"
-                                        >
-                                            <Link
-                                                href={item.href}
-                                                className={cn(
-                                                    'relative flex items-center gap-1 px-2 py-1 text-xs font-medium text-white transition-colors hover:text-white/90 xl:px-3',
-                                                    active &&
-                                                        "after:absolute after:bottom-1 after:left-3 after:right-3 after:h-[2px] after:bg-[rgb(0,175,239)] after:content-['']",
-                                                )}
+                            {/* Desktop nav */}
+                            <nav className="hidden lg:flex">
+                                <ul className="flex items-center gap-1 xl:gap-2">
+                                    {navItems.map((item) => {
+                                        const active = item.href
+                                            ? isActive(item.href)
+                                            : false
+                                        const hasChildren = !!item.items?.length
+                                        const triggerClass = cn(
+                                            'relative flex items-center gap-1 px-2 py-1 text-xs font-medium text-white transition-colors hover:text-white/90 xl:px-3',
+                                            active &&
+                                                "after:absolute after:bottom-1 after:left-3 after:right-3 after:h-[2px] after:bg-[rgb(0,175,239)] after:content-['']",
+                                        )
+                                        const isOpen = openMenu === item.title
+                                        return (
+                                            <li
+                                                key={item.title}
+                                                className="group relative"
+                                                onMouseLeave={() =>
+                                                    setOpenMenu((m) =>
+                                                        m === item.title
+                                                            ? null
+                                                            : m,
+                                                    )
+                                                }
                                             >
-                                                {item.title}
-                                                {hasChildren && (
-                                                    <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
-                                                )}
-                                            </Link>
-                                            {active && (
-                                                <span
-                                                    aria-hidden
-                                                    className="absolute -bottom-[6px] left-1/2 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[rgb(0,175,239)]"
-                                                />
-                                            )}
-
-                                            {/* Dropdown */}
-                                            {hasChildren && (
-                                                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
-                                                    <ul className="min-w-[260px] overflow-hidden rounded-md bg-[rgba(0,175,239,0.92)] text-sm text-white shadow-xl backdrop-blur-sm">
-                                                        {item.items!.map(
-                                                            (sub) => (
-                                                                <li key={sub.title}>
-                                                                    <Link
-                                                                        href={
-                                                                            sub.href
-                                                                        }
-                                                                        className="block px-4 py-2 transition-colors hover:bg-white/15"
-                                                                    >
-                                                                        {sub.title}
-                                                                    </Link>
-                                                                </li>
-                                                            ),
+                                                {item.href ? (
+                                                    <Link
+                                                        href={item.href}
+                                                        className={triggerClass}
+                                                    >
+                                                        {item.title}
+                                                        {hasChildren && (
+                                                            <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
                                                         )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        </nav>
-
-                            {/* Right icons */}
-                            <div className="flex items-center gap-0.5">
-                            <button
-                                aria-label="Account"
-                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
-                            >
-                                <User className="h-4 w-4" />
-                            </button>
-                            <button
-                                aria-label="Menu"
-                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
-                            >
-                                <Menu className="h-4 w-4" />
-                            </button>
-                            <button
-                                aria-label="Search"
-                                className="hidden h-7 w-7 items-center justify-center text-white transition-colors hover:bg-white/10 md:inline-flex"
-                            >
-                                <Search className="h-4 w-4" />
-                            </button>
-
-                                {/* Mobile toggle */}
-                                <button
-                                    aria-label="Toggle navigation"
-                                    onClick={() => setMobileOpen((v) => !v)}
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 lg:hidden"
-                                >
-                                    {mobileOpen ? (
-                                        <X className="h-6 w-6" />
-                                    ) : (
-                                        <Menu className="h-6 w-6" />
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Mobile nav */}
-                    {mobileOpen && (
-                        <nav className="mt-2 rounded-md bg-[rgb(62,64,149)] py-2 lg:hidden">
-                            <ul className="flex flex-col gap-1 px-2">
-                                {navItems.map((item) => {
-                                    const active = isActive(item.href)
-                                    const hasChildren = !!item.items?.length
-                                    const expanded = mobileExpanded === item.title
-                                    return (
-                                        <li key={item.title}>
-                                            <div className="flex items-center">
-                                                <Link
-                                                    href={item.href}
-                                                    className={cn(
-                                                        'flex-1 rounded px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10',
-                                                        active &&
-                                                            'bg-white/10 border-l-2 border-[rgb(0,175,239)]',
-                                                    )}
-                                                    onClick={() =>
-                                                        setMobileOpen(false)
-                                                    }
-                                                >
-                                                    {item.title}
-                                                </Link>
-                                                {hasChildren && (
+                                                    </Link>
+                                                ) : (
                                                     <button
+                                                        type="button"
                                                         onClick={() =>
-                                                            setMobileExpanded(
-                                                                expanded
+                                                            setOpenMenu((m) =>
+                                                                m === item.title
                                                                     ? null
                                                                     : item.title,
                                                             )
                                                         }
-                                                        aria-label="Expand submenu"
-                                                        className="p-2 text-white"
+                                                        aria-expanded={isOpen}
+                                                        className={triggerClass}
                                                     >
-                                                        <ChevronDown
-                                                            className={cn(
-                                                                'h-4 w-4 transition-transform',
-                                                                expanded &&
-                                                                    'rotate-180',
-                                                            )}
-                                                        />
+                                                        {item.title}
+                                                        {hasChildren && (
+                                                            <ChevronDown
+                                                                className={cn(
+                                                                    'h-3.5 w-3.5 transition-transform group-hover:rotate-180',
+                                                                    isOpen &&
+                                                                        'rotate-180',
+                                                                )}
+                                                            />
+                                                        )}
                                                     </button>
                                                 )}
-                                            </div>
-                                            {hasChildren && expanded && (
-                                                <ul className="ml-4 border-l border-white/20 pl-2">
-                                                    {item.items!.map((sub) => (
-                                                        <li key={sub.title}>
-                                                            <Link
-                                                                href={sub.href}
-                                                                className="block rounded px-3 py-1.5 text-xs text-white/90 hover:bg-white/10"
-                                                                onClick={() =>
-                                                                    setMobileOpen(
-                                                                        false,
-                                                                    )
-                                                                }
-                                                            >
-                                                                {sub.title}
-                                                            </Link>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            )}
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        </nav>
-                    )}
+                                                {active && (
+                                                    <span
+                                                        aria-hidden
+                                                        className="absolute -bottom-[6px] left-1/2 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[6px] border-x-transparent border-t-[rgb(0,175,239)]"
+                                                    />
+                                                )}
+
+                                                {hasChildren && (
+                                                    <div
+                                                        className={cn(
+                                                            'invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100',
+                                                            isOpen &&
+                                                                'visible opacity-100',
+                                                        )}
+                                                    >
+                                                        <ul className="min-w-[260px] overflow-hidden rounded-md bg-[rgba(0,175,239,0.92)] text-sm text-white shadow-xl backdrop-blur-sm">
+                                                            {item.items!.map(
+                                                                (sub) => (
+                                                                    <li
+                                                                        key={
+                                                                            sub.title
+                                                                        }
+                                                                    >
+                                                                        <Link
+                                                                            href={
+                                                                                sub.href
+                                                                            }
+                                                                            onClick={() =>
+                                                                                setOpenMenu(
+                                                                                    null,
+                                                                                )
+                                                                            }
+                                                                            className="block px-4 py-2 transition-colors hover:bg-white/15"
+                                                                        >
+                                                                            {
+                                                                                sub.title
+                                                                            }
+                                                                        </Link>
+                                                                    </li>
+                                                                ),
+                                                            )}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                            </nav>
+
+                            {/* Right icons — utility icons on lg+, hamburger on smaller screens */}
+                            <div className="ml-auto flex items-center gap-0.5">
+                                <Link
+                                    href={login().url}
+                                    aria-label="Account / Login"
+                                    className="hidden h-7 w-7 items-center justify-center rounded text-white transition-colors hover:bg-white/10 md:h-8 md:w-8 lg:inline-flex"
+                                >
+                                    <User className="h-4 w-4" />
+                                </Link>
+                                <button
+                                    type="button"
+                                    aria-label={
+                                        searchOpen ? 'Close search' : 'Search'
+                                    }
+                                    aria-expanded={searchOpen}
+                                    onClick={() => setSearchOpen((v) => !v)}
+                                    className={cn(
+                                        'hidden h-7 w-7 items-center justify-center rounded text-white transition-colors hover:bg-white/10 md:h-8 md:w-8 lg:inline-flex',
+                                        searchOpen && 'bg-white/15',
+                                    )}
+                                >
+                                    {searchOpen ? (
+                                        <X className="h-4 w-4" />
+                                    ) : (
+                                        <Search className="h-4 w-4" />
+                                    )}
+                                </button>
+                                <button
+                                    type="button"
+                                    aria-label="Open menu"
+                                    onClick={() => setDrawerOpen(true)}
+                                    className="inline-flex h-7 w-7 items-center justify-center rounded text-white transition-colors hover:bg-white/10 md:h-8 md:w-8 lg:hidden"
+                                >
+                                    <Menu className="h-4 w-4" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Search bar (toggled by search icon) */}
+                        {searchOpen && (
+                            <div className="mt-2 rounded-md bg-white p-2 shadow-sm ring-1 ring-gray-200">
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault()
+                                        // Search submission handled later.
+                                    }}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Search className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                                    <input
+                                        type="search"
+                                        autoFocus
+                                        value={searchQuery}
+                                        onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                        }
+                                        placeholder="Search the site…"
+                                        className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setSearchQuery('')}
+                                            aria-label="Clear search"
+                                            className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+                                        >
+                                            <X className="h-3.5 w-3.5" />
+                                        </button>
+                                    )}
+                                </form>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
+
+            {/* Drawer (slides in from the left, all screen sizes) */}
+            <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
+                <SheetContent
+                    side="left"
+                    className="w-[88vw] max-w-sm overflow-y-auto border-r-0 bg-[rgb(62,64,149)] p-0 text-white sm:max-w-md"
+                >
+                    <SheetHeader className="border-b border-white/10 p-4">
+                        <SheetTitle className="text-white">Menu</SheetTitle>
+                    </SheetHeader>
+
+                    <nav className="px-2 py-3">
+                        <ul className="flex flex-col gap-1">
+                            {navItems.map((item) => {
+                                const active = item.href
+                                    ? isActive(item.href)
+                                    : false
+                                const hasChildren = !!item.items?.length
+                                const expanded = drawerExpanded === item.title
+                                const itemClass = cn(
+                                    'flex-1 rounded px-3 py-2 text-left text-sm font-medium text-white transition-colors hover:bg-white/10',
+                                    active &&
+                                        'border-l-2 border-[rgb(0,175,239)] bg-white/10',
+                                )
+                                return (
+                                    <li key={item.title}>
+                                        <div className="flex items-center">
+                                            {item.href ? (
+                                                <Link
+                                                    href={item.href}
+                                                    className={itemClass}
+                                                    onClick={closeDrawer}
+                                                >
+                                                    {item.title}
+                                                </Link>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setDrawerExpanded(
+                                                            expanded
+                                                                ? null
+                                                                : item.title,
+                                                        )
+                                                    }
+                                                    aria-expanded={expanded}
+                                                    className={itemClass}
+                                                >
+                                                    {item.title}
+                                                </button>
+                                            )}
+                                            {hasChildren && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setDrawerExpanded(
+                                                            expanded
+                                                                ? null
+                                                                : item.title,
+                                                        )
+                                                    }
+                                                    aria-label="Expand submenu"
+                                                    aria-expanded={expanded}
+                                                    className="rounded p-2 text-white transition-colors hover:bg-white/10"
+                                                >
+                                                    <ChevronDown
+                                                        className={cn(
+                                                            'h-4 w-4 transition-transform',
+                                                            expanded &&
+                                                                'rotate-180',
+                                                        )}
+                                                    />
+                                                </button>
+                                            )}
+                                        </div>
+                                        {hasChildren && expanded && (
+                                            <ul className="ml-4 border-l border-white/20 pl-2">
+                                                {item.items!.map((sub) => (
+                                                    <li key={sub.title}>
+                                                        <Link
+                                                            href={sub.href}
+                                                            className="block rounded px-3 py-1.5 text-xs text-white/90 transition-colors hover:bg-white/10"
+                                                            onClick={closeDrawer}
+                                                        >
+                                                            {sub.title}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </nav>
+                </SheetContent>
+            </Sheet>
         </header>
     )
 }

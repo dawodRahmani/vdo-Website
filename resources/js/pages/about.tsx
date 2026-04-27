@@ -1,6 +1,5 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
-import { Compass, Eye, Files, Flag, TrendingUp } from 'lucide-react'
 
 const photos = [
     {
@@ -22,44 +21,6 @@ const historyParagraphs = [
     "Following the government collapse in 2021, In response to Afghanistan's escalating social and economic instability VDO expanded its impact. In June 2022, the organization signed its first official grant, delivering lifesaving services in Inclusion, Protection, and Health to marginalized populations, including women, children, and persons with disabilities.",
     'Since then, VDO has launched multiple initiatives in health, livelihoods, food security, humanitarian aid, and programs bridging emergency response with long-term development. Today, VDO is a recognized Afghan NGO capable of operating in complex environments, navigating access challenges, and delivering results under difficult circumstances. Beyond service delivery, VDO amplifies Afghan voices at national and international forums, including the UN Human Rights Council, the Afghanistan Coordination Group, and the Senior Officials Meeting in Brussels, providing evidence-based recommendations to shape humanitarian and development policy.',
 ]
-
-const leadershipRoles = [
-    {
-        color: 'rgb(62,64,149)',
-        title: 'UN Humanitarian Country Team (HCT)',
-        body: 'Elected member, representing national NGO voices and elected for 3 years in 3 consecutive terms.',
-    },
-    {
-        color: 'rgb(0,175,239)',
-        title: 'ACBAR',
-        body: 'Steering Committee Member and currently Chairperson (2025–2026 term).',
-    },
-    {
-        color: 'rgb(189,191,193)',
-        title: 'Strategic working groups and clusters',
-        body: 'across protection, education, and humanitarian coordination platforms.',
-    },
-]
-
-function BalloonPin({ color }: { color: string }) {
-    return (
-        <div className="relative flex flex-col items-center">
-            <svg
-                viewBox="0 0 40 56"
-                className="h-14 w-10 drop-shadow-md"
-                fill={color}
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path d="M20 0 C8.95 0 0 8.95 0 20 c0 5.6 2.3 10.67 6 14.3 L20 56 L34 34.3 C37.7 30.67 40 25.6 40 20 C40 8.95 31.05 0 20 0 Z" />
-                <ellipse cx="14" cy="14" rx="5" ry="3" fill="rgba(255,255,255,0.25)" />
-            </svg>
-            <span
-                className="mt-1 h-2 w-2 rounded-full border-2"
-                style={{ borderColor: color }}
-            />
-        </div>
-    )
-}
 
 const lookingAheadParagraphs = [
     'Afghanistan faces a fragile humanitarian landscape, widespread poverty, and restrictions on the rights of women and girls. Limited international aid and a weakened financial system have strained services and community resilience, while rising food insecurity, shrinking economic opportunities, and youth psychosocial stress pose ongoing challenges.',
@@ -84,9 +45,13 @@ export default function About() {
 
             {/* Executive Summary */}
             <section className="bg-gray-100 py-10 md:py-14">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
-                        <Files className="mt-1 h-10 w-10 flex-shrink-0 text-[rgb(0,175,239)] md:h-12 md:w-12" />
+                        <img
+                            src="/svg/About Us/01.svg"
+                            alt=""
+                            className="mt-1 h-10 w-10 flex-shrink-0 md:h-12 md:w-12"
+                        />
                         <div className="flex-1">
                             <h2 className="mb-3 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 Executive Summary:
@@ -106,9 +71,13 @@ export default function About() {
 
             {/* History */}
             <section className="bg-gray-100 pb-14 pt-2">
-                <div className="container mx-auto px-4">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
-                        <Flag className="mt-1 h-10 w-10 flex-shrink-0 text-[rgb(0,175,239)] md:h-12 md:w-12" />
+                        <img
+                            src="/svg/About Us/02.svg"
+                            alt=""
+                            className="mt-1 h-10 w-10 flex-shrink-0 md:h-12 md:w-12"
+                        />
                         <div className="flex-1">
                             <h2 className="mb-3 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 History:
@@ -129,22 +98,39 @@ export default function About() {
                             coordination bodies:
                         </p>
 
-                        <div className="relative">
-                            {/* Dotted line between pins */}
-                            <div className="absolute left-[16%] right-[16%] top-[52px] border-t border-dotted border-gray-400" />
+                        {/* Coordination bodies diagram + labels */}
+                        <div className="mx-auto max-w-4xl">
+                            <div className="flex justify-center">
+                                <img
+                                    src="/svg/About Us/03.svg"
+                                    alt="VDO coordination bodies and leadership roles"
+                                    className="h-auto w-full"
+                                />
+                            </div>
 
-                            <div className="relative grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-6">
-                                {leadershipRoles.map((role) => (
-                                    <div
-                                        key={role.title}
-                                        className="flex flex-col items-center"
-                                    >
-                                        <BalloonPin color={role.color} />
-                                        <p className="mt-4 text-center text-sm leading-relaxed text-gray-700 md:text-left">
-                                            {role.title} – {role.body}
-                                        </p>
-                                    </div>
-                                ))}
+                            <div className="mt-6 grid grid-cols-1 gap-6 text-center md:grid-cols-3 md:gap-8">
+                                <p className="text-sm leading-relaxed text-gray-700">
+                                    <span className="font-semibold text-[rgb(62,64,149)]">
+                                        UN Humanitarian Country Team (HCT)
+                                    </span>{' '}
+                                    – Elected member, representing national NGO
+                                    voices and elected for 3 years in 3
+                                    consecutive terms.
+                                </p>
+                                <p className="text-sm leading-relaxed text-gray-700">
+                                    <span className="font-semibold text-[rgb(0,175,239)]">
+                                        ACBAR
+                                    </span>{' '}
+                                    – Steering Committee Member and currently
+                                    Chairperson (2025–2026 term).
+                                </p>
+                                <p className="text-sm leading-relaxed text-gray-700">
+                                    <span className="font-semibold text-gray-500">
+                                        Strategic working groups and clusters
+                                    </span>{' '}
+                                    – across protection, education, and
+                                    humanitarian coordination platforms.
+                                </p>
                             </div>
                         </div>
 
@@ -159,10 +145,14 @@ export default function About() {
 
             {/* Mission, Vision, Looking Ahead */}
             <section className="bg-gray-100 pb-14 pt-2">
-                <div className="container mx-auto space-y-10 px-4">
+                <div className="mx-auto max-w-[1240px] space-y-10 px-6 md:px-10 lg:px-14">
                     {/* Mission */}
                     <div className="flex items-start gap-4 md:gap-6">
-                        <Compass className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
+                        <img
+                            src="/svg/About Us/04.svg"
+                            alt=""
+                            className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
+                        />
                         <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
                             <strong className="font-bold text-[rgb(62,64,149)]">
                                 Our mission
@@ -182,7 +172,11 @@ export default function About() {
 
                     {/* Vision */}
                     <div className="flex items-start gap-4 md:gap-6">
-                        <Eye className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
+                        <img
+                            src="/svg/About Us/05.svg"
+                            alt=""
+                            className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
+                        />
                         <p className="text-sm leading-relaxed text-gray-700 md:text-[15px]">
                             <strong className="font-bold text-[rgb(62,64,149)]">
                                 Our vision
@@ -195,7 +189,11 @@ export default function About() {
 
                     {/* Looking Ahead */}
                     <div className="flex items-start gap-4 md:gap-6">
-                        <TrendingUp className="mt-1 h-8 w-8 flex-shrink-0 text-[rgb(0,175,239)] md:h-10 md:w-10" />
+                        <img
+                            src="/svg/About Us/06.svg"
+                            alt=""
+                            className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
+                        />
                         <div className="flex-1">
                             <h2 className="mb-4 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
                                 Looking Ahead

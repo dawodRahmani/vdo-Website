@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1.46889in" height="1.57872in" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 11.1 11.93"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+ <defs>
+     <clipPath id="id0">
+      <path d="M-0 0.83l11.1 0 0 11.1 -11.1 0 0 -11.1z"/>
+     </clipPath>
+    <clipPath id="id1">
+     <rect x="0.31" y="1.14" width="10.47" height="10.47"/>
+    </clipPath>
+     <clipPath id="id2">
+      <path d="M0.43 0.07l10.4 0 0 11 -10.4 0 0 -11z"/>
+     </clipPath>
+    <clipPath id="id3">
+     <rect x="0.72" y="0.36" width="9.82" height="10.41"/>
+    </clipPath>
+     <clipPath id="id4">
+      <path d="M0.58 0.12l9 0 0 10.15 -9 0 0 -10.15z"/>
+     </clipPath>
+    <clipPath id="id5">
+     <rect x="0.83" y="0.37" width="8.49" height="9.64"/>
+    </clipPath>
+     <clipPath id="id6">
+      <path d="M0.66 0l7.38 0 0 9.01 -7.38 0 0 -9.01z"/>
+     </clipPath>
+    <clipPath id="id7">
+     <rect x="1.06" y="0.4" width="6.59" height="8.22"/>
+    </clipPath>
+ </defs>
+ <g id="Layer_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="_1689252426784">
+   <g>
+    <g style="clip-path:url(#id0)">
+     <image x="-0" y="0.83" width="11.1" height="11.1" xlink:href="01_Images\01_ImgID1.png"/>
+    </g>
+   </g>
+   <g style="clip-path:url(#id1)">
+    <image transform="matrix(0.0352682 0.0352682 -0.0353808 0.0353808 6.12471 1.14395)" x="0" y="0" width="132.12" height="164.23" xlink:href="01_Images\01_ImgID2.png"/>
+   </g>
+   <g>
+    <g style="clip-path:url(#id2)">
+     <image x="0.43" y="0.07" width="10.4" height="11" xlink:href="01_Images\01_ImgID3.png"/>
+    </g>
+   </g>
+   <g style="clip-path:url(#id3)">
+    <image transform="matrix(0.0430919 0.0248791 -0.0251304 0.0435272 4.82982 0.362683)" x="0" y="0" width="132.43" height="163.5" xlink:href="01_Images\01_ImgID4.png"/>
+   </g>
+   <g>
+    <g style="clip-path:url(#id4)">
+     <image x="0.58" y="0.12" width="9" height="10.15" xlink:href="01_Images\01_ImgID5.png"/>
+    </g>
+   </g>
+   <g style="clip-path:url(#id5)">
+    <image transform="matrix(0.0483308 0.0129502 -0.0129669 0.0483929 2.95768 0.374809)" x="0" y="0" width="131.7" height="164.02" xlink:href="01_Images\01_ImgID6.png"/>
+   </g>
+   <g>
+    <g style="clip-path:url(#id6)">
+     <image x="0.66" y="0" width="7.38" height="9.01" xlink:href="01_Images\01_ImgID7.png"/>
+    </g>
+   </g>
+   <g style="clip-path:url(#id7)">
+    <image x="1.06" y="0.4" width="6.59" height="8.22" xlink:href="01_Images\01_ImgID8.png"/>
+   </g>
+  </g>
+ </g>
+</svg>

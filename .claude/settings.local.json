@@ -24,7 +24,24 @@
       "Bash(powershell:*)",
       "Bash(python:*)",
       "Bash(dir /B \"c:\\\\Users\\\\Rahmani\\\\Desktop\\\\vdo website\\\\vdoWebsite\")",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\Region::orderBy\\('order'\\)->select\\('slug','color'\\)->get\\(\\)->toJson\\(JSON_PRETTY_PRINT\\);\")",
+      "PowerShell(npm run types 2>&1)",
+      "PowerShell(php artisan migrate 2>&1)",
+      "PowerShell(php artisan db:seed --force 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\Region::orderBy\\('order'\\)->get\\(['slug','label','color','label_x','label_y','label_two_line']\\)->toJson\\(\\);\")",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\MapPin::orderBy\\('order'\\)->count\\(\\);\")",
+      "PowerShell(php artisan migrate)",
+      "Bash(npx eslint *)",
+      "PowerShell(php artisan db:seed --class=LeadershipRoleSeeder)",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\LeadershipRole::all\\(\\)->pluck\\('icon_image', 'id'\\); echo PHP_EOL; echo App\\\\Models\\\\LeadershipRole::all\\(\\)->pluck\\('icon_image_url', 'id'\\); echo PHP_EOL; echo 'APP_URL: ' . config\\('app.url'\\);\")",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\LeadershipRole::all\\(\\)->pluck\\('pin_style', 'id'\\); echo PHP_EOL; echo App\\\\Models\\\\LeadershipRole::all\\(\\)->pluck\\('icon_image_url', 'id'\\);\")",
+      "PowerShell(php artisan migrate --force 2>&1)",
+      "PowerShell(php artisan db:seed --class=EducationDonutSegmentSeeder --force 2>&1)",
+      "PowerShell(php artisan route:list --path=admin --columns=method,uri,name 2>&1)",
+      "PowerShell(php artisan route:list --path=admin 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\EducationDonutSegment::count\\(\\) . PHP_EOL; echo App\\\\Models\\\\EducationDonutSegment::ordered\\(\\)->get\\(\\)->pluck\\('label'\\)->join\\(', '\\) . PHP_EOL;\")",
+      "Bash(grep -E '\\\\.png$')"
     ]
   }
 }

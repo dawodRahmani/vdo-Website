@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             RegionSeeder::class,
+            MapPinSeeder::class,
+            LeadershipRoleSeeder::class,
+            EducationDonutSegmentSeeder::class,
         ]);
     }
 }

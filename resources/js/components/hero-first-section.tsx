@@ -1,13 +1,3 @@
-import {
-    Activity,
-    Award,
-    Briefcase,
-    ClipboardCheck,
-    Heart,
-    Map,
-    type LucideIcon,
-} from 'lucide-react'
-
 const photos = [
     {
         src: '/Header and Gallary Photos/01.jpg',
@@ -23,12 +13,12 @@ const photos = [
     },
 ]
 
-const stats: { value: string; label: string; icon: LucideIcon }[] = [
-    { value: '4+', label: 'Regions', icon: Map },
-    { value: '12+M', label: 'Live Impact', icon: Activity },
-    { value: '17+', label: 'Implemented Projects', icon: ClipboardCheck },
-    { value: '4+', label: 'Active Projects', icon: Briefcase },
-    { value: '10+', label: 'Years of Experience', icon: Award },
+const stats: { svg: string; label: string }[] = [
+    { svg: '/svg/Home Page/01.svg', label: 'Regions' },
+    { svg: '/svg/Home Page/02.svg', label: 'Live Impact' },
+    { svg: '/svg/Home Page/03.svg', label: 'Implemented Projects' },
+    { svg: '/svg/Home Page/04.svg', label: 'Active Projects' },
+    { svg: '/svg/Home Page/05.svg', label: 'Years of Experience' },
 ]
 
 export default function HeroFirstSection() {
@@ -60,38 +50,36 @@ export default function HeroFirstSection() {
                                 Key Impact Numbers:
                             </h2>
 
-                            <ul className="flex flex-wrap items-start gap-x-6 gap-y-4 md:gap-x-8">
-                                {stats.map((stat) => {
-                                    const Icon = stat.icon
-                                    return (
-                                        <li
-                                            key={stat.label}
-                                            className="flex flex-col items-center text-center"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[rgb(0,175,239)] text-white ring-1 ring-white/30">
-                                                    <Icon className="h-4.5 w-4.5" />
-                                                </span>
-                                                <span className="text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
-                                                    {stat.value}
-                                                </span>
-                                            </div>
-                                            <span className="mt-1.5 text-xs font-medium text-white/90 md:text-sm">
-                                                {stat.label}
-                                            </span>
-                                        </li>
-                                    )
-                                })}
+                            <ul className="flex flex-nowrap items-start gap-x-3 sm:gap-x-4 md:gap-x-6">
+                                {stats.map((stat) => (
+                                    <li
+                                        key={stat.label}
+                                        className="flex min-w-0 flex-1 flex-col items-center text-center"
+                                    >
+                                        <img
+                                            src={stat.svg}
+                                            alt={stat.label}
+                                            className="h-9 w-auto md:h-11"
+                                        />
+                                        <span className="mt-1.5 text-[11px] font-medium leading-tight text-[rgb(0,175,239)] md:text-xs">
+                                            {stat.label}
+                                        </span>
+                                    </li>
+                                ))}
                             </ul>
                         </div>
 
                         <div className="flex-shrink-0 lg:pl-6">
                             <a
                                 href="/donate"
-                                className="inline-flex min-w-[300px] items-center justify-center gap-2 rounded-md border-2 border-[rgb(0,175,239)] bg-[rgb(189,191,193)]/60 px-10 py-2 text-sm font-semibold text-white transition-colors hover:bg-[rgb(189,191,193)]/60"
+                                aria-label="Donate"
+                                className="group inline-block transition-all duration-200 hover:-translate-y-0.5 hover:drop-shadow-[0_4px_10px_rgba(0,175,239,0.45)]"
                             >
-                                Donate
-                                <Heart className="h-4 w-4 fill-white text-white" />
+                                <img
+                                    src="/svg/Home Page/06.svg"
+                                    alt="Donate"
+                                    className="h-7 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.04] md:h-8"
+                                />
                             </a>
                         </div>
                     </div>

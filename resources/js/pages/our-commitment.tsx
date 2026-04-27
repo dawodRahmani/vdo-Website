@@ -1,18 +1,5 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
-import {
-    BookOpen,
-    ClipboardCheck,
-    Gauge,
-    HandHeart,
-    PackageOpen,
-    Scale,
-    Shield,
-    ShieldAlert,
-    Sprout,
-    Users,
-    type LucideIcon,
-} from 'lucide-react'
 
 const photos = [
     { src: '/Header and Gallary Photos/07.jpg', alt: 'Inclusive programs' },
@@ -23,42 +10,42 @@ const photos = [
 interface CommitmentCard {
     id: string
     title: string
-    icon: LucideIcon
+    svg: string
 }
 
 const cards: CommitmentCard[] = [
-    { id: 'inclusivity', title: 'Inclusivity', icon: Users },
+    { id: 'inclusivity', title: 'Inclusivity', svg: '/svg/Our Commitment/01.svg' },
     {
         id: 'accountability',
         title: 'Accountability to Affected Population',
-        icon: ClipboardCheck,
+        svg: '/svg/Our Commitment/02.svg',
     },
-    { id: 'safeguarding', title: 'Safeguarding', icon: Shield },
-    { id: 'psea', title: 'PSEA', icon: ShieldAlert },
+    { id: 'safeguarding', title: 'Safeguarding', svg: '/svg/Our Commitment/03.svg' },
+    { id: 'psea', title: 'PSEA', svg: '/svg/Our Commitment/04.svg' },
     {
         id: 'anti-fraud',
         title: 'Anti-Fraud Transparency',
-        icon: Scale,
+        svg: '/svg/Our Commitment/05.svg',
     },
     {
         id: 'effectiveness',
         title: 'Effectiveness and Efficiency',
-        icon: Gauge,
+        svg: '/svg/Our Commitment/06.svg',
     },
     {
         id: 'impact',
         title: 'Impact and Sustainability',
-        icon: Sprout,
+        svg: '/svg/Our Commitment/07.svg',
     },
     {
         id: 'aid-diversion',
         title: 'Prevention from Aid Diversion',
-        icon: PackageOpen,
+        svg: '/svg/Our Commitment/08.svg',
     },
     {
         id: 'humanitarian-principles',
         title: 'Humanitarian Principles',
-        icon: HandHeart,
+        svg: '/svg/Our Commitment/09.svg',
     },
 ]
 
@@ -102,34 +89,42 @@ export default function OurCommitmentPage() {
         <SiteLayout title="Our Commitment">
             <PhotoStrip photos={photos} />
 
+            <div
+                className="bg-gray-100"
+                style={{
+                    backgroundImage: 'url(/svg/Map.svg)',
+                    backgroundSize: '100% auto',
+                    backgroundPosition: 'top center',
+                    backgroundRepeat: 'no-repeat',
+                }}
+            >
+
             {/* 9-card grid */}
-            <section className="bg-gray-100 pb-4 pt-6">
-                <div className="container mx-auto px-4">
+            <section className="pb-4 pt-6">
+                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                        {cards.map((card) => {
-                            const Icon = card.icon
-                            return (
-                                <a
-                                    key={card.id}
-                                    href={`#${card.id}`}
-                                    className="group flex items-center gap-4 rounded-lg bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-                                >
-                                    <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[rgb(62,64,149)] text-white shadow-md">
-                                        <Icon className="h-6 w-6" />
-                                    </span>
-                                    <span className="text-sm font-semibold leading-snug text-[rgb(62,64,149)] group-hover:text-[rgb(0,175,239)] md:text-base">
-                                        {card.title}
-                                    </span>
-                                </a>
-                            )
-                        })}
+                        {cards.map((card) => (
+                            <a
+                                key={card.id}
+                                href={`#${card.id}`}
+                                aria-label={card.title}
+                                className="block"
+                            >
+                                <img
+                                    src={card.svg}
+                                    alt={card.title}
+                                    className="h-full w-full object-contain"
+                                    draggable={false}
+                                />
+                            </a>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* Detailed sections */}
-            <section className="bg-gray-100 pb-14">
-                <div className="container mx-auto px-4 py-8">
+            <section className="pb-14">
+                <div className="mx-auto max-w-[1240px] px-6 py-8 md:px-10 lg:px-14">
                     {/* Inclusivity */}
                     <div>
                         <SectionTitle id="inclusivity" title="Inclusivity:" />
@@ -466,7 +461,7 @@ export default function OurCommitmentPage() {
                             </Body>
                         </div>
 
-                        <div className="mt-6 grid gap-4 md:grid-cols-2">
+                        <div className="mt-4 space-y-4">
                             {[
                                 {
                                     title: 'Humanity:',
@@ -485,36 +480,31 @@ export default function OurCommitmentPage() {
                                     body: 'VDO maintains full autonomy over its humanitarian objectives, ensuring that our work is not influenced by political, military, economic, or external agendas. Our decisions are driven by evidence, needs assessments, and the best interests of affected communities.',
                                 },
                             ].map((p) => (
-                                <div
-                                    key={p.title}
-                                    className="rounded-lg border border-gray-200 bg-white p-5"
-                                >
-                                    <div className="mb-2 flex items-center gap-2">
-                                        <BookOpen className="h-5 w-5 text-[rgb(0,175,239)]" />
-                                        <h4 className="text-sm font-bold text-[rgb(62,64,149)]">
-                                            {p.title}
-                                        </h4>
-                                    </div>
-                                    <p className="text-sm leading-relaxed text-gray-700">
+                                <div key={p.title}>
+                                    <h4 className="text-sm font-bold text-[rgb(62,64,149)] md:text-base">
+                                        {p.title}
+                                    </h4>
+                                    <p className="mt-1 text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
                                         {p.body}
                                     </p>
                                 </div>
                             ))}
                         </div>
 
-                        <Body>
-                            <span className="mt-6 block">
+                        <div className="mt-4">
+                            <Body>
                                 These principles define VDO's identity as a
                                 trusted and principled organization. VDO
                                 Management is committed to upholding them
                                 across all programs, departments, and
                                 operations to ensure ethical, transparent, and
                                 effective humanitarian action.
-                            </span>
-                        </Body>
+                            </Body>
+                        </div>
                     </div>
                 </div>
             </section>
+            </div>
         </SiteLayout>
     )
 }
