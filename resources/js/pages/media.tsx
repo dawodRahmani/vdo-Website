@@ -1,7 +1,7 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
 import { ChevronLeft, ChevronRight, Download, Play } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const photos = [
     { src: '/Header and Gallary Photos/05.jpg', alt: 'Food distribution' },
@@ -98,6 +98,79 @@ const publications = [
     },
 ]
 
+type PhotoLayer = { id: number; src: string; direction: 'next' | 'prev' }
+
+function PhotoTile({
+    src,
+    direction,
+    delay,
+    position,
+}: {
+    src: string
+    direction: 'next' | 'prev'
+    delay: number
+    position: string
+}) {
+    const [layers, setLayers] = useState<PhotoLayer[]>(() => [
+        { id: 0, src, direction },
+    ])
+    const nextIdRef = useRef(1)
+
+    useEffect(() => {
+        setLayers((prev) => {
+            const top = prev[prev.length - 1]
+            if (top.src === src) return prev
+            return [...prev, { id: nextIdRef.current++, src, direction }]
+        })
+    }, [src, direction])
+
+    const dropOlderLayers = (keepId: number) => {
+        setLayers((prev) =>
+            prev.length > 1 ? prev.filter((l) => l.id === keepId) : prev,
+        )
+    }
+
+    return (
+        <div
+            className={`group relative overflow-hidden rounded-md bg-gray-200 shadow-sm ${position}`}
+        >
+            {layers.map((layer, idx) => {
+                const isTop = idx === layers.length - 1
+                const isAnimating = isTop && layers.length > 1
+                const animationClass = isAnimating
+                    ? layer.direction === 'next'
+                        ? 'photo-crossfade-right'
+                        : 'photo-crossfade-left'
+                    : ''
+                return (
+                    <div
+                        key={layer.id}
+                        className={`absolute inset-0 ${animationClass}`}
+                        style={
+                            isAnimating
+                                ? { animationDelay: `${delay}ms` }
+                                : undefined
+                        }
+                        onAnimationEnd={
+                            isAnimating
+                                ? () => dropOlderLayers(layer.id)
+                                : undefined
+                        }
+                    >
+                        <img
+                            src={encodeURI(layer.src)}
+                            alt="VDO photograph"
+                            className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
+                            loading="lazy"
+                        />
+                    </div>
+                )
+            })}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
+    )
+}
+
 function VideoCard({ title }: { title: string }) {
     return (
         <div>
@@ -163,10 +236,20 @@ export default function Media() {
     const pubs = useHorizontalScroll()
     const totalPhotoPages = Math.ceil(galleryPhotos.length / PHOTOS_PER_PAGE)
     const [photoPage, setPhotoPage] = useState(0)
+    const [photoDirection, setPhotoDirection] = useState<'next' | 'prev'>('next')
     const visiblePhotos = galleryPhotos.slice(
         photoPage * PHOTOS_PER_PAGE,
         photoPage * PHOTOS_PER_PAGE + PHOTOS_PER_PAGE,
     )
+
+    const goToPrevPhotoPage = () => {
+        setPhotoDirection('prev')
+        setPhotoPage((p) => (p === 0 ? totalPhotoPages - 1 : p - 1))
+    }
+    const goToNextPhotoPage = () => {
+        setPhotoDirection('next')
+        setPhotoPage((p) => (p + 1) % totalPhotoPages)
+    }
 
     return (
         <SiteLayout title="Media">
@@ -217,35 +300,28 @@ export default function Media() {
                     <div className="flex items-center gap-3 md:gap-4">
                         <CarouselArrowButton
                             direction="prev"
-                            onClick={() =>
-                                setPhotoPage((p) =>
-                                    p === 0 ? totalPhotoPages - 1 : p - 1,
-                                )
-                            }
+                            onClick={goToPrevPhotoPage}
                         />
-                        <div
-                            key={photoPage}
-                            className="grid flex-1 grid-cols-3 grid-rows-3 gap-3 auto-rows-[120px] animate-in fade-in duration-500 md:gap-4 md:auto-rows-[180px] lg:auto-rows-[210px]"
-                        >
+                        <div className="grid flex-1 grid-cols-3 gap-3 auto-rows-[100px] md:gap-4 md:auto-rows-[150px] lg:auto-rows-[175px]">
                             {visiblePhotos.map((src, i) => (
-                                <div
-                                    key={`${photoPage}-${src}`}
-                                    className={`relative overflow-hidden rounded-md bg-gray-200 shadow-sm ${photoMosaicPositions[i]}`}
-                                >
-                                    <img
-                                        src={encodeURI(src)}
-                                        alt="VDO photograph"
-                                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                                        loading="lazy"
-                                    />
-                                </div>
+                                <PhotoTile
+                                    key={i}
+                                    src={src}
+                                    direction={photoDirection}
+                                    delay={i * 90}
+                                    position={photoMosaicPositions[i]}
+                                />
                             ))}
                         </div>
                         <CarouselArrowButton
                             direction="next"
-                            onClick={() =>
-                                setPhotoPage((p) => (p + 1) % totalPhotoPages)
-                            }
+                            onClick={goToNextPhotoPage}
+                        />
+                        <img
+                            src="/svg/Missed%20Icons/Media/01.svg"
+                            alt=""
+                            aria-hidden="true"
+                            className="ml-2 hidden h-12 w-auto select-none opacity-80 md:block lg:h-14"
                         />
                     </div>
                 </div>

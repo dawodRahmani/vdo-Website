@@ -28,7 +28,7 @@ export default function AuthSimpleLayout({
                         >
                             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white p-2 shadow-md">
                                 <img
-                                    src="/images/logo.png"
+                                    src="/svg/logo.png"
                                     alt="VDO Logo"
                                     className="h-full w-full object-contain"
                                 />

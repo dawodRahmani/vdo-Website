@@ -159,7 +159,7 @@ export default function Header() {
                 {/* Logo sits outside nav container */}
                 <Link href="/" className="flex-shrink-0">
                     <img
-                        src="/images/logo.png"
+                        src="/svg/logo.png"
                         alt="VDO Vision"
                         className="h-16 w-auto object-contain md:h-[72px]"
                     />

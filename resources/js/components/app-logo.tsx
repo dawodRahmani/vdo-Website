@@ -3,7 +3,7 @@ export default function AppLogo() {
         <>
             <div className="flex items-center">
                 <img
-                    src="/images/logo.png"
+                    src="/svg/logo.png"
                     alt="VDO Logo"
                     className="h-8 w-auto object-contain"
                 />

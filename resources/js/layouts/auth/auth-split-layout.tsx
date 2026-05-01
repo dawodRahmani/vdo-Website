@@ -24,7 +24,7 @@ export default function AuthSplitLayout({
                     className="relative z-20 flex items-center gap-2 text-lg font-medium"
                 >
                     <img
-                        src="/images/logo.png"
+                        src="/svg/logo.png"
                         alt="VDO Logo"
                         className="h-10 w-auto object-contain"
                     />
@@ -50,7 +50,7 @@ export default function AuthSplitLayout({
                         className="relative z-20 flex items-center justify-center lg:hidden"
                     >
                         <img
-                            src="/images/logo.png"
+                            src="/svg/logo.png"
                             alt="VDO Logo"
                             className="h-10 w-auto object-contain sm:h-12"
                         />

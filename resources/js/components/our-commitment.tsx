@@ -4,18 +4,18 @@ interface CommitmentItem {
 }
 
 const items: CommitmentItem[] = [
-    { title: 'Inclusivity', svg: '/svg/Home Page/14.svg' },
-    { title: 'Accountability to Affected People', svg: '/svg/Home Page/15.svg' },
-    { title: 'Humanitarian Principles', svg: '/svg/Home Page/16.svg' },
-    { title: 'Impact & Sustainability', svg: '/svg/Home Page/17.svg' },
-    { title: 'Prevention from Aid Diversion', svg: '/svg/Home Page/18.svg' },
+    { title: 'Inclusivity', svg: '/svg/Missed Icons/Home page/14.svg' },
+    { title: 'Accountability to Affected People', svg: '/svg/Missed Icons/Home page/15.svg' },
+    { title: 'Humanitarian Principles', svg: '/svg/Missed Icons/Home page/16.svg' },
+    { title: 'Impact & Sustainability', svg: '/svg/Missed Icons/Home page/17.svg' },
+    { title: 'Prevention from Aid Diversion', svg: '/svg/Missed Icons/Home page/18.svg' },
 ]
 
 export default function OurCommitment() {
     return (
-        <section className="bg-gray-100 py-12 md:py-16">
+        <section className="bg-gray-100 py-10 md:py-12">
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
-                <h2 className="mb-10 text-center text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
+                <h2 className="mb-8 text-left text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                     Our Commitment:
                 </h2>
 
@@ -25,14 +25,14 @@ export default function OurCommitment() {
                         {items.map((item) => (
                             <div
                                 key={item.title}
-                                className="flex flex-col items-center px-2 text-center"
+                                className="flex flex-col items-center px-1 text-center"
                             >
                                 <img
                                     src={item.svg}
                                     alt={item.title}
                                     className="h-10 w-10 object-contain"
                                 />
-                                <p className="mt-3 text-xs font-medium leading-snug text-[rgb(62,64,149)] md:text-sm">
+                                <p className="mt-2 whitespace-nowrap text-[10px] font-medium leading-snug text-[rgb(62,64,149)] md:text-[9px] lg:text-xs">
                                     {item.title}
                                 </p>
                             </div>
@@ -40,15 +40,24 @@ export default function OurCommitment() {
                     </div>
 
                     {/* Dotted timeline with square markers */}
-                    <div className="relative mt-6 hidden md:block">
-                        <div className="absolute inset-x-0 top-1/2 border-t-2 border-dotted border-[rgb(0,175,239)]" />
+                    <div className="relative mt-2 hidden md:block">
+                        <div
+                            className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2"
+                            style={{
+                                backgroundImage:
+                                    'radial-gradient(circle, rgb(0,175,239) 1px, transparent 1px)',
+                                backgroundSize: '10px 2px',
+                                backgroundRepeat: 'repeat-x',
+                                backgroundPosition: 'center',
+                            }}
+                        />
                         <div className="relative grid grid-cols-5">
                             {items.map((item) => (
                                 <div
                                     key={item.title}
                                     className="flex justify-center"
                                 >
-                                    <span className="h-2.5 w-2.5 bg-[rgb(0,175,239)]" />
+                                    <span className="h-2 w-2 border border-[rgb(0,175,239)] bg-white" />
                                 </div>
                             ))}
                         </div>

@@ -1,4 +1,4 @@
-import { Calendar, Award, Globe, Users } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 
 const milestones = [
     {
@@ -29,22 +29,22 @@ const milestones = [
 
 const memberships = [
     {
-        icon: Award,
-        title: 'ACBAR',
-        description:
-            'Steering Committee Member and currently Chairperson (2025–2026 term)',
-    },
-    {
-        icon: Globe,
         title: 'UN Humanitarian Country Team (HCT)',
         description:
-            'Elected member, representing national NGO voices and elected for 3 years in 3 consecutive terms',
+            'Elected member, representing national NGO voices and elected for 3 years in 3 consecutive terms.',
+        gradient: { from: '#3e4095', to: '#9395c4' },
     },
     {
-        icon: Users,
+        title: 'ACBAR',
+        description:
+            'Steering Committee Member and currently Chairperson (2025–2026 term).',
+        gradient: { from: '#00afef', to: '#7fd6f6' },
+    },
+    {
         title: 'Strategic Working Groups',
         description:
-            'Active participation across protection, education, and humanitarian coordination platforms',
+            'Active participation across protection, education, and humanitarian coordination platforms.',
+        gradient: { from: '#5cc8f3', to: '#bce6fa' },
     },
 ]
 
@@ -130,25 +130,61 @@ export default function HistorySection() {
                         bodies:
                     </p>
 
-                    <div className="grid gap-6 md:grid-cols-3">
-                        {memberships.map((membership, index) => (
-                            <div
-                                key={index}
-                                className="rounded-lg border border-gray-100 bg-gray-50 p-6 text-center transition-shadow hover:shadow-md"
-                            >
-                                <div className="mb-4 flex justify-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[rgb(62,64,149)]">
-                                        <membership.icon className="h-6 w-6 text-white" />
-                                    </div>
+                    <div className="relative pt-2">
+                        {/* Horizontal dotted line connecting the pins (md+ only) */}
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute left-[16.67%] right-[16.67%] top-[66px] hidden border-t-2 border-dotted border-gray-300 md:block"
+                        />
+
+                        <div className="grid gap-y-14 md:grid-cols-3 md:gap-x-6 md:gap-y-0">
+                            {memberships.map((m, i) => (
+                                <div
+                                    key={i}
+                                    className="flex flex-col items-center text-center"
+                                >
+                                    {/* Balloon pin */}
+                                    <svg
+                                        width="40"
+                                        height="56"
+                                        viewBox="0 0 40 56"
+                                        className="block drop-shadow-sm"
+                                        aria-hidden="true"
+                                    >
+                                        <defs>
+                                            <linearGradient
+                                                id={`pin-grad-${i}`}
+                                                x1="0%"
+                                                y1="0%"
+                                                x2="0%"
+                                                y2="100%"
+                                            >
+                                                <stop
+                                                    offset="0%"
+                                                    stopColor={m.gradient.from}
+                                                />
+                                                <stop
+                                                    offset="100%"
+                                                    stopColor={m.gradient.to}
+                                                />
+                                            </linearGradient>
+                                        </defs>
+                                        <path
+                                            d="M20 0 C 32 0, 40 9, 40 20 C 40 31, 32 42, 22 50 L 20 52 L 18 50 C 8 42, 0 31, 0 20 C 0 9, 8 0, 20 0 Z"
+                                            fill={`url(#pin-grad-${i})`}
+                                        />
+                                    </svg>
+
+                                    {/* Dot sitting on the dotted line */}
+                                    <div className="relative z-10 mt-1 h-3 w-3 rounded-full border-2 border-gray-400 bg-white" />
+
+                                    {/* Text — block centered under the pin, lines centered inside */}
+                                    <p className="mx-auto mt-4 max-w-[240px] text-center text-sm leading-relaxed text-gray-700">
+                                        {m.title} – {m.description}
+                                    </p>
                                 </div>
-                                <h4 className="mb-2 font-bold text-[rgb(62,64,149)]">
-                                    {membership.title}
-                                </h4>
-                                <p className="text-sm text-gray-600">
-                                    {membership.description}
-                                </p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

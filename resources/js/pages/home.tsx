@@ -10,7 +10,7 @@ export default function Home() {
         <>
             <Head title="Home" />
 
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-gray-100 shadow-[inset_0_10px_12px_-6px_rgba(0,0,0,0.18),inset_0_-10px_12px_-6px_rgba(0,0,0,0.18)]">
                 <Header />
 
                 <HeroFirstSection />

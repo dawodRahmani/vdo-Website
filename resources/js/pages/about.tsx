@@ -1,5 +1,6 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
+import CoordinationDiagram from '@/components/about/coordination-diagram'
 
 const photos = [
     {
@@ -48,7 +49,7 @@ export default function About() {
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
-                            src="/svg/About Us/01.svg"
+                            src="/svg/Missed Icons/About Us/01.svg"
                             alt=""
                             className="mt-1 h-10 w-10 flex-shrink-0 md:h-12 md:w-12"
                         />
@@ -74,7 +75,7 @@ export default function About() {
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
-                            src="/svg/About Us/02.svg"
+                            src="/svg/Missed Icons/About Us/02.svg"
                             alt=""
                             className="mt-1 h-10 w-10 flex-shrink-0 md:h-12 md:w-12"
                         />
@@ -98,40 +99,9 @@ export default function About() {
                             coordination bodies:
                         </p>
 
-                        {/* Coordination bodies diagram + labels */}
+                        {/* Coordination bodies diagram */}
                         <div className="mx-auto max-w-4xl">
-                            <div className="flex justify-center">
-                                <img
-                                    src="/svg/About Us/03.svg"
-                                    alt="VDO coordination bodies and leadership roles"
-                                    className="h-auto w-full"
-                                />
-                            </div>
-
-                            <div className="mt-6 grid grid-cols-1 gap-6 text-center md:grid-cols-3 md:gap-8">
-                                <p className="text-sm leading-relaxed text-gray-700">
-                                    <span className="font-semibold text-[rgb(62,64,149)]">
-                                        UN Humanitarian Country Team (HCT)
-                                    </span>{' '}
-                                    – Elected member, representing national NGO
-                                    voices and elected for 3 years in 3
-                                    consecutive terms.
-                                </p>
-                                <p className="text-sm leading-relaxed text-gray-700">
-                                    <span className="font-semibold text-[rgb(0,175,239)]">
-                                        ACBAR
-                                    </span>{' '}
-                                    – Steering Committee Member and currently
-                                    Chairperson (2025–2026 term).
-                                </p>
-                                <p className="text-sm leading-relaxed text-gray-700">
-                                    <span className="font-semibold text-gray-500">
-                                        Strategic working groups and clusters
-                                    </span>{' '}
-                                    – across protection, education, and
-                                    humanitarian coordination platforms.
-                                </p>
-                            </div>
+                            <CoordinationDiagram />
                         </div>
 
                         <p className="mt-10 text-sm leading-relaxed text-gray-700 md:text-[15px]">
@@ -149,7 +119,7 @@ export default function About() {
                     {/* Mission */}
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
-                            src="/svg/About Us/04.svg"
+                            src="/svg/Missed Icons/About Us/03.svg"
                             alt=""
                             className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
                         />
@@ -173,7 +143,7 @@ export default function About() {
                     {/* Vision */}
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
-                            src="/svg/About Us/05.svg"
+                            src="/svg/Missed Icons/About Us/04.svg"
                             alt=""
                             className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
                         />
@@ -190,7 +160,7 @@ export default function About() {
                     {/* Looking Ahead */}
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
-                            src="/svg/About Us/06.svg"
+                            src="/svg/Missed Icons/About Us/05.svg"
                             alt=""
                             className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
                         />

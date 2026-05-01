@@ -14,13 +14,13 @@ const priorityAreas: PriorityArea[] = [
 ]
 
 const regionRows = [
-    { region: 'Central Region:', province: 'Kabul (main office)', dotColor: '#E74C3C' },
-    { region: 'Northeastern Region:', province: 'Badakhshan', dotColor: '#E74C3C' },
-    { region: 'Northern Region:', province: 'Kunduz', dotColor: '#E74C3C' },
-    { region: 'Northwestern Region:', province: 'Faryab', dotColor: '#E74C3C' },
-    { region: 'Eastern Region:', province: 'Jalalabad', dotColor: '#E74C3C' },
-    { region: 'Western Region:', province: 'Herat', dotColor: '#E74C3C' },
-    { region: 'Southern Region:', province: 'Qandahar', dotColor: '#F1C40F' },
+    { region: 'Central Region:', province: 'Kabul (main office)', dotColor: '#3E4095' },
+    { region: 'Northeastern Region:', province: 'Badakhshan', dotColor: '#F58634' },
+    { region: 'Northern Region:', province: 'Kunduz', dotColor: '#A53692' },
+    { region: 'Northwestern Region:', province: 'Faryab', dotColor: '#84716B' },
+    { region: 'Eastern Region:', province: 'Jalalabad', dotColor: '#A8CF45' },
+    { region: 'Western Region:', province: 'Herat', dotColor: '#00A859' },
+    { region: 'Southern Region:', province: 'Qandahar', dotColor: '#FFCC29' },
 ]
 
 const newsItems = [

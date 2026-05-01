@@ -26,7 +26,7 @@ export default function AuthCardLayout({
                     className="flex items-center gap-2 self-center font-medium"
                 >
                     <img
-                        src="/images/logo.png"
+                        src="/svg/logo.png"
                         alt="VDO Logo"
                         className="h-12 w-auto object-contain"
                     />

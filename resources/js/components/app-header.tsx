@@ -128,7 +128,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 </SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
                                     <img
-                                        src="/images/logo.png"
+                                        src="/svg/logo.png"
                                         alt="VDO Logo"
                                         className="h-8 w-auto object-contain"
                                     />
