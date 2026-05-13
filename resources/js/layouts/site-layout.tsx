@@ -14,7 +14,7 @@ export default function SiteLayout({
     return (
         <>
             <Head title={title} />
-            <div className="flex min-h-screen flex-col bg-gray-50 shadow-[inset_0_10px_12px_-6px_rgba(0,0,0,0.18),inset_0_-10px_12px_-6px_rgba(0,0,0,0.18)]">
+            <div className="flex min-h-screen flex-col bg-[rgb(189,191,193)] shadow-[inset_0_10px_12px_-6px_rgba(0,0,0,0.18),inset_0_-10px_12px_-6px_rgba(0,0,0,0.18)]">
                 <Header />
                 <main className="flex-1">{children}</main>
                 <SiteFooter />

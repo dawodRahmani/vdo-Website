@@ -1,27 +1,39 @@
-import HomeAfghanistanMap from '@/components/home-afghanistan-map'
+import HomeAfghanistanMap from '@/components/home-afghanistan-map';
+import { Link } from '@inertiajs/react';
 
 interface PriorityArea {
-    title: string
-    svg: string
+    title: string;
+    svg: string;
+    href: string;
 }
 
 const priorityAreas: PriorityArea[] = [
-    { title: 'Education — 320,000', svg: '/svg/Home Page/09.svg' },
-    { title: 'Economic Growth — 760 Families', svg: '/svg/Home Page/10.svg' },
-    { title: 'Rural Development — 218 Areas', svg: '/svg/Home Page/11.svg' },
-    { title: 'Health and Nutrition — 18,000', svg: '/svg/Home Page/12.svg' },
-    { title: 'Emergency Response — 135,400', svg: '/svg/Home Page/13.svg' },
-]
-
-const regionRows = [
-    { region: 'Central Region:', province: 'Kabul (main office)', dotColor: '#3E4095' },
-    { region: 'Northeastern Region:', province: 'Badakhshan', dotColor: '#F58634' },
-    { region: 'Northern Region:', province: 'Kunduz', dotColor: '#A53692' },
-    { region: 'Northwestern Region:', province: 'Faryab', dotColor: '#84716B' },
-    { region: 'Eastern Region:', province: 'Jalalabad', dotColor: '#A8CF45' },
-    { region: 'Western Region:', province: 'Herat', dotColor: '#00A859' },
-    { region: 'Southern Region:', province: 'Qandahar', dotColor: '#FFCC29' },
-]
+    {
+        title: 'Education — 610,000 Community Members',
+        svg: '/Home Page/06.svg',
+        href: '/strategic-priorities/education',
+    },
+    {
+        title: 'Economic Growth — 760 Family & Businesses',
+        svg: '/Home Page/07.svg',
+        href: '/strategic-priorities/economic-growth',
+    },
+    {
+        title: 'Rural Development — 32,100',
+        svg: '/Home Page/08.svg',
+        href: '/strategic-priorities/rural-development',
+    },
+    {
+        title: 'Health and Nutrition — 960,515 Individuals',
+        svg: '/Home Page/09.svg',
+        href: '/strategic-priorities/health-and-nutrition',
+    },
+    {
+        title: 'Emergency Response — 418,400 Individuals',
+        svg: '/Home Page/10.svg',
+        href: '/strategic-priorities/emergency-response',
+    },
+];
 
 const newsItems = [
     {
@@ -36,12 +48,12 @@ const newsItems = [
         date: 'Apr 05, 2026',
         image: '/Header and Gallary Photos/11.jpg',
     },
-]
+];
 
 export default function HomeSecondSection() {
     return (
         <section
-            className="relative bg-gray-100 pb-10 pt-2 md:pb-14 md:pt-4"
+            className="relative bg-gray-100 pt-2 pb-10 md:pt-4 md:pb-14"
             style={{
                 backgroundImage: 'url(/svg/Map.svg)',
                 backgroundSize: 'cover',
@@ -65,56 +77,43 @@ export default function HomeSecondSection() {
 
                     {/* Row 1 — Right: Strategic Priority Areas */}
                     <div>
-                        <h2 className="mb-4 text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
-                            Strategic Priority Areas:
+                        <h2 className="mb-4 text-xl font-extrabold whitespace-nowrap text-[rgb(0,175,239)] md:text-2xl">
+                            Strategic Priority Areas &amp; Reached
+                            Beneficiaries:
                         </h2>
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-6">
                             {priorityAreas.map((area, index) => {
                                 const cardSpanClass =
                                     index < 3
                                         ? 'col-span-1 md:col-span-2'
-                                        : 'col-span-1 md:col-span-3'
+                                        : 'col-span-1 md:col-span-3';
                                 return (
-                                    <div
+                                    <Link
                                         key={area.title}
-                                        className={`${cardSpanClass} overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-md`}
+                                        href={area.href}
+                                        prefetch
+                                        className={`${cardSpanClass} block overflow-hidden rounded-xl shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md`}
                                     >
                                         <img
-                                            src={area.svg}
+                                            src={encodeURI(area.svg)}
                                             alt={area.title}
                                             className="h-full w-full object-contain"
+                                            loading="lazy"
                                         />
-                                    </div>
-                                )
+                                    </Link>
+                                );
                             })}
                         </div>
                     </div>
 
                     {/* Row 2 — Left: Regions + Provinces */}
-                    <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 text-sm">
-                        <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-[rgb(0,175,239)]">
-                            Regions
-                        </h3>
-                        <h3 className="mb-2 text-xs font-bold uppercase tracking-widest text-[rgb(0,175,239)]">
-                            Provinces
-                        </h3>
-                        {regionRows.map((row) => (
-                            <div
-                                key={row.region}
-                                className="contents"
-                            >
-                                <div className="flex items-center gap-2 text-[rgb(0,175,239)]">
-                                    <span
-                                        className="h-2 w-2 flex-shrink-0 rounded-full"
-                                        style={{ backgroundColor: row.dotColor }}
-                                    />
-                                    {row.region}
-                                </div>
-                                <div className="font-semibold text-[rgb(0,175,239)]">
-                                    {row.province}
-                                </div>
-                            </div>
-                        ))}
+                    <div>
+                        <img
+                            src="/Home Page/11.svg"
+                            alt="Regions and Provinces: Central (Kabul main office), Northeastern (Badakhshan), Northern (Kunduz), Northwestern (Faryab), Eastern (Jalalabad), Western (Herat), Southern (Qandahar)"
+                            className="h-auto w-full"
+                            loading="lazy"
+                        />
                     </div>
 
                     {/* Row 2 — Right: Latest News & Announcements */}
@@ -133,10 +132,11 @@ export default function HomeSecondSection() {
                                             src={encodeURI(item.image)}
                                             alt={item.title}
                                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
                                         />
                                     </div>
                                     <div className="p-3">
-                                        <h4 className="line-clamp-2 text-xs font-semibold leading-snug text-[rgb(62,64,149)] group-hover:text-[rgb(0,175,239)]">
+                                        <h4 className="line-clamp-2 text-xs leading-snug font-semibold text-[rgb(62,64,149)] group-hover:text-[rgb(0,175,239)]">
                                             {item.title}
                                         </h4>
                                     </div>
@@ -147,5 +147,5 @@ export default function HomeSecondSection() {
                 </div>
             </div>
         </section>
-    )
+    );
 }

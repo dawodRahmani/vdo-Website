@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
-import { ChevronDown, Menu, Search, User, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, Menu, Search, User, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
     Sheet,
@@ -12,7 +12,8 @@ import { login } from '@/routes'
 
 interface NavChild {
     title: string
-    href: string
+    href?: string
+    items?: NavChild[]
 }
 
 interface NavItem {
@@ -49,19 +50,20 @@ const navItems: NavItem[] = [
             },
             {
                 title: 'Target Group',
-                href: '/strategic-priorities/target-group',
-            },
-            {
-                title: "VDO's Secondary Beneficiaries",
-                href: '/strategic-priorities/secondary-beneficiaries',
-            },
-            {
-                title: 'Tertiary Audience',
-                href: '/strategic-priorities/tertiary-audience',
-            },
-            {
-                title: "VDO's Contribution Project",
-                href: '/strategic-priorities/contribution-project',
+                items: [
+                    {
+                        title: "VDO's Primary Beneficiaries",
+                        href: '/strategic-priorities/target-group',
+                    },
+                    {
+                        title: "VDO's Secondary Beneficiaries",
+                        href: '/strategic-priorities/secondary-beneficiaries',
+                    },
+                    {
+                        title: 'Tertiary Audience',
+                        href: '/strategic-priorities/tertiary-audience',
+                    },
+                ],
             },
         ],
     },
@@ -142,7 +144,14 @@ function useIsActive() {
 
 export default function Header() {
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
+    const [drawerExpanded, setDrawerExpanded] = useState<Set<string>>(new Set())
+    const toggleDrawerExpanded = (key: string) =>
+        setDrawerExpanded((prev) => {
+            const next = new Set(prev)
+            if (next.has(key)) next.delete(key)
+            else next.add(key)
+            return next
+        })
     const [searchOpen, setSearchOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [openMenu, setOpenMenu] = useState<string | null>(null)
@@ -150,7 +159,7 @@ export default function Header() {
 
     const closeDrawer = () => {
         setDrawerOpen(false)
-        setDrawerExpanded(null)
+        setDrawerExpanded(new Set())
     }
 
     return (
@@ -245,31 +254,90 @@ export default function Header() {
                                                                 'visible opacity-100',
                                                         )}
                                                     >
-                                                        <ul className="min-w-[260px] overflow-hidden rounded-md bg-[rgba(0,175,239,0.92)] text-sm text-white shadow-xl backdrop-blur-sm">
+                                                        <ul className="min-w-[260px] rounded-md bg-[rgba(0,175,239,0.92)] text-sm text-white shadow-xl backdrop-blur-sm">
                                                             {item.items!.map(
-                                                                (sub) => (
-                                                                    <li
-                                                                        key={
-                                                                            sub.title
-                                                                        }
-                                                                    >
-                                                                        <Link
-                                                                            href={
-                                                                                sub.href
-                                                                            }
-                                                                            onClick={() =>
-                                                                                setOpenMenu(
-                                                                                    null,
-                                                                                )
-                                                                            }
-                                                                            className="block px-4 py-2 transition-colors hover:bg-white/15"
-                                                                        >
-                                                                            {
+                                                                (sub) => {
+                                                                    const hasSubChildren =
+                                                                        !!sub
+                                                                            .items
+                                                                            ?.length
+                                                                    return (
+                                                                        <li
+                                                                            key={
                                                                                 sub.title
                                                                             }
-                                                                        </Link>
-                                                                    </li>
-                                                                ),
+                                                                            className="group/sub relative"
+                                                                        >
+                                                                            {sub.href ? (
+                                                                                <Link
+                                                                                    href={
+                                                                                        sub.href
+                                                                                    }
+                                                                                    onClick={() =>
+                                                                                        setOpenMenu(
+                                                                                            null,
+                                                                                        )
+                                                                                    }
+                                                                                    className="flex items-center justify-between gap-2 px-4 py-2 transition-colors hover:bg-white/15"
+                                                                                >
+                                                                                    <span>
+                                                                                        {
+                                                                                            sub.title
+                                                                                        }
+                                                                                    </span>
+                                                                                    {hasSubChildren && (
+                                                                                        <ChevronRight className="h-3.5 w-3.5" />
+                                                                                    )}
+                                                                                </Link>
+                                                                            ) : (
+                                                                                <div className="flex items-center justify-between gap-2 px-4 py-2 transition-colors hover:bg-white/15">
+                                                                                    <span>
+                                                                                        {
+                                                                                            sub.title
+                                                                                        }
+                                                                                    </span>
+                                                                                    {hasSubChildren && (
+                                                                                        <ChevronRight className="h-3.5 w-3.5" />
+                                                                                    )}
+                                                                                </div>
+                                                                            )}
+                                                                            {hasSubChildren && (
+                                                                                <div className="invisible absolute left-full top-0 z-50 pl-1 opacity-0 transition-all duration-150 group-hover/sub:visible group-hover/sub:opacity-100">
+                                                                                    <ul className="min-w-[260px] overflow-hidden rounded-md bg-[rgba(0,175,239,0.92)] text-sm text-white shadow-xl backdrop-blur-sm">
+                                                                                        {sub.items!.map(
+                                                                                            (
+                                                                                                leaf,
+                                                                                            ) => (
+                                                                                                <li
+                                                                                                    key={
+                                                                                                        leaf.title
+                                                                                                    }
+                                                                                                >
+                                                                                                    <Link
+                                                                                                        href={
+                                                                                                            leaf.href ??
+                                                                                                            '#'
+                                                                                                        }
+                                                                                                        onClick={() =>
+                                                                                                            setOpenMenu(
+                                                                                                                null,
+                                                                                                            )
+                                                                                                        }
+                                                                                                        className="block px-4 py-2 transition-colors hover:bg-white/15"
+                                                                                                    >
+                                                                                                        {
+                                                                                                            leaf.title
+                                                                                                        }
+                                                                                                    </Link>
+                                                                                                </li>
+                                                                                            ),
+                                                                                        )}
+                                                                                    </ul>
+                                                                                </div>
+                                                                            )}
+                                                                        </li>
+                                                                    )
+                                                                },
                                                             )}
                                                         </ul>
                                                     </div>
@@ -373,7 +441,7 @@ export default function Header() {
                                     ? isActive(item.href)
                                     : false
                                 const hasChildren = !!item.items?.length
-                                const expanded = drawerExpanded === item.title
+                                const expanded = drawerExpanded.has(item.title)
                                 const itemClass = cn(
                                     'flex-1 rounded px-3 py-2 text-left text-sm font-medium text-white transition-colors hover:bg-white/10',
                                     active &&
@@ -394,10 +462,8 @@ export default function Header() {
                                                 <button
                                                     type="button"
                                                     onClick={() =>
-                                                        setDrawerExpanded(
-                                                            expanded
-                                                                ? null
-                                                                : item.title,
+                                                        toggleDrawerExpanded(
+                                                            item.title,
                                                         )
                                                     }
                                                     aria-expanded={expanded}
@@ -410,10 +476,8 @@ export default function Header() {
                                                 <button
                                                     type="button"
                                                     onClick={() =>
-                                                        setDrawerExpanded(
-                                                            expanded
-                                                                ? null
-                                                                : item.title,
+                                                        toggleDrawerExpanded(
+                                                            item.title,
                                                         )
                                                     }
                                                     aria-label="Expand submenu"
@@ -432,17 +496,107 @@ export default function Header() {
                                         </div>
                                         {hasChildren && expanded && (
                                             <ul className="ml-4 border-l border-white/20 pl-2">
-                                                {item.items!.map((sub) => (
-                                                    <li key={sub.title}>
-                                                        <Link
-                                                            href={sub.href}
-                                                            className="block rounded px-3 py-1.5 text-xs text-white/90 transition-colors hover:bg-white/10"
-                                                            onClick={closeDrawer}
-                                                        >
-                                                            {sub.title}
-                                                        </Link>
-                                                    </li>
-                                                ))}
+                                                {item.items!.map((sub) => {
+                                                    const subKey = `${item.title}::${sub.title}`
+                                                    const hasSubChildren =
+                                                        !!sub.items?.length
+                                                    const subExpanded =
+                                                        drawerExpanded.has(
+                                                            subKey,
+                                                        )
+                                                    return (
+                                                        <li key={sub.title}>
+                                                            <div className="flex items-center">
+                                                                {sub.href ? (
+                                                                    <Link
+                                                                        href={
+                                                                            sub.href
+                                                                        }
+                                                                        className="flex-1 rounded px-3 py-1.5 text-xs text-white/90 transition-colors hover:bg-white/10"
+                                                                        onClick={
+                                                                            closeDrawer
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            sub.title
+                                                                        }
+                                                                    </Link>
+                                                                ) : (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            toggleDrawerExpanded(
+                                                                                subKey,
+                                                                            )
+                                                                        }
+                                                                        aria-expanded={
+                                                                            subExpanded
+                                                                        }
+                                                                        className="flex-1 rounded px-3 py-1.5 text-left text-xs text-white/90 transition-colors hover:bg-white/10"
+                                                                    >
+                                                                        {
+                                                                            sub.title
+                                                                        }
+                                                                    </button>
+                                                                )}
+                                                                {hasSubChildren && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            toggleDrawerExpanded(
+                                                                                subKey,
+                                                                            )
+                                                                        }
+                                                                        aria-label="Expand submenu"
+                                                                        aria-expanded={
+                                                                            subExpanded
+                                                                        }
+                                                                        className="rounded p-1.5 text-white/90 transition-colors hover:bg-white/10"
+                                                                    >
+                                                                        <ChevronDown
+                                                                            className={cn(
+                                                                                'h-3.5 w-3.5 transition-transform',
+                                                                                subExpanded &&
+                                                                                    'rotate-180',
+                                                                            )}
+                                                                        />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                            {hasSubChildren &&
+                                                                subExpanded && (
+                                                                    <ul className="ml-4 border-l border-white/20 pl-2">
+                                                                        {sub.items!.map(
+                                                                            (
+                                                                                leaf,
+                                                                            ) => (
+                                                                                <li
+                                                                                    key={
+                                                                                        leaf.title
+                                                                                    }
+                                                                                >
+                                                                                    <Link
+                                                                                        href={
+                                                                                            leaf.href ??
+                                                                                            '#'
+                                                                                        }
+                                                                                        className="block rounded px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10"
+                                                                                        onClick={
+                                                                                            closeDrawer
+                                                                                        }
+                                                                                    >
+                                                                                        {
+                                                                                            leaf.title
+                                                                                        }
+                                                                                    </Link>
+                                                                                </li>
+                                                                            ),
+                                                                        )}
+                                                                    </ul>
+                                                                )}
+                                                        </li>
+                                                    )
+                                                })}
                                             </ul>
                                         )}
                                     </li>

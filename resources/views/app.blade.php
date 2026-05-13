@@ -30,7 +30,7 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'VDO') }}</title>
 
         <link rel="icon" href="/svg/logo.png" type="image/png">
         <link rel="apple-touch-icon" href="/svg/logo.png">

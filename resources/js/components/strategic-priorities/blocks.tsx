@@ -216,15 +216,25 @@ export function MapPlaceholder({
     )
 }
 
-export function PageSection({ children }: { children: React.ReactNode }) {
+export function PageSection({
+    children,
+    showMap = true,
+}: {
+    children: React.ReactNode
+    showMap?: boolean
+}) {
     return (
         <section className="bg-gray-100 pb-14">
             <div
                 className="mx-auto max-w-[1240px] space-y-6 bg-center bg-no-repeat px-6 py-8 md:px-10 lg:px-14"
-                style={{
-                    backgroundImage: "url('/svg/Map.svg')",
-                    backgroundSize: 'contain',
-                }}
+                style={
+                    showMap
+                        ? {
+                              backgroundImage: "url('/svg/Map.svg')",
+                              backgroundSize: 'contain',
+                          }
+                        : undefined
+                }
             >
                 {children}
             </div>

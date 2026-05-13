@@ -14,11 +14,11 @@ const photos = [
 ]
 
 const stats: { svg: string; label: string }[] = [
-    { svg: '/svg/Home Page/01.svg', label: 'Regions' },
-    { svg: '/svg/Home Page/02.svg', label: 'Live Impact' },
-    { svg: '/svg/Home Page/03.svg', label: 'Implemented Projects' },
-    { svg: '/svg/Home Page/04.svg', label: 'Active Projects' },
-    { svg: '/svg/Home Page/05.svg', label: 'Years of Experience' },
+    { svg: '/Home Page/01.svg', label: 'Regions' },
+    { svg: '/Home Page/02.svg', label: 'Lives Impact' },
+    { svg: '/Home Page/03.svg', label: 'Implemented Projects' },
+    { svg: '/Home Page/04.svg', label: 'Active Projects' },
+    { svg: '/Home Page/05.svg', label: 'Years of Service' },
 ]
 
 export default function HeroFirstSection() {
@@ -59,11 +59,8 @@ export default function HeroFirstSection() {
                                         <img
                                             src={stat.svg}
                                             alt={stat.label}
-                                            className="h-9 w-auto md:h-11"
+                                            className="h-14 w-auto md:h-16 lg:h-20"
                                         />
-                                        <span className="mt-1.5 text-[11px] font-medium leading-tight text-[rgb(0,175,239)] md:text-xs">
-                                            {stat.label}
-                                        </span>
                                     </li>
                                 ))}
                             </ul>

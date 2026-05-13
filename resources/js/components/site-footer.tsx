@@ -1,6 +1,6 @@
-import { Heart, Undo2 } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { ComponentType, FormEvent, SVGProps, useState } from 'react'
-import { Link, usePage } from '@inertiajs/react'
+import { Link } from '@inertiajs/react'
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -37,16 +37,30 @@ function YouTubeIcon(props: IconProps) {
 }
 
 const socials: { Icon: ComponentType<IconProps>; href: string; label: string }[] = [
-    { Icon: FacebookIcon, href: '#', label: 'Facebook' },
-    { Icon: TwitterIcon, href: '#', label: 'X' },
-    { Icon: LinkedInIcon, href: '#', label: 'LinkedIn' },
-    { Icon: YouTubeIcon, href: '#', label: 'YouTube' },
+    {
+        Icon: FacebookIcon,
+        href: 'https://www.facebook.com/profile.php?id=61554735623328',
+        label: 'Facebook',
+    },
+    {
+        Icon: TwitterIcon,
+        href: 'https://twitter.com/vdoafg',
+        label: 'X',
+    },
+    {
+        Icon: LinkedInIcon,
+        href: 'https://www.linkedin.com/in/vision-development-organization-4169362a7/',
+        label: 'LinkedIn',
+    },
+    {
+        Icon: YouTubeIcon,
+        href: 'https://www.youtube.com/channel/UCxW1GenM8SeBrumZzKY4wsQ',
+        label: 'YouTube',
+    },
 ]
 
 export default function SiteFooter() {
     const [email, setEmail] = useState('')
-    const { url } = usePage()
-    const isHome = url === '/'
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -58,24 +72,6 @@ export default function SiteFooter() {
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <div className="rounded-md bg-[rgb(0,175,239)] px-6 py-6 text-white md:px-8">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
-                        {/* Back to Home Page */}
-                        {!isHome && (
-                            <Link
-                                href="/"
-                                className="flex flex-col items-start self-start text-white transition-opacity hover:opacity-80 lg:self-end lg:pb-1"
-                            >
-                                <Undo2
-                                    className="h-5 w-5"
-                                    strokeWidth={2.25}
-                                />
-                                <span className="mt-0.5 text-[10px] font-semibold leading-tight">
-                                    Back to
-                                    <br />
-                                    Home Page
-                                </span>
-                            </Link>
-                        )}
-
                         {/* Newsletter */}
                         <div className="flex-1">
                             <h3 className="mb-3 text-base font-semibold">
@@ -119,6 +115,8 @@ export default function SiteFooter() {
                                         <a
                                             key={label}
                                             href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             aria-label={label}
                                             className="flex h-8 w-9 items-center justify-center bg-white text-gray-500 transition-colors hover:text-gray-700"
                                         >

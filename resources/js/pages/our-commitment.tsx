@@ -1,5 +1,13 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
+import { Paperclip } from 'lucide-react'
+
+const publications = [
+    { title: 'Project Final Report', cover: '/Header and Gallary Photos/P1.jpg' },
+    { title: 'Guide Book', cover: '/Header and Gallary Photos/P2.jpg' },
+    { title: 'Project Conclusion Report', cover: '/Header and Gallary Photos/P3.jpg' },
+    { title: 'Annual Booklet 2023', cover: '/Header and Gallary Photos/P4.jpg' },
+]
 
 const photos = [
     { src: '/Header and Gallary Photos/07.jpg', alt: 'Inclusive programs' },
@@ -7,82 +15,116 @@ const photos = [
     { src: '/Header and Gallary Photos/19.jpg', alt: 'Safeguarding and dignity' },
 ]
 
-interface CommitmentCard {
+interface CommitmentItem {
     id: string
     title: string
-    svg: string
+    body: string[]
 }
 
-const cards: CommitmentCard[] = [
-    { id: 'inclusivity', title: 'Inclusivity', svg: '/svg/Our Commitment/01.svg' },
+const commitments: CommitmentItem[] = [
     {
-        id: 'accountability',
-        title: 'Accountability to Affected Population',
-        svg: '/svg/Our Commitment/02.svg',
+        id: 'gender-equality',
+        title: "Gender Equality & Women's Empowerment",
+        body: [
+            'VDO promotes equal opportunities, leadership, participation, and access to services for women and girls across all programs and operations.',
+            'We prioritize women-led approaches that strengthen dignity, resilience, economic participation, and decision-making power within communities.',
+        ],
     },
-    { id: 'safeguarding', title: 'Safeguarding', svg: '/svg/Our Commitment/03.svg' },
-    { id: 'psea', title: 'PSEA', svg: '/svg/Our Commitment/04.svg' },
+    {
+        id: 'safeguarding-pseah',
+        title: 'Safeguarding, PSEAH & Child Protection',
+        body: [
+            'VDO maintains a zero-tolerance approach toward sexual exploitation, abuse, harassment, and all forms of violence against children and vulnerable individuals.',
+            'Safeguarding principles are integrated across all activities to ensure safe, respectful, and accountable humanitarian and development programming.',
+        ],
+    },
+    {
+        id: 'aap',
+        title: 'Accountability to Affected People (AAP)',
+        body: [
+            'VDO ensures that communities are informed, consulted, and actively engaged throughout the project cycle.',
+            'Feedback and complaint mechanisms are established to strengthen transparency, participation, and community trust.',
+        ],
+    },
+    {
+        id: 'do-no-harm',
+        title: 'Do No Harm & Conflict Sensitivity',
+        body: [
+            'VDO designs and implements programs in ways that minimize risks, avoid unintended harm, and strengthen social cohesion.',
+            'We apply conflict-sensitive approaches that respect local dynamics, cultural contexts, and community relationships.',
+        ],
+    },
+    {
+        id: 'protection-mainstreaming',
+        title: 'Protection Mainstreaming',
+        body: [
+            'Protection considerations are integrated across all sectors to ensure safe, dignified, and equitable access to assistance and services.',
+            'Special attention is given to vulnerable groups facing heightened risks, exclusion, or protection concerns.',
+        ],
+    },
+    {
+        id: 'inclusion-pwd',
+        title: 'Inclusion of Persons with Disabilities',
+        body: [
+            'VDO promotes disability-inclusive programming by reducing barriers to participation, access, and representation.',
+            'We work to ensure that persons with disabilities can safely and meaningfully engage in all interventions and community processes.',
+        ],
+    },
+    {
+        id: 'environmental-sustainability',
+        title: 'Environmental Sustainability & Climate Sensitivity',
+        body: [
+            'VDO integrates environmentally responsible and climate-resilient approaches across humanitarian and development programming.',
+            'We promote sustainable resource management, climate adaptation, and community resilience to environmental shocks.',
+        ],
+    },
+    {
+        id: 'localization',
+        title: 'Localization & Community Ownership',
+        body: [
+            'VDO believes that sustainable change is achieved through locally led and community-driven approaches.',
+            'We strengthen local capacities, partnerships, and participation to ensure long-term ownership and impact.',
+        ],
+    },
+    {
+        id: 'data-protection',
+        title: 'Data Protection & Ethical Information Management',
+        body: [
+            'VDO is committed to the safe, confidential, and ethical management of personal and organizational data.',
+            'Data collection, storage, sharing, and reporting processes follow protection, privacy, and accountability principles.',
+        ],
+    },
     {
         id: 'anti-fraud',
-        title: 'Anti-Fraud Transparency',
-        svg: '/svg/Our Commitment/05.svg',
+        title: 'Anti-Fraud, Anti-Corruption & Aid Diversion Protection',
+        body: [
+            'VDO applies strong compliance, financial control, and risk management systems to prevent fraud, corruption, and aid diversion.',
+            'Transparency, accountability, and ethical conduct are enforced across all organizational operations and partnerships.',
+        ],
     },
     {
-        id: 'effectiveness',
-        title: 'Effectiveness and Efficiency',
-        svg: '/svg/Our Commitment/06.svg',
+        id: 'meal',
+        title: 'MEAL & Evidence-Based Programming',
+        body: [
+            'VDO promotes Monitoring, Evaluation, Accountability, and Learning (MEAL) systems to improve program quality and effectiveness.',
+            'Evidence, community feedback, and lessons learned are used to guide adaptive and impact-driven programming.',
+        ],
     },
     {
-        id: 'impact',
-        title: 'Impact and Sustainability',
-        svg: '/svg/Our Commitment/07.svg',
-    },
-    {
-        id: 'aid-diversion',
-        title: 'Prevention from Aid Diversion',
-        svg: '/svg/Our Commitment/08.svg',
-    },
-    {
-        id: 'humanitarian-principles',
-        title: 'Humanitarian Principles',
-        svg: '/svg/Our Commitment/09.svg',
+        id: 'edi',
+        title: 'Equity, Diversity & Inclusion (EDI)',
+        body: [
+            'VDO values diversity and promotes equitable participation regardless of gender, age, disability, ethnicity, or background.',
+            'We foster inclusive environments that respect dignity, representation, and equal opportunity for all.',
+        ],
     },
 ]
 
-function SectionTitle({ id, title }: { id: string; title: string }) {
-    return (
-        <h2
-            id={id}
-            className="scroll-mt-24 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl"
-        >
-            {title}
-        </h2>
-    )
-}
-
-function Body({ children }: { children: React.ReactNode }) {
-    return (
-        <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
-            {children}
-        </p>
-    )
-}
-
-function Bullets({ items }: { items: string[] }) {
-    return (
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-700 md:text-[15px]">
-            {items.map((item, i) => (
-                <li key={i}>{item}</li>
-            ))}
-        </ul>
-    )
-}
-
-function Divider() {
-    return (
-        <hr className="my-10 border-t border-dashed border-[rgb(0,175,239)]/40" />
-    )
-}
+const cards = commitments.map((c, i) => ({
+    id: c.id,
+    title: c.title,
+    svg: `/svg/Our Commitment/C${i + 1}.svg`,
+}))
 
 export default function OurCommitmentPage() {
     return (
@@ -99,25 +141,108 @@ export default function OurCommitmentPage() {
                 }}
             >
 
-            {/* 9-card grid */}
+            {/* Commitments + Form / Publications */}
             <section className="pb-4 pt-6">
-                <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                        {cards.map((card) => (
-                            <a
-                                key={card.id}
-                                href={`#${card.id}`}
-                                aria-label={card.title}
-                                className="block"
+                <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-8 px-6 md:px-10 lg:grid-cols-2 lg:gap-12 lg:px-14">
+                    {/* Left: Commitments grid + Make a Report form */}
+                    <div>
+                        <h2 className="mb-4 text-lg font-semibold text-[rgb(62,64,149)] md:text-xl">
+                            Commitments:
+                        </h2>
+                        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4">
+                            {cards.map((card) => (
+                                <a
+                                    key={card.id}
+                                    href={`#${card.id}`}
+                                    aria-label={card.title}
+                                    className="block transition-transform hover:-translate-y-0.5"
+                                >
+                                    <img
+                                        src={card.svg}
+                                        alt={card.title}
+                                        className="mx-auto h-auto w-full max-w-[150px] object-contain"
+                                        draggable={false}
+                                    />
+                                </a>
+                            ))}
+                        </div>
+
+                        {/* Make a Report form */}
+                        <div className="mt-8">
+                            <h3 className="mb-3 text-base font-semibold text-[rgb(62,64,149)] md:text-lg">
+                                Make a Report:
+                            </h3>
+                            <form
+                                onSubmit={(e) => e.preventDefault()}
+                                className="space-y-3"
                             >
-                                <img
-                                    src={card.svg}
-                                    alt={card.title}
-                                    className="h-full w-full object-contain"
-                                    draggable={false}
-                                />
-                            </a>
-                        ))}
+                                <div className="flex items-center gap-3">
+                                    <label
+                                        htmlFor="report-subject"
+                                        className="w-20 text-sm text-gray-700"
+                                    >
+                                        Subject:
+                                    </label>
+                                    <input
+                                        id="report-subject"
+                                        type="text"
+                                        className="flex-1 rounded border-0 bg-[rgb(189,191,193)]/40 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[rgb(0,175,239)]/40"
+                                    />
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <label
+                                        htmlFor="report-comment"
+                                        className="w-20 pt-1.5 text-sm text-gray-700"
+                                    >
+                                        Comment:
+                                    </label>
+                                    <textarea
+                                        id="report-comment"
+                                        rows={5}
+                                        className="flex-1 resize-none rounded border-0 bg-[rgb(189,191,193)]/40 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[rgb(0,175,239)]/40"
+                                    />
+                                </div>
+                                <div className="flex items-center justify-end gap-3 pl-20">
+                                    <button
+                                        type="button"
+                                        className="flex items-center gap-2 rounded border-0 bg-[rgb(189,191,193)]/40 px-4 py-1.5 text-sm text-gray-700 transition-colors hover:bg-[rgb(189,191,193)]/60"
+                                    >
+                                        Attachment
+                                        <Paperclip className="h-4 w-4 text-[rgb(0,175,239)]" />
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="rounded border-0 bg-[rgb(189,191,193)]/40 px-6 py-1.5 text-sm text-gray-700 transition-colors hover:bg-[rgb(189,191,193)]/60"
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {/* Right: Publications (title aligned with Commitments, images end at form) */}
+                    <div>
+                        <h2 className="mb-4 text-lg font-semibold text-[rgb(62,64,149)] md:text-xl">
+                            Publications:
+                        </h2>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            {publications.map((pub) => (
+                                <div
+                                    key={pub.title}
+                                    className="mx-auto w-full max-w-[180px] rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md"
+                                >
+                                    <div className="aspect-[3/4] w-full overflow-hidden bg-white">
+                                        <img
+                                            src={encodeURI(pub.cover)}
+                                            alt={pub.title}
+                                            className="h-full w-full object-contain"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -125,383 +250,31 @@ export default function OurCommitmentPage() {
             {/* Detailed sections */}
             <section className="pb-14">
                 <div className="mx-auto max-w-[1240px] px-6 py-8 md:px-10 lg:px-14">
-                    {/* Inclusivity */}
-                    <div>
-                        <SectionTitle id="inclusivity" title="Inclusivity:" />
-                        <h3 className="mt-2 text-sm font-bold text-gray-900 md:text-base">
-                            Promoting Inclusivity
-                        </h3>
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is committed to fostering inclusive
-                                development that leaves no one behind. The
-                                organization ensures that all programs consider
-                                the needs of marginalized and vulnerable groups,
-                                including women, girls, people with
-                                disabilities, youth, and other underserved
-                                populations. By promoting equal access to
-                                education, economic opportunities, health
-                                services, and safe community spaces, VDO
-                                empowers every individual to participate fully
-                                in social, economic, and civic life, creating
-                                more equitable and resilient communities.
-                            </Body>
-                            <Body>
-                                Inclusivity is embedded in every aspect of VDO's
-                                work—from program design and implementation to
-                                monitoring and evaluation—ensuring that
-                                interventions are accessible, culturally
-                                sensitive, and responsive to the unique needs of
-                                diverse communities. VDO actively engages
-                                community members in decision-making processes,
-                                encourages their voices to be heard, and works
-                                to break down barriers to participation. By
-                                championing inclusivity, VDO not only addresses
-                                immediate inequalities but also fosters
-                                long-term empowerment, social cohesion, and
-                                sustainable development across all regions
-                                where it operates.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Accountability */}
-                    <div>
-                        <SectionTitle
-                            id="accountability"
-                            title="Accountability to Affected Population:"
-                        />
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is committed to ensuring that crisis-affected
-                                people are informed, heard, included, and
-                                respected. Accountability to Affected Populations
-                                is central to our mandate and guides how
-                                communities shape our programs and decisions.
-                            </Body>
-                            <p className="text-sm font-semibold text-[rgb(62,64,149)]">
-                                Our commitment includes:
-                            </p>
-                            <Bullets
-                                items={[
-                                    'Transparent information-sharing on services, criteria, and entitlements',
-                                    'Meaningful community participation throughout the program cycle',
-                                    'Safe, confidential, and accessible feedback and complaint channels',
-                                    'Timely response and resolution of all feedback',
-                                    'Protection of complainants and strict non-retaliation',
-                                    'Inclusive engagement of women, persons with disabilities, minorities, and marginalized groups',
-                                ]}
-                            />
-                            <Body>
-                                For VDO, AAP is both a responsibility and a
-                                moral obligation. We strive to build trust-based
-                                relationships and ensure our assistance is
-                                relevant, safe, dignified, and accountable to
-                                the people we serve.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Safeguarding */}
-                    <div>
-                        <SectionTitle id="safeguarding" title="Safeguarding:" />
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is fully committed to preventing and
-                                responding to harm through its Safeguarding
-                                Policy, which protects children, adults at
-                                risk, and all community members. The
-                                organization has established clear prevention,
-                                reporting, and response mechanisms, ensuring
-                                that safeguarding responsibilities apply to all
-                                staff, volunteers, and partners. By enforcing
-                                strict policies and providing training on
-                                ethical standards, VDO prevents exploitation,
-                                abuse, harassment, and any form of harm,
-                                creating a safe, respectful, and protective
-                                environment. Safeguarding is central to VDO's
-                                work, ensuring that all beneficiaries—especially
-                                women, children, and vulnerable
-                                individuals—are treated with dignity, protected
-                                from risk, and empowered to raise their voices
-                                without fear. These measures underpin safe and
-                                dignified programming across all of VDO's
-                                initiatives, reinforcing the organization's
-                                commitment to integrity, care, and
-                                accountability in every interaction.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* PSEA */}
-                    <div>
-                        <SectionTitle id="psea" title="PSEA:" />
-                        <h3 className="mt-2 text-sm font-bold text-gray-900 md:text-base">
-                            VDO's Commitment to Zero Tolerance to PSEA
-                        </h3>
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO upholds a strict Zero Tolerance Policy
-                                toward Sexual Exploitation, Abuse, and Sexual
-                                Harassment (PSEAH). Protecting the dignity,
-                                rights, and safety of all
-                                individuals—especially those in vulnerable
-                                contexts—is central to our mission.
-                            </Body>
-                            <Body>
-                                VDO requires all staff, volunteers, contractors,
-                                and partners to adhere to the highest standards
-                                of conduct. Any form of exploitation, abuse, or
-                                harassment is prohibited and will result in
-                                immediate investigation and appropriate
-                                disciplinary or legal action.
-                            </Body>
-                            <p className="text-sm font-semibold text-[rgb(62,64,149)]">
-                                Our commitments include:
-                            </p>
-                            <Bullets
-                                items={[
-                                    'Mandatory PSEA training for all personnel',
-                                    'Signed Codes of Conduct and PSEA declarations',
-                                    'Safe, confidential, and accessible reporting channels',
-                                    'Survivor-centered response and protection',
-                                    'Rigorous vetting of staff and partners',
-                                    'Continuous monitoring of PSEA risks',
-                                ]}
-                            />
-                            <Body>
-                                VDO's leadership is dedicated to maintaining a
-                                safe, respectful, and accountable environment,
-                                ensuring that zero tolerance is upheld in both
-                                policy and practice.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Anti-Fraud Transparency */}
-                    <div>
-                        <SectionTitle
-                            id="anti-fraud"
-                            title="Anti-Fraud Transparency:"
-                        />
-                        <h3 className="mt-2 text-sm font-bold text-gray-900 md:text-base">
-                            Commitment to Anti-Fraud and Transparency
-                        </h3>
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is fully committed to maintaining the
-                                highest standards of integrity, transparency,
-                                and accountability in all its operations. The
-                                organization enforces a zero-tolerance policy
-                                for fraud and corruption, with clear measures
-                                for prevention, detection, and response. All
-                                staff, volunteers, and partners are accountable
-                                for upholding these standards, and confidential
-                                reporting mechanisms are in place to ensure
-                                concerns can be raised safely and effectively.
-                                Through these policies, VDO protects its
-                                organizational integrity, ensures responsible
-                                use of resources, and fosters trust with
-                                beneficiaries, partners, and stakeholders.
-                                Transparency and ethical conduct are central to
-                                VDO's mission, reinforcing its commitment to
-                                delivering programs with honesty, fairness, and
-                                accountability.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Effectiveness and Efficiency */}
-                    <div>
-                        <SectionTitle
-                            id="effectiveness"
-                            title="Effectiveness and Efficiency:"
-                        />
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is committed to delivering programs that
-                                are both effective and efficient, ensuring that
-                                resources are used responsibly to achieve
-                                meaningful impact. Through careful planning,
-                                evidence-based approaches, and continuous
-                                monitoring and evaluation, the organization
-                                maximizes the outcomes of its interventions
-                                while minimizing waste and duplication. VDO
-                                prioritizes results-driven strategies, adaptive
-                                management, and collaboration with partners and
-                                communities to ensure that every initiative
-                                delivers tangible benefits. By combining
-                                strategic planning, operational excellence, and
-                                accountability, VDO strengthens its ability to
-                                respond to community needs, improve livelihoods,
-                                and create sustainable, lasting change.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Impact and Sustainability */}
-                    <div>
-                        <SectionTitle
-                            id="impact"
-                            title="Impact and Sustainability:"
-                        />
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                VDO is dedicated to creating lasting impact by
-                                designing programs that not only address
-                                immediate needs but also foster long-term,
-                                sustainable change. The organization focuses on
-                                empowering communities, building local
-                                capacities, and promoting resilient systems that
-                                continue to thrive beyond project timelines. By
-                                integrating community participation,
-                                evidence-based approaches, and strategic
-                                partnerships, VDO ensures that interventions
-                                are relevant, scalable, and adaptable to
-                                evolving challenges. Through this commitment,
-                                VDO strengthens livelihoods, enhances access to
-                                education and health services, and supports
-                                inclusive development—leaving a sustainable
-                                legacy of positive change in the communities it
-                                serves.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Prevention from Aid Diversion */}
-                    <div>
-                        <SectionTitle
-                            id="aid-diversion"
-                            title="Prevention from Aid Diversion:"
-                        />
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                Vision Development Organization (VDO) is
-                                dedicated to ensuring that all humanitarian and
-                                development assistance reaches the intended
-                                individuals fairly and transparently. Aid
-                                diversion in any form undermines community
-                                trust and harms the vulnerable populations we
-                                serve.
-                            </Body>
-                            <Body>
-                                To safeguard integrity across our programs, VDO
-                                has established strong systems to prevent,
-                                detect, and address risks of diversion,
-                                including:
-                            </Body>
-                            <Bullets
-                                items={[
-                                    'Transparent targeting and beneficiary selection',
-                                    'Secure cash, voucher, and verification controls',
-                                    'GPS-based monitoring, distribution oversight, and spot checks',
-                                    'Anti-fraud measures, whistleblowing channels, and CFRM systems',
-                                    'Rigorous supplier and partner due diligence',
-                                    'Clear segregation of duties across core functions',
-                                ]}
-                            />
-                            <Body>
-                                VDO upholds a strict zero-tolerance policy for
-                                aid diversion. Any misuse, manipulation, or
-                                interference triggers immediate investigation
-                                and corrective action. Through robust controls
-                                and ethical leadership, we ensure that every
-                                resource entrusted to VDO reaches those who
-                                need it most.
-                            </Body>
-                            <Body>
-                                In case of any suspected diversion or misuse of
-                                aid, please use the link below to confidentially
-                                share information with us or contact our
-                                designated hotline.
-                            </Body>
-                        </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Humanitarian Principles */}
-                    <div>
-                        <SectionTitle
-                            id="humanitarian-principles"
-                            title="Humanitarian Principles:"
-                        />
-                        <h3 className="mt-2 text-sm font-bold text-gray-900 md:text-base">
-                            1. Commitment to humanitarian principle:
-                        </h3>
-                        <div className="mt-3 space-y-4">
-                            <Body>
-                                Vision Development Organization (VDO) is firmly
-                                committed to the Humanitarian Principles of{' '}
-                                <strong className="text-[rgb(62,64,149)]">
-                                    Humanity, Neutrality, Impartiality, and
-                                    Independence
-                                </strong>
-                                . These principles guide every aspect of our
-                                work and are essential for maintaining trust,
-                                protecting humanitarian space, and ensuring
-                                that assistance reaches those who need it most
-                                in Afghanistan's complex context without
-                                discrimination, bias, or influence from
-                                political, ethnic, or social interests.
-                            </Body>
-                        </div>
-
-                        <div className="mt-4 space-y-4">
-                            {[
-                                {
-                                    title: 'Humanity:',
-                                    body: 'VDO is dedicated to alleviating human suffering wherever it is found. We strive to protect life, uphold dignity, and ensure that our programs respond to the real needs and priorities of affected populations. Humanity is the driving force behind our mission and the cornerstone of our work.',
-                                },
-                                {
-                                    title: 'Neutrality:',
-                                    body: 'VDO does not take sides in political, ethnic, religious, or ideological conflicts. By remaining neutral, we preserve our ability to access communities impartially and deliver assistance without interference or bias. Neutrality enables VDO to maintain credibility and acceptance among all stakeholders.',
-                                },
-                                {
-                                    title: 'Impartiality:',
-                                    body: 'VDO delivers assistance based solely on assessed needs, without discrimination based on gender, ethnicity, religion, age, disability, political affiliation, or social status. We prioritize the most vulnerable and ensure that resources are distributed fairly and transparently, guided strictly by humanitarian need.',
-                                },
-                                {
-                                    title: 'Independence:',
-                                    body: 'VDO maintains full autonomy over its humanitarian objectives, ensuring that our work is not influenced by political, military, economic, or external agendas. Our decisions are driven by evidence, needs assessments, and the best interests of affected communities.',
-                                },
-                            ].map((p) => (
-                                <div key={p.title}>
-                                    <h4 className="text-sm font-bold text-[rgb(62,64,149)] md:text-base">
-                                        {p.title}
-                                    </h4>
-                                    <p className="mt-1 text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
-                                        {p.body}
-                                    </p>
+                    {commitments.map((c, i) => (
+                        <div key={c.id}>
+                            <div
+                                id={c.id}
+                                className="scroll-mt-24 pt-2"
+                            >
+                                <h2 className="text-base font-semibold text-[rgb(62,64,149)] md:text-lg">
+                                    {c.title}:
+                                </h2>
+                                <div className="mt-2 space-y-1">
+                                    {c.body.map((line, j) => (
+                                        <p
+                                            key={j}
+                                            className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]"
+                                        >
+                                            {line}
+                                        </p>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
+                            {i < commitments.length - 1 && (
+                                <hr className="my-6 border-0 border-t border-dashed border-[rgb(0,175,239)]" />
+                            )}
                         </div>
-
-                        <div className="mt-4">
-                            <Body>
-                                These principles define VDO's identity as a
-                                trusted and principled organization. VDO
-                                Management is committed to upholding them
-                                across all programs, departments, and
-                                operations to ensure ethical, transparent, and
-                                effective humanitarian action.
-                            </Body>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </section>
             </div>

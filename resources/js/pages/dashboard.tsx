@@ -71,8 +71,8 @@ export default function Dashboard() {
                                     Diagrams · Education Donut
                                 </h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Edit the education target-group donut on
-                                    the Education page — labels, percentages,
+                                    Edit the education target-group donut on the
+                                    Education page — labels, percentages,
                                     colors.
                                 </p>
                             </div>

@@ -2,7 +2,6 @@ import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
 import { TrendingUp } from 'lucide-react'
 import {
-    Bullets,
     PageSection,
     Paragraph,
     WorldMapBackdrop,
@@ -96,14 +95,26 @@ export default function EconomicGrowth() {
                     </div>
 
                     <div className="pt-16 md:pt-20">
-                        <Bullets
-                            items={[
-                                'Multiple women-owned small businesses launched and sustained.',
-                                'Youth employed through career placement support.',
-                                'Women with disabilities supported through home-based livelihoods.',
-                                'Increase Income improvement validated by post-training assessments.',
-                            ]}
-                        />
+                        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700 md:text-[15px]">
+                            {[
+                                'Supporting women-owned businesses and inclusive entrepreneurship initiatives.',
+                                'Promoting sustainable livelihoods and income generation for youth, women, returnees, refugees, and IDPs.',
+                                'Strengthening job placement, employability, and private sector engagement opportunities.',
+                                'Expanding disability-inclusive and home-based livelihood support initiatives.',
+                                'Building climate-resilient and market-driven economic empowerment programs.',
+                                'Enhancing economic resilience through skills development, enterprise support, and workforce readiness initiatives.',
+                            ].map((item, i) => (
+                                <li key={i} className="flex gap-2">
+                                    <span
+                                        aria-hidden="true"
+                                        className="font-semibold text-[rgb(0,175,239)]"
+                                    >
+                                        -
+                                    </span>
+                                    <span>{item}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </PageSection>

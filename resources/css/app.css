@@ -159,42 +159,52 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Photo gallery crossfade transitions */
-@keyframes photo-crossfade-from-right {
-    from {
-        opacity: 0;
-        transform: translate3d(24px, 0, 0) scale(1.04);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
+/* Photo gallery push (PowerPoint-style) transitions */
+@keyframes photo-slide-in-from-right {
+    from { transform: translate3d(100%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes photo-crossfade-from-left {
-    from {
-        opacity: 0;
-        transform: translate3d(-24px, 0, 0) scale(1.04);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
+@keyframes photo-slide-in-from-left {
+    from { transform: translate3d(-100%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
 }
 
-.photo-crossfade-right {
-    animation: photo-crossfade-from-right 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-    will-change: transform, opacity;
+@keyframes photo-slide-out-to-left {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-100%, 0, 0); }
 }
 
-.photo-crossfade-left {
-    animation: photo-crossfade-from-left 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-    will-change: transform, opacity;
+@keyframes photo-slide-out-to-right {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(100%, 0, 0); }
+}
+
+.photo-slide-in-right {
+    animation: photo-slide-in-from-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
+}
+
+.photo-slide-in-left {
+    animation: photo-slide-in-from-left 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
+}
+
+.photo-slide-out-left {
+    animation: photo-slide-out-to-left 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
+}
+
+.photo-slide-out-right {
+    animation: photo-slide-out-to-right 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .photo-crossfade-right,
-    .photo-crossfade-left {
+    .photo-slide-in-right,
+    .photo-slide-in-left,
+    .photo-slide-out-left,
+    .photo-slide-out-right {
         animation: none;
     }
 }
