@@ -1,11 +1,36 @@
 import { Head } from '@inertiajs/react'
 import Header from '@/components/header'
-import HeroFirstSection from '@/components/hero-first-section'
-import HomeSecondSection from '@/components/home-second-section'
-import OurCommitment from '@/components/our-commitment'
+import HeroFirstSection, {
+    type HeroPhoto,
+    type ImpactStat,
+} from '@/components/hero-first-section'
+import HomeSecondSection, {
+    type LatestNewsItem,
+    type PriorityArea,
+    type RegionsImage,
+} from '@/components/home-second-section'
+import OurCommitment, {
+    type CommitmentItem,
+} from '@/components/our-commitment'
 import SiteFooter from '@/components/site-footer'
 
-export default function Home() {
+interface HomeProps {
+    heroPhotos?: HeroPhoto[]
+    impactStats?: ImpactStat[]
+    priorityAreas?: PriorityArea[]
+    homeCommitments?: CommitmentItem[]
+    latestNews?: LatestNewsItem[]
+    regionsImage?: RegionsImage
+}
+
+export default function Home({
+    heroPhotos,
+    impactStats,
+    priorityAreas,
+    homeCommitments,
+    latestNews,
+    regionsImage,
+}: HomeProps) {
     return (
         <>
             <Head title="Home" />
@@ -13,11 +38,18 @@ export default function Home() {
             <div className="min-h-screen bg-gray-100 shadow-[inset_0_10px_12px_-6px_rgba(0,0,0,0.18),inset_0_-10px_12px_-6px_rgba(0,0,0,0.18)]">
                 <Header />
 
-                <HeroFirstSection />
+                <HeroFirstSection
+                    heroPhotos={heroPhotos}
+                    impactStats={impactStats}
+                />
 
-                <HomeSecondSection />
+                <HomeSecondSection
+                    priorityAreas={priorityAreas}
+                    latestNews={latestNews}
+                    regionsImage={regionsImage}
+                />
 
-                <OurCommitment />
+                <OurCommitment commitments={homeCommitments} />
 
                 <SiteFooter />
             </div>

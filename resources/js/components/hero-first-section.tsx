@@ -1,4 +1,16 @@
-const photos = [
+export interface HeroPhoto {
+    src: string
+    alt: string
+}
+
+export interface ImpactStat {
+    id?: number
+    label: string
+    svg_url?: string
+    svg?: string
+}
+
+const defaultPhotos: HeroPhoto[] = [
     {
         src: '/Header and Gallary Photos/01.jpg',
         alt: 'Health and nutrition program',
@@ -13,7 +25,7 @@ const photos = [
     },
 ]
 
-const stats: { svg: string; label: string }[] = [
+const defaultStats: ImpactStat[] = [
     { svg: '/Home Page/01.svg', label: 'Regions' },
     { svg: '/Home Page/02.svg', label: 'Lives Impact' },
     { svg: '/Home Page/03.svg', label: 'Implemented Projects' },
@@ -21,15 +33,30 @@ const stats: { svg: string; label: string }[] = [
     { svg: '/Home Page/05.svg', label: 'Years of Service' },
 ]
 
-export default function HeroFirstSection() {
+function statSrc(s: ImpactStat): string {
+    return s.svg_url || s.svg || ''
+}
+
+interface Props {
+    heroPhotos?: HeroPhoto[]
+    impactStats?: ImpactStat[]
+}
+
+export default function HeroFirstSection({ heroPhotos, impactStats }: Props) {
+    const photos =
+        heroPhotos && heroPhotos.length === 3 && heroPhotos.every((p) => p.src)
+            ? heroPhotos
+            : defaultPhotos
+    const stats = impactStats && impactStats.length > 0 ? impactStats : defaultStats
+
     return (
         <section className="bg-gray-100 pb-6 pt-3 md:pb-8">
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 {/* 3-image strip */}
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-1">
-                    {photos.map((photo) => (
+                    {photos.map((photo, i) => (
                         <div
-                            key={photo.src}
+                            key={`${photo.src}-${i}`}
                             className="relative aspect-[16/10] overflow-hidden md:aspect-[16/9]"
                         >
                             <img
@@ -53,11 +80,11 @@ export default function HeroFirstSection() {
                             <ul className="flex flex-nowrap items-start gap-x-3 sm:gap-x-4 md:gap-x-6">
                                 {stats.map((stat) => (
                                     <li
-                                        key={stat.label}
+                                        key={stat.id ?? stat.label}
                                         className="flex min-w-0 flex-1 flex-col items-center text-center"
                                     >
                                         <img
-                                            src={stat.svg}
+                                            src={statSrc(stat)}
                                             alt={stat.label}
                                             className="h-14 w-auto md:h-16 lg:h-20"
                                         />

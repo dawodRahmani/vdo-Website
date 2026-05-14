@@ -30,6 +30,14 @@ class DatabaseSeeder extends Seeder
             MapPinSeeder::class,
             LeadershipRoleSeeder::class,
             EducationDonutSegmentSeeder::class,
+            HeroSectionSeeder::class,
+            DonationItemSeeder::class,
+            HomePageSeeder::class,
+            NewsPostSeeder::class,
+            MediaItemSeeder::class,
+            AboutPageSeeder::class,
+            ResilienceItemSeeder::class,
+            StrategicPrioritiesSeeder::class,
         ]);
     }
 }

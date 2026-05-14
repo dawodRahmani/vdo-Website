@@ -22,11 +22,25 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface SiteSettings {
+    logo_url: string | null;
+    contact_phone: string | null;
+    contact_email: string | null;
+    social_facebook_url: string | null;
+    social_twitter_url: string | null;
+    social_linkedin_url: string | null;
+    social_youtube_url: string | null;
+    newsletter_heading: string | null;
+    donate_button_text: string | null;
+    donate_button_url: string | null;
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    siteSettings: SiteSettings;
     [key: string]: unknown;
 }
 

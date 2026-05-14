@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -38,6 +39,8 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $settings = SiteSetting::current();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -46,6 +49,21 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'siteSettings' => [
+                'logo_url' => $settings->logoUrl(),
+                'contact_phone' => $settings->contact_phone,
+                'contact_email' => $settings->contact_email,
+                'social_facebook_url' => $settings->social_facebook_url,
+                'social_twitter_url' => $settings->social_twitter_url,
+                'social_linkedin_url' => $settings->social_linkedin_url,
+                'social_youtube_url' => $settings->social_youtube_url,
+                'newsletter_heading' => $settings->newsletter_heading,
+                'donate_button_text' => $settings->donate_button_text,
+                'donate_button_url' => $settings->donate_button_url,
+            ],
+            'flash' => [
+                'reportSent' => fn () => $request->session()->get('reportSent'),
+            ],
         ];
     }
 }

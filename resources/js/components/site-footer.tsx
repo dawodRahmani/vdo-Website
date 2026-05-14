@@ -1,6 +1,7 @@
 import { Heart } from 'lucide-react'
 import { ComponentType, FormEvent, SVGProps, useState } from 'react'
-import { Link } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
+import { type SharedData } from '@/types'
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -36,36 +37,29 @@ function YouTubeIcon(props: IconProps) {
     )
 }
 
-const socials: { Icon: ComponentType<IconProps>; href: string; label: string }[] = [
-    {
-        Icon: FacebookIcon,
-        href: 'https://www.facebook.com/profile.php?id=61554735623328',
-        label: 'Facebook',
-    },
-    {
-        Icon: TwitterIcon,
-        href: 'https://twitter.com/vdoafg',
-        label: 'X',
-    },
-    {
-        Icon: LinkedInIcon,
-        href: 'https://www.linkedin.com/in/vision-development-organization-4169362a7/',
-        label: 'LinkedIn',
-    },
-    {
-        Icon: YouTubeIcon,
-        href: 'https://www.youtube.com/channel/UCxW1GenM8SeBrumZzKY4wsQ',
-        label: 'YouTube',
-    },
-]
+interface SocialEntry {
+    Icon: ComponentType<IconProps>
+    label: string
+    url: string | null
+}
 
 export default function SiteFooter() {
+    const settings = usePage<SharedData>().props.siteSettings
     const [email, setEmail] = useState('')
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setEmail('')
     }
+
+    const socials: SocialEntry[] = (
+        [
+            { Icon: FacebookIcon, label: 'Facebook', url: settings.social_facebook_url },
+            { Icon: TwitterIcon, label: 'X', url: settings.social_twitter_url },
+            { Icon: LinkedInIcon, label: 'LinkedIn', url: settings.social_linkedin_url },
+            { Icon: YouTubeIcon, label: 'YouTube', url: settings.social_youtube_url },
+        ] satisfies SocialEntry[]
+    ).filter((s) => Boolean(s.url))
 
     return (
         <footer className="pb-6 pt-4">
@@ -75,7 +69,8 @@ export default function SiteFooter() {
                         {/* Newsletter */}
                         <div className="flex-1">
                             <h3 className="mb-3 text-base font-semibold">
-                                Sign up for our newsletter
+                                {settings.newsletter_heading ??
+                                    'Sign up for our newsletter'}
                             </h3>
                             <form onSubmit={handleSubmit}>
                                 <input
@@ -92,38 +87,56 @@ export default function SiteFooter() {
                         {/* Donate + Contact + Socials */}
                         <div className="flex flex-col items-stretch gap-3 lg:items-end">
                             <Link
-                                href="/donate"
+                                href={settings.donate_button_url ?? '/donate'}
                                 className="inline-flex w-full items-center justify-center gap-2 rounded-md border-2 border-white px-10 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[rgb(0,175,239)] lg:w-auto lg:min-w-[260px]"
                             >
-                                Donate
+                                {settings.donate_button_text ?? 'Donate'}
                                 <Heart className="h-4 w-4" />
                             </Link>
 
                             <div className="flex flex-wrap items-center justify-start gap-3 text-sm lg:justify-end">
-                                <span className="font-semibold">Contact:</span>
-                                <span>+93 728 777 117</span>
-                                <span className="opacity-80">-</span>
-                                <a
-                                    href="mailto:communications@vdongo.org"
-                                    className="hover:underline"
-                                >
-                                    communications@vdongo.org
-                                </a>
+                                {(settings.contact_phone ||
+                                    settings.contact_email) && (
+                                    <>
+                                        <span className="font-semibold">
+                                            Contact:
+                                        </span>
+                                        {settings.contact_phone && (
+                                            <span>{settings.contact_phone}</span>
+                                        )}
+                                        {settings.contact_phone &&
+                                            settings.contact_email && (
+                                                <span className="opacity-80">
+                                                    -
+                                                </span>
+                                            )}
+                                        {settings.contact_email && (
+                                            <a
+                                                href={`mailto:${settings.contact_email}`}
+                                                className="hover:underline"
+                                            >
+                                                {settings.contact_email}
+                                            </a>
+                                        )}
+                                    </>
+                                )}
 
-                                <div className="flex items-center gap-1">
-                                    {socials.map(({ Icon, href, label }) => (
-                                        <a
-                                            key={label}
-                                            href={href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            aria-label={label}
-                                            className="flex h-8 w-9 items-center justify-center bg-white text-gray-500 transition-colors hover:text-gray-700"
-                                        >
-                                            <Icon className="h-5 w-5" />
-                                        </a>
-                                    ))}
-                                </div>
+                                {socials.length > 0 && (
+                                    <div className="flex items-center gap-1">
+                                        {socials.map(({ Icon, url, label }) => (
+                                            <a
+                                                key={label}
+                                                href={url as string}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={label}
+                                                className="flex h-8 w-9 items-center justify-center bg-white text-gray-500 transition-colors hover:text-gray-700"
+                                            >
+                                                <Icon className="h-5 w-5" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

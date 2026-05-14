@@ -9,6 +9,7 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet'
 import { login } from '@/routes'
+import { type SharedData } from '@/types'
 
 interface NavChild {
     title: string
@@ -142,6 +143,10 @@ function useIsActive() {
     return (href: string) => url === href || url.startsWith(`${href}/`)
 }
 
+function useSiteSettings() {
+    return usePage<SharedData>().props.siteSettings
+}
+
 export default function Header() {
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [drawerExpanded, setDrawerExpanded] = useState<Set<string>>(new Set())
@@ -156,6 +161,7 @@ export default function Header() {
     const [searchQuery, setSearchQuery] = useState('')
     const [openMenu, setOpenMenu] = useState<string | null>(null)
     const isActive = useIsActive()
+    const settings = useSiteSettings()
 
     const closeDrawer = () => {
         setDrawerOpen(false)
@@ -168,7 +174,7 @@ export default function Header() {
                 {/* Logo sits outside nav container */}
                 <Link href="/" className="flex-shrink-0">
                     <img
-                        src="/svg/logo.png"
+                        src={settings.logo_url ?? '/svg/logo.png'}
                         alt="VDO Vision"
                         className="h-16 w-auto object-contain md:h-[72px]"
                     />

@@ -7,26 +7,31 @@ import {
     SectionHeading,
     photos,
 } from '@/components/strategic-priorities/blocks'
+import {
+    pickBullets,
+    pickHeading,
+    type SpContent,
+} from '@/components/strategic-priorities/dynamic'
 
-export default function ContributionProject() {
+const defaultBullets = [
+    'Awareness raising of women, girls, and families on COVID-19, nutrition, and menstrual hygiene management in the North.',
+    'Training of frontline workers (CHW, Nutrition counsellors, mobile teams) on PSS.',
+    'Conduct 30 awareness-raising sessions on available nutrition services and provide training to nutrition partners on conducting safety audits.',
+    'Distribute dignity kits to vulnerable women and girls and establish women- and girls-friendly spaces near health centres for recreational activities and GBV awareness.',
+    'Through the Integrated Health–Nutrition–Immunization Project, VDO addressed vaccine misconceptions and promoted positive health behaviors, leading caregivers to better understand and accept immunization and nutrition services, improving child health outcomes in the East.',
+]
+
+export default function ContributionProject({ content }: { content?: SpContent }) {
+    const title = pickHeading(content?.heading, 'VDO Contribution Project:')
+    const items = pickBullets(content?.bullets, defaultBullets)
+
     return (
         <SiteLayout title="VDO's Contribution Project">
             <PhotoStrip photos={photos} />
 
             <PageSection>
-                <SectionHeading
-                    icon={CheckCircle2}
-                    title="VDO Contribution Project:"
-                />
-                <Bullets
-                    items={[
-                        'Awareness raising of women, girls, and families on COVID-19, nutrition, and menstrual hygiene management in the North.',
-                        'Training of frontline workers (CHW, Nutrition counsellors, mobile teams) on PSS.',
-                        'Conduct 30 awareness-raising sessions on available nutrition services and provide training to nutrition partners on conducting safety audits.',
-                        'Distribute dignity kits to vulnerable women and girls and establish women- and girls-friendly spaces near health centres for recreational activities and GBV awareness.',
-                        'Through the Integrated Health–Nutrition–Immunization Project, VDO addressed vaccine misconceptions and promoted positive health behaviors, leading caregivers to better understand and accept immunization and nutrition services, improving child health outcomes in the East.',
-                    ]}
-                />
+                <SectionHeading icon={CheckCircle2} title={title} />
+                <Bullets items={items} />
             </PageSection>
         </SiteLayout>
     )

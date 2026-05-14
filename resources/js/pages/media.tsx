@@ -9,41 +9,20 @@ const photos = [
     { src: '/Header and Gallary Photos/23.jpg', alt: 'Health services' },
 ]
 
-const documentaries = [
-    {
-        title: 'Integrated Health Service Program for Improved Community Well-...',
-    },
-    {
-        title: 'Strengthening Food Security Through Food Distribution Pro...',
-    },
-    {
-        title: 'Empowering Rural Women Through Vocational Training Initiat...',
-    },
-    {
-        title: 'Clean Water Access for Remote Villages in Northern Afghan...',
-    },
-    {
-        title: 'Education for All: Building Schools in Underserved Comm...',
-    },
-    {
-        title: 'Emergency Response and Disaster Relief Operations Doc...',
-    },
-]
+interface MediaItem {
+    id: number
+    kind: 'documentary' | 'photo' | 'publication'
+    title: string | null
+    image: string | null
+    image_url: string | null
+    video_url: string | null
+    order: number
+    is_active: boolean
+}
 
-const galleryPhotos = [
-    '/Header and Gallary Photos/G1.jpg',
-    '/Header and Gallary Photos/G2.jpg',
-    '/Header and Gallary Photos/G3.jpg',
-    '/Header and Gallary Photos/G4.jpg',
-    '/Header and Gallary Photos/G5.jpg',
-    '/Header and Gallary Photos/G6.jpg',
-    '/Header and Gallary Photos/G7.jpg',
-    '/Header and Gallary Photos/G8.jpg',
-    '/Header and Gallary Photos/G9.jpg',
-    '/Header and Gallary Photos/G10.jpg',
-    '/Header and Gallary Photos/G11.jpg',
-    '/Header and Gallary Photos/G12.jpg',
-]
+interface MediaProps {
+    items?: MediaItem[]
+}
 
 const photoMosaicPositions = [
     'col-start-1 row-start-1 row-span-2',
@@ -54,49 +33,6 @@ const photoMosaicPositions = [
     'col-start-2 row-start-3',
 ]
 const PHOTOS_PER_PAGE = 6
-
-const publications = [
-    {
-        title: 'Project Final Report',
-        cover: '/Header and Gallary Photos/P1.jpg',
-    },
-    {
-        title: 'Guide Book',
-        cover: '/Header and Gallary Photos/P2.jpg',
-    },
-    {
-        title: 'Project Conclusion Report',
-        cover: '/Header and Gallary Photos/P3.jpg',
-    },
-    {
-        title: 'Annual Booklet 2023',
-        cover: '/Header and Gallary Photos/P4.jpg',
-    },
-    {
-        title: 'Health Program Report',
-        cover: '/Header and Gallary Photos/P1.jpg',
-    },
-    {
-        title: 'Education Impact Study',
-        cover: '/Header and Gallary Photos/P2.jpg',
-    },
-    {
-        title: 'Annual Booklet 2022',
-        cover: '/Header and Gallary Photos/P3.jpg',
-    },
-    {
-        title: 'Field Operations Brief',
-        cover: '/Header and Gallary Photos/P4.jpg',
-    },
-    {
-        title: 'Annual Booklet 2021',
-        cover: '/Header and Gallary Photos/P1.jpg',
-    },
-    {
-        title: 'Community Outreach Report',
-        cover: '/Header and Gallary Photos/P2.jpg',
-    },
-]
 
 type PhotoLayer = { id: number; src: string; direction: 'next' | 'prev' }
 
@@ -231,10 +167,20 @@ function useHorizontalScroll() {
     }
 }
 
-export default function Media() {
+export default function Media({ items = [] }: MediaProps) {
     const docs = useHorizontalScroll()
     const pubs = useHorizontalScroll()
-    const totalPhotoPages = Math.ceil(galleryPhotos.length / PHOTOS_PER_PAGE)
+
+    const documentaries = items.filter((i) => i.kind === 'documentary')
+    const galleryPhotos = items
+        .filter((i) => i.kind === 'photo' && i.image_url)
+        .map((i) => i.image_url as string)
+    const publications = items.filter((i) => i.kind === 'publication')
+
+    const totalPhotoPages = Math.max(
+        1,
+        Math.ceil(galleryPhotos.length / PHOTOS_PER_PAGE),
+    )
     const [photoPage, setPhotoPage] = useState(0)
     const [photoDirection, setPhotoDirection] = useState<'next' | 'prev'>('next')
     const visiblePhotos = galleryPhotos.slice(
@@ -269,10 +215,10 @@ export default function Media() {
                         >
                             {documentaries.map((d) => (
                                 <div
-                                    key={d.title}
+                                    key={d.id}
                                     className="w-full flex-none snap-start md:w-[calc(50%-12px)]"
                                 >
-                                    <VideoCard title={d.title} />
+                                    <VideoCard title={d.title ?? ''} />
                                 </div>
                             ))}
                         </div>
@@ -339,31 +285,38 @@ export default function Media() {
                             ref={pubs.ref}
                             className="flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6"
                         >
-                            {publications.map((pub) => (
-                                <div
-                                    key={pub.title}
-                                    className="flex w-[55%] flex-none snap-start flex-col items-center sm:w-[32%] md:w-[calc(20%-19.2px)] lg:w-[calc(16.6666%-20px)]"
-                                >
-                                    <div className="w-full rounded-sm border border-dashed border-gray-400 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
-                                        <div className="aspect-[3/4] w-full overflow-hidden bg-white">
-                                            <img
-                                                src={encodeURI(pub.cover)}
-                                                alt={pub.title}
-                                                className="h-full w-full object-contain"
-                                                loading="lazy"
-                                            />
-                                        </div>
-                                    </div>
-                                    <a
-                                        href={encodeURI(pub.cover)}
-                                        download
-                                        aria-label={`Download ${pub.title}`}
-                                        className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
+                            {publications.map((pub) => {
+                                const cover = pub.image_url ?? ''
+                                return (
+                                    <div
+                                        key={pub.id}
+                                        className="flex w-[55%] flex-none snap-start flex-col items-center sm:w-[32%] md:w-[calc(20%-19.2px)] lg:w-[calc(16.6666%-20px)]"
                                     >
-                                        <Download className="h-6 w-6" strokeWidth={1.5} />
-                                    </a>
-                                </div>
-                            ))}
+                                        <div className="w-full rounded-sm border border-dashed border-gray-400 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+                                            <div className="aspect-[3/4] w-full overflow-hidden bg-white">
+                                                {cover && (
+                                                    <img
+                                                        src={encodeURI(cover)}
+                                                        alt={pub.title ?? ''}
+                                                        className="h-full w-full object-contain"
+                                                        loading="lazy"
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+                                        {cover && (
+                                            <a
+                                                href={encodeURI(cover)}
+                                                download
+                                                aria-label={`Download ${pub.title ?? ''}`}
+                                                className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
+                                            >
+                                                <Download className="h-6 w-6" strokeWidth={1.5} />
+                                            </a>
+                                        )}
+                                    </div>
+                                )
+                            })}
                         </div>
                         <CarouselArrowButton direction="next" onClick={pubs.onNext} />
                     </div>

@@ -1,5 +1,6 @@
 import '../css/app.css';
 
+import NavigationOverlay from '@/components/navigation-overlay';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
@@ -21,6 +22,7 @@ createInertiaApp({
         root.render(
             <StrictMode>
                 <App {...props} />
+                <NavigationOverlay />
             </StrictMode>,
         );
     },

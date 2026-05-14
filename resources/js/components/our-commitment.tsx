@@ -1,11 +1,13 @@
 import { Link } from '@inertiajs/react';
 
-interface CommitmentItem {
+export interface CommitmentItem {
+    id?: number;
     title: string;
-    svg: string;
+    svg?: string;
+    svg_url?: string;
 }
 
-const row1: CommitmentItem[] = [
+const defaultRow1: CommitmentItem[] = [
     { title: 'Gender Equality & Women Empowerment', svg: '/Home Page/H1.svg' },
     {
         title: 'Safeguarding, PSEAH & Child Protection',
@@ -20,7 +22,7 @@ const row1: CommitmentItem[] = [
     },
 ];
 
-const row2: CommitmentItem[] = [
+const defaultRow2: CommitmentItem[] = [
     {
         title: 'Environmental Sustainability & Climate Sensitivity',
         svg: '/Home Page/H7.svg',
@@ -38,18 +40,22 @@ const row2: CommitmentItem[] = [
     { title: 'Equity, Diversity & Inclusion (EDI)', svg: '/Home Page/H12.svg' },
 ];
 
+function itemSrc(c: CommitmentItem): string {
+    return c.svg_url || c.svg || '';
+}
+
 function CommitmentRow({ items }: { items: CommitmentItem[] }) {
     return (
         <div className="relative">
             <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 md:grid-cols-6">
                 {items.map((item) => (
                     <Link
-                        key={item.title}
+                        key={item.id ?? item.title}
                         href="/our-commitment"
                         className="flex justify-center px-1 transition-transform hover:-translate-y-0.5"
                     >
                         <img
-                            src={encodeURI(item.svg)}
+                            src={encodeURI(itemSrc(item))}
                             alt={item.title}
                             className="h-24 w-24 object-contain md:h-28 md:w-28 lg:h-32 lg:w-32"
                             loading="lazy"
@@ -72,7 +78,7 @@ function CommitmentRow({ items }: { items: CommitmentItem[] }) {
                 />
                 <div className="relative grid grid-cols-6">
                     {items.map((item) => (
-                        <div key={item.title} className="flex justify-center">
+                        <div key={item.id ?? item.title} className="flex justify-center">
                             <span className="h-2 w-2 border border-[rgb(0,175,239)] bg-white" />
                         </div>
                     ))}
@@ -82,7 +88,16 @@ function CommitmentRow({ items }: { items: CommitmentItem[] }) {
     );
 }
 
-export default function OurCommitment() {
+interface Props {
+    commitments?: CommitmentItem[];
+}
+
+export default function OurCommitment({ commitments }: Props) {
+    const all = commitments && commitments.length > 0 ? commitments : [...defaultRow1, ...defaultRow2];
+    const mid = Math.ceil(all.length / 2);
+    const row1 = all.slice(0, mid);
+    const row2 = all.slice(mid);
+
     return (
         <section className="bg-gray-100 py-10 md:py-12">
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
@@ -92,7 +107,7 @@ export default function OurCommitment() {
 
                 <div className="space-y-8">
                     <CommitmentRow items={row1} />
-                    <CommitmentRow items={row2} />
+                    {row2.length > 0 && <CommitmentRow items={row2} />}
                 </div>
             </div>
         </section>
