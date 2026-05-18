@@ -22,6 +22,7 @@ class AdminCommitmentController extends Controller
                 'body' => $c->body,
                 'card_svg_path' => $c->card_svg_path,
                 'card_svg_url' => $c->card_svg_url,
+                'size_scale' => (int) ($c->size_scale ?? 100),
                 'order' => $c->order,
                 'is_active' => $c->is_active,
             ]),
@@ -30,6 +31,7 @@ class AdminCommitmentController extends Controller
                 'title' => $p->title,
                 'cover_path' => $p->cover_path,
                 'cover_url' => $p->cover_url,
+                'size_scale' => (int) ($p->size_scale ?? 100),
                 'order' => $p->order,
                 'is_active' => $p->is_active,
             ]),
@@ -131,6 +133,7 @@ class AdminCommitmentController extends Controller
             'body' => 'required|string|max:5000',
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
+            'size_scale' => 'nullable|integer|min:50|max:200',
             'card_svg_file' => 'nullable|file|mimes:svg,png,jpg,jpeg,webp|max:4096',
             'clear_card_svg' => 'nullable|boolean',
         ];
@@ -141,28 +144,41 @@ class AdminCommitmentController extends Controller
 
         $data = $request->validate($rules);
 
-        return [
+        $out = [
             'title' => $data['title'],
             'body' => $data['body'],
             'order' => (int) $data['order'],
             'is_active' => $request->boolean('is_active'),
         ] + ($slugRequired ? ['slug' => $data['slug']] : []);
+
+        if (isset($data['size_scale'])) {
+            $out['size_scale'] = (int) $data['size_scale'];
+        }
+
+        return $out;
     }
 
     private function validatedPublication(Request $request): array
     {
-        $request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:191',
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
+            'size_scale' => 'nullable|integer|min:50|max:200',
             'cover_file' => 'nullable|image|max:4096',
             'clear_cover' => 'nullable|boolean',
         ]);
 
-        return [
-            'title' => $request->input('title'),
-            'order' => (int) $request->input('order'),
+        $out = [
+            'title' => $data['title'],
+            'order' => (int) $data['order'],
             'is_active' => $request->boolean('is_active'),
         ];
+
+        if (isset($data['size_scale'])) {
+            $out['size_scale'] = (int) $data['size_scale'];
+        }
+
+        return $out;
     }
 }

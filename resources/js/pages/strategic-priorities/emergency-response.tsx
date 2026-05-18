@@ -2,6 +2,7 @@ import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
 import { AlertTriangle } from 'lucide-react'
 import {
+    Bullets,
     PageSection,
     Paragraph,
     SectionHeading,
@@ -10,7 +11,9 @@ import {
 import {
     paragraphs,
     pickBody,
+    pickBullets,
     pickHeading,
+    renderRich,
     type SpContent,
 } from '@/components/strategic-priorities/dynamic'
 
@@ -20,6 +23,16 @@ const defaultBody =
 export default function EmergencyResponse({ content }: { content?: SpContent }) {
     const title = pickHeading(content?.heading, 'Emergency Response:')
     const body = paragraphs(pickBody(content?.body, defaultBody))
+    const between = paragraphs(content?.between_body ?? '')
+    const bullets = pickBullets(content?.bullets, [])
+    const achievementsHeading = pickHeading(
+        content?.achievements_heading,
+        'Key Achievements:',
+    )
+    const infographic = content?.infographic_url ?? ''
+    const infographicAlt = content?.infographic_alt ?? ''
+    const beneficiary = content?.beneficiary_url ?? ''
+    const beneficiaryAlt = content?.beneficiary_alt ?? ''
 
     return (
         <SiteLayout title="Emergency Response">
@@ -30,6 +43,43 @@ export default function EmergencyResponse({ content }: { content?: SpContent }) 
                 {body.map((p, i) => (
                     <Paragraph key={i}>{p}</Paragraph>
                 ))}
+
+                {infographic && (
+                    <div className="mt-6 flex justify-center">
+                        <img
+                            src={infographic}
+                            alt={infographicAlt}
+                            className="h-auto w-full max-w-3xl"
+                        />
+                    </div>
+                )}
+
+                {between.length > 0 && (
+                    <div className="mt-4 space-y-3">
+                        {between.map((p, i) => (
+                            <Paragraph key={i}>{renderRich(p)}</Paragraph>
+                        ))}
+                    </div>
+                )}
+
+                {bullets.length > 0 && (
+                    <div className="mt-6">
+                        <h3 className="text-base font-bold text-[rgb(62,64,149)]">
+                            {achievementsHeading}
+                        </h3>
+                        <Bullets items={bullets} />
+                    </div>
+                )}
+
+                {beneficiary && (
+                    <div className="mt-6 flex justify-center">
+                        <img
+                            src={beneficiary}
+                            alt={beneficiaryAlt}
+                            className="h-auto w-full max-w-xl"
+                        />
+                    </div>
+                )}
             </PageSection>
         </SiteLayout>
     )

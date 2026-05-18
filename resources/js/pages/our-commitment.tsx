@@ -17,12 +17,14 @@ interface CommitmentItem {
     title: string
     body: string
     card_svg_url: string | null
+    size_scale?: number
 }
 
 interface Publication {
     id: number
     title: string
     cover_url: string | null
+    size_scale?: number
 }
 
 interface PageProps {
@@ -145,24 +147,30 @@ export default function OurCommitmentPage({
                                 Commitments:
                             </h2>
                             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4">
-                                {items.map((c) => (
-                                    <a
-                                        key={c.id}
-                                        href={`#${c.slug}`}
-                                        aria-label={c.title}
-                                        className="block transition-transform hover:-translate-y-0.5"
-                                    >
-                                        {c.card_svg_url && (
-                                            <img
-                                                src={c.card_svg_url}
-                                                alt={c.title}
-                                                className="mx-auto h-auto w-full max-w-[150px] object-contain"
-                                                draggable={false}
-                                                loading="lazy"
-                                            />
-                                        )}
-                                    </a>
-                                ))}
+                                {items.map((c) => {
+                                    const scale = (c.size_scale ?? 100) / 100
+                                    return (
+                                        <a
+                                            key={c.id}
+                                            href={`#${c.slug}`}
+                                            aria-label={c.title}
+                                            className="block transition-transform hover:-translate-y-0.5"
+                                        >
+                                            {c.card_svg_url && (
+                                                <img
+                                                    src={c.card_svg_url}
+                                                    alt={c.title}
+                                                    className="mx-auto h-auto w-full max-w-[150px] object-contain transition-transform duration-200"
+                                                    style={{
+                                                        transform: `scale(${scale})`,
+                                                    }}
+                                                    draggable={false}
+                                                    loading="lazy"
+                                                />
+                                            )}
+                                        </a>
+                                    )
+                                })}
                             </div>
 
                             {/* Make a Report form */}
@@ -296,25 +304,31 @@ export default function OurCommitmentPage({
                                 Publications:
                             </h2>
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                                {pubs.map((pub) => (
-                                    <div
-                                        key={pub.id}
-                                        className="mx-auto w-full max-w-[180px] rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md"
-                                    >
-                                        <div className="aspect-[3/4] w-full overflow-hidden bg-white">
-                                            {pub.cover_url && (
-                                                <img
-                                                    src={encodeURI(
-                                                        pub.cover_url,
-                                                    )}
-                                                    alt={pub.title}
-                                                    className="h-full w-full object-contain"
-                                                    loading="lazy"
-                                                />
-                                            )}
+                                {pubs.map((pub) => {
+                                    const scale = (pub.size_scale ?? 100) / 100
+                                    return (
+                                        <div
+                                            key={pub.id}
+                                            className="mx-auto w-full max-w-[180px] rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md"
+                                        >
+                                            <div className="aspect-[3/4] w-full overflow-hidden bg-white">
+                                                {pub.cover_url && (
+                                                    <img
+                                                        src={encodeURI(
+                                                            pub.cover_url,
+                                                        )}
+                                                        alt={pub.title}
+                                                        className="h-full w-full object-contain transition-transform duration-200"
+                                                        style={{
+                                                            transform: `scale(${scale})`,
+                                                        }}
+                                                        loading="lazy"
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </div>
                     </div>

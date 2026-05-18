@@ -58,7 +58,16 @@
       "PowerShell(php artisan route:list --path=work-regions 2>&1)",
       "PowerShell(php artisan tinker --execute=\"`$req = new Illuminate\\\\Http\\\\Request\\(\\); `$req->merge\\(['q' => 'education']\\); `$resp = \\(new App\\\\Http\\\\Controllers\\\\Admin\\\\AdminSearchController\\(\\)\\)->search\\(`$req\\); echo `$resp->getContent\\(\\);\")",
       "PowerShell(php artisan route:list --path=mail 2>&1)",
-      "PowerShell(php artisan route:list --path=our-commitment/report 2>&1)"
+      "PowerShell(php artisan route:list --path=our-commitment/report 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"echo \\\\App\\\\Models\\\\StrategicPriorityPage::orderBy\\('order'\\)->pluck\\('page_key'\\)->implode\\(','\\);\")",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\AboutPage::current\\(\\)->looking_ahead_subheading;\")",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\CommitmentPublication::count\\(\\);\")",
+      "PowerShell(php artisan tinker --execute=\"foreach \\(\\\\App\\\\Models\\\\StrategicPriorityPage::whereIn\\('page_key', ['emergency-response','secondary-beneficiaries','contribution-project']\\)->get\\(\\) as \\\\$p\\) { echo \\\\$p->page_key.':'.PHP_EOL; echo '  infographic_path: '.\\(\\\\$p->infographic_path ?? '\\(null\\)'\\).PHP_EOL; echo '  beneficiary_path: '.\\(\\\\$p->beneficiary_path ?? '\\(null\\)'\\).PHP_EOL; echo '  body length: '.strlen\\(\\\\$p->body ?? ''\\).PHP_EOL; echo '  between length: '.strlen\\(\\\\$p->between_body ?? ''\\).PHP_EOL; echo '  bullets: '.\\\\App\\\\Models\\\\StrategicPriorityBullet::where\\('page_key',\\\\$p->page_key\\)->count\\(\\).PHP_EOL; }\")",
+      "PowerShell(php storage\\\\tmp-sp-audit.php)",
+      "PowerShell(php artisan tinker --execute=\"echo App\\\\Models\\\\ResilienceItem::ofSection\\('policy'\\)->active\\(\\)->ordered\\(\\)->count\\(\\); echo ' policies' . PHP_EOL; foreach \\(App\\\\Models\\\\ResilienceItem::ofSection\\('policy'\\)->active\\(\\)->ordered\\(\\)->get\\(['id','title','image']\\) as `$p\\) { echo `$p->id . ': ' . `$p->title . ' | ' . \\(`$p->image ?? 'NULL'\\) . PHP_EOL; }\" 2>&1)",
+      "PowerShell(php artisan route:list --path=admin/users 2>&1)",
+      "PowerShell(php artisan tinker --execute=\"`$cs = App\\\\Models\\\\ResilienceItem::ofSection\\('capacity'\\)->active\\(\\)->ordered\\(\\)->get\\(['id','title','image']\\); echo `$cs->count\\(\\) . ' capacity items' . PHP_EOL; foreach \\(`$cs as `$c\\) { echo `$c->id . ': ' . \\(`$c->title ?? '\\(no title\\)'\\) . ' | image=' . \\(`$c->image ?? 'NULL'\\) . PHP_EOL; }\")",
+      "PowerShell(php artisan route:list --path=admin/home-page/hero-slides 2>&1)"
     ]
   },
   "enabledPlugins": {

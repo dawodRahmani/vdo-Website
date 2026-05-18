@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AppLayout from '@/layouts/app-layout'
 import { dashboard } from '@/routes'
@@ -10,7 +11,12 @@ import { useRef, useState } from 'react'
 interface SettingsPayload {
     logo_url: string | null
     logo_path: string | null
+    logo_height: number | null
 }
+
+const DEFAULT_LOGO_HEIGHT = 72
+const MIN_LOGO_HEIGHT = 24
+const MAX_LOGO_HEIGHT = 200
 
 interface PageProps {
     settings: SettingsPayload
@@ -28,6 +34,9 @@ export default function AdminSiteHeader({ settings }: PageProps) {
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
     const [clearLogo, setClearLogo] = useState(false)
     const [saving, setSaving] = useState(false)
+    const [logoHeight, setLogoHeight] = useState<number>(
+        settings.logo_height ?? DEFAULT_LOGO_HEIGHT,
+    )
     const fileInput = useRef<HTMLInputElement | null>(null)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +59,7 @@ export default function AdminSiteHeader({ settings }: PageProps) {
         setSaving(true)
         const payload: Record<string, string | File | number> = {
             clear_logo: clearLogo ? 1 : 0,
+            logo_height: logoHeight,
         }
         if (logoFile) payload.logo_file = logoFile
 
@@ -136,6 +146,62 @@ export default function AdminSiteHeader({ settings }: PageProps) {
                                 </p>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Logo height */}
+                    <div className="space-y-2">
+                        <Label htmlFor="logo-height">Logo height (px)</Label>
+                        <div className="flex items-center gap-4">
+                            <input
+                                id="logo-height-range"
+                                type="range"
+                                min={MIN_LOGO_HEIGHT}
+                                max={MAX_LOGO_HEIGHT}
+                                value={logoHeight}
+                                onChange={(e) =>
+                                    setLogoHeight(parseInt(e.target.value))
+                                }
+                                className="h-2 flex-1 cursor-pointer"
+                            />
+                            <Input
+                                id="logo-height"
+                                type="number"
+                                min={MIN_LOGO_HEIGHT}
+                                max={MAX_LOGO_HEIGHT}
+                                value={logoHeight}
+                                onChange={(e) => {
+                                    const v = parseInt(e.target.value)
+                                    if (Number.isNaN(v)) {
+                                        setLogoHeight(DEFAULT_LOGO_HEIGHT)
+                                    } else {
+                                        setLogoHeight(
+                                            Math.min(
+                                                MAX_LOGO_HEIGHT,
+                                                Math.max(MIN_LOGO_HEIGHT, v),
+                                            ),
+                                        )
+                                    }
+                                }}
+                                className="w-24"
+                            />
+                        </div>
+                        <p className="text-muted-foreground text-xs">
+                            Live preview below. Between {MIN_LOGO_HEIGHT} and{' '}
+                            {MAX_LOGO_HEIGHT} px. Default {DEFAULT_LOGO_HEIGHT}.
+                        </p>
+                        {shownLogo && (
+                            <div className="border-border bg-background mt-2 flex items-center justify-center overflow-hidden rounded-md border p-3">
+                                <img
+                                    src={shownLogo}
+                                    alt="Logo preview"
+                                    style={{
+                                        height: `${logoHeight}px`,
+                                        width: 'auto',
+                                    }}
+                                    className="object-contain"
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex justify-end">

@@ -15,6 +15,7 @@ class HeroSection extends Model
         'photo2_alt',
         'photo3_path',
         'photo3_alt',
+        'background_color',
         'order',
     ];
 
@@ -35,6 +36,13 @@ class HeroSection extends Model
             ['src' => static::resolveUrl($row->photo2_path), 'alt' => $row->photo2_alt ?? ''],
             ['src' => static::resolveUrl($row->photo3_path), 'alt' => $row->photo3_alt ?? ''],
         ];
+    }
+
+    public static function backgroundColorFor(string $key): ?string
+    {
+        $row = static::where('page_key', $key)->first();
+
+        return $row?->background_color;
     }
 
     public static function resolveUrl(?string $path): string

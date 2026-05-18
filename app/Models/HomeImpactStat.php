@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class HomeImpactStat extends Model
 {
-    protected $fillable = ['label', 'svg_path', 'order'];
+    protected $fillable = ['label', 'svg_path', 'size_scale', 'order'];
 
-    protected $casts = ['order' => 'integer'];
+    protected $casts = ['order' => 'integer', 'size_scale' => 'integer'];
 
     protected $appends = ['svg_url'];
 

@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react'
 import Header from '@/components/header'
 import HeroFirstSection, {
     type HeroPhoto,
+    type HeroSlide,
     type ImpactStat,
 } from '@/components/hero-first-section'
 import HomeSecondSection, {
@@ -16,6 +17,7 @@ import SiteFooter from '@/components/site-footer'
 
 interface HomeProps {
     heroPhotos?: HeroPhoto[]
+    heroSlides?: HeroSlide[]
     impactStats?: ImpactStat[]
     priorityAreas?: PriorityArea[]
     homeCommitments?: CommitmentItem[]
@@ -25,6 +27,7 @@ interface HomeProps {
 
 export default function Home({
     heroPhotos,
+    heroSlides,
     impactStats,
     priorityAreas,
     homeCommitments,
@@ -40,6 +43,7 @@ export default function Home({
 
                 <HeroFirstSection
                     heroPhotos={heroPhotos}
+                    heroSlides={heroSlides}
                     impactStats={impactStats}
                 />
 

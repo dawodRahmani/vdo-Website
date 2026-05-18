@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class HomePriorityArea extends Model
 {
-    protected $fillable = ['title', 'svg_path', 'href', 'order'];
+    protected $fillable = ['title', 'svg_path', 'href', 'size_scale', 'order'];
 
-    protected $casts = ['order' => 'integer'];
+    protected $casts = ['order' => 'integer', 'size_scale' => 'integer'];
 
     protected $appends = ['svg_url'];
 

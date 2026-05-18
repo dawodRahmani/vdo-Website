@@ -119,8 +119,6 @@ export default function RuralDevelopment({ content }: { content?: SpContent }) {
                         )}
                     </div>
                 </div>
-
-                <hr className="mt-12 border-0 border-t border-dashed border-[rgb(0,175,239)]" />
             </PageSection>
         </SiteLayout>
     )

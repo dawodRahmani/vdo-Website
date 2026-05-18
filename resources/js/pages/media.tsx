@@ -1,13 +1,37 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, Download, Play } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-const photos = [
+interface HeroPhoto {
+    src?: string
+    url?: string
+    alt?: string | null
+}
+
+const defaultPhotos: HeroPhoto[] = [
     { src: '/Header and Gallary Photos/05.jpg', alt: 'Food distribution' },
     { src: '/Header and Gallary Photos/11.jpg', alt: 'Community outreach' },
     { src: '/Header and Gallary Photos/23.jpg', alt: 'Health services' },
 ]
+
+function photoSrc(p: HeroPhoto): string {
+    return p.src ?? p.url ?? ''
+}
+
+function youtubeEmbedUrl(url: string): string | null {
+    const m =
+        url.match(
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/,
+        ) || url.match(/^([\w-]{11})$/)
+    return m ? `https://www.youtube.com/embed/${m[1]}` : null
+}
 
 interface MediaItem {
     id: number
@@ -16,11 +40,15 @@ interface MediaItem {
     image: string | null
     image_url: string | null
     video_url: string | null
+    video_path: string | null
+    video_file_url: string | null
     order: number
     is_active: boolean
+    size_scale?: number
 }
 
 interface MediaProps {
+    heroPhotos?: HeroPhoto[]
     items?: MediaItem[]
 }
 
@@ -107,22 +135,128 @@ function PhotoTile({
     )
 }
 
-function VideoCard({ title }: { title: string }) {
+function VideoCard({
+    item,
+    onPlay,
+}: {
+    item: MediaItem
+    onPlay: (item: MediaItem) => void
+}) {
+    const title = item.title ?? ''
+    const thumb = item.image_url
+    const hasPlayable = !!item.video_file_url || !!item.video_url
+
     return (
-        <div>
-            <div className="flex aspect-video items-center justify-center rounded-lg border border-gray-300 bg-gray-200/70 shadow-sm">
-                <button
-                    type="button"
-                    aria-label="Play video"
-                    className="flex h-16 w-16 items-center justify-center rounded-md bg-red-600 text-white shadow-md transition-transform hover:scale-105"
+        <button
+            type="button"
+            onClick={() => hasPlayable && onPlay(item)}
+            disabled={!hasPlayable}
+            aria-label={hasPlayable ? `Play ${title || 'video'}` : 'No video available'}
+            className="group block w-full text-left disabled:cursor-not-allowed"
+        >
+            <div className="group relative flex aspect-video items-center justify-center overflow-hidden rounded-lg border border-gray-300 bg-gray-200/70 shadow-sm">
+                {thumb ? (
+                    <img
+                        src={thumb}
+                        alt={title}
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                    />
+                ) : null}
+                <div
+                    className={`absolute inset-0 transition-opacity ${
+                        thumb
+                            ? 'bg-black/30 opacity-100 group-hover:bg-black/40'
+                            : ''
+                    }`}
+                />
+                <span
+                    className={`relative z-10 flex h-16 w-16 items-center justify-center rounded-md text-white shadow-md transition-transform ${
+                        hasPlayable
+                            ? 'bg-red-600 group-hover:scale-105'
+                            : 'bg-red-600/60'
+                    }`}
                 >
                     <Play className="h-7 w-7 fill-current" />
-                </button>
+                </span>
             </div>
-            <p className="mt-3 text-sm font-medium text-[rgb(0,175,239)] hover:underline">
+            <p
+                className={`mt-3 text-sm font-medium ${
+                    hasPlayable
+                        ? 'text-[rgb(0,175,239)] group-hover:underline'
+                        : 'text-gray-400'
+                }`}
+            >
                 {title}
             </p>
-        </div>
+        </button>
+    )
+}
+
+function VideoPlayerModal({
+    item,
+    onClose,
+}: {
+    item: MediaItem | null
+    onClose: () => void
+}) {
+    if (!item) return null
+
+    const embed = item.video_url ? youtubeEmbedUrl(item.video_url) : null
+    const fileUrl = item.video_file_url
+    const fallbackUrl = item.video_url
+
+    return (
+        <Dialog open={!!item} onOpenChange={(v) => !v && onClose()}>
+            <DialogContent className="max-w-3xl overflow-hidden p-0 sm:max-w-4xl">
+                <DialogHeader className="sr-only">
+                    <DialogTitle>{item.title ?? 'Video'}</DialogTitle>
+                </DialogHeader>
+                <div className="aspect-video w-full bg-black">
+                    {fileUrl ? (
+                        <video
+                            key={fileUrl}
+                            src={fileUrl}
+                            controls
+                            autoPlay
+                            className="h-full w-full"
+                            poster={item.image_url ?? undefined}
+                        >
+                            Sorry, your browser doesn't support embedded video.
+                        </video>
+                    ) : embed ? (
+                        <iframe
+                            key={embed}
+                            src={`${embed}?autoplay=1`}
+                            title={item.title ?? 'Video'}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                            allowFullScreen
+                            className="h-full w-full"
+                        />
+                    ) : fallbackUrl ? (
+                        <div className="flex h-full w-full items-center justify-center p-6 text-center text-sm text-white">
+                            <a
+                                href={fallbackUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline"
+                            >
+                                Open video in a new tab
+                            </a>
+                        </div>
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm text-white/70">
+                            No video source.
+                        </div>
+                    )}
+                </div>
+                {item.title && (
+                    <div className="px-5 py-3 text-sm font-medium text-[rgb(62,64,149)]">
+                        {item.title}
+                    </div>
+                )}
+            </DialogContent>
+        </Dialog>
     )
 }
 
@@ -152,8 +286,11 @@ function useHorizontalScroll() {
         const el = ref.current
         if (!el) return
         const firstChild = el.firstElementChild as HTMLElement | null
+        const styles = getComputedStyle(el)
+        const gap =
+            parseFloat(styles.columnGap || styles.gap || '0') || 0
         const step = firstChild
-            ? firstChild.getBoundingClientRect().width + 24
+            ? firstChild.getBoundingClientRect().width + gap
             : el.clientWidth
         el.scrollBy({
             left: direction === 'next' ? step : -step,
@@ -167,9 +304,18 @@ function useHorizontalScroll() {
     }
 }
 
-export default function Media({ items = [] }: MediaProps) {
+export default function Media({ heroPhotos, items = [] }: MediaProps) {
     const docs = useHorizontalScroll()
     const pubs = useHorizontalScroll()
+    const [activeVideo, setActiveVideo] = useState<MediaItem | null>(null)
+
+    const photos =
+        heroPhotos && heroPhotos.length > 0
+            ? heroPhotos.map((p) => ({ src: photoSrc(p), alt: p.alt ?? '' }))
+            : defaultPhotos.map((p) => ({
+                  src: photoSrc(p),
+                  alt: p.alt ?? '',
+              }))
 
     const documentaries = items.filter((i) => i.kind === 'documentary')
     const galleryPhotos = items
@@ -218,7 +364,7 @@ export default function Media({ items = [] }: MediaProps) {
                                     key={d.id}
                                     className="w-full flex-none snap-start md:w-[calc(50%-12px)]"
                                 >
-                                    <VideoCard title={d.title ?? ''} />
+                                    <VideoCard item={d} onPlay={setActiveVideo} />
                                 </div>
                             ))}
                         </div>
@@ -241,7 +387,7 @@ export default function Media({ items = [] }: MediaProps) {
                 <div className="absolute inset-0 bg-gray-100/70" />
                 <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
-                        Photographs:
+                        Program Snapshots:
                     </h2>
                     <div className="flex items-center gap-3 md:gap-4">
                         <CarouselArrowButton
@@ -283,16 +429,21 @@ export default function Media({ items = [] }: MediaProps) {
                         <CarouselArrowButton direction="prev" onClick={pubs.onPrev} />
                         <div
                             ref={pubs.ref}
-                            className="flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:gap-6"
+                            className="flex flex-1 snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                         >
                             {publications.map((pub) => {
                                 const cover = pub.image_url ?? ''
+                                const scale = (pub.size_scale ?? 100) / 100
                                 return (
                                     <div
                                         key={pub.id}
-                                        className="flex w-[55%] flex-none snap-start flex-col items-center sm:w-[32%] md:w-[calc(20%-19.2px)] lg:w-[calc(16.6666%-20px)]"
+                                        className="flex w-[calc(25%-12px)] flex-none snap-start flex-col items-center"
+                                        style={{
+                                            transform: `scale(${scale})`,
+                                            transformOrigin: 'top center',
+                                        }}
                                     >
-                                        <div className="w-full rounded-sm border border-dashed border-gray-400 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+                                        <div className="w-full rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md">
                                             <div className="aspect-[3/4] w-full overflow-hidden bg-white">
                                                 {cover && (
                                                     <img
@@ -322,6 +473,11 @@ export default function Media({ items = [] }: MediaProps) {
                     </div>
                 </div>
             </section>
+
+            <VideoPlayerModal
+                item={activeVideo}
+                onClose={() => setActiveVideo(null)}
+            />
         </SiteLayout>
     )
 }

@@ -2,11 +2,12 @@ import { useRef, useState } from 'react'
 import { Head, router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { dashboard } from '@/routes'
 import { type BreadcrumbItem } from '@/types'
-import { ExternalLink, Upload } from 'lucide-react'
+import { ExternalLink, Plus, Trash2, Upload } from 'lucide-react'
 import { Link } from '@inertiajs/react'
 
 interface HeroPhoto {
@@ -21,6 +22,7 @@ interface Stat {
     id: number
     label: string
     svg_url: string
+    size_scale?: number
     order: number
 }
 interface Priority {
@@ -28,6 +30,7 @@ interface Priority {
     title: string
     href: string
     svg_url: string
+    size_scale?: number
     order: number
 }
 interface Commitment {
@@ -40,10 +43,28 @@ interface Commitment {
 interface RegionsBlock {
     image_url: string
     alt: string
+    max_width: number | null
+}
+
+const DEFAULT_REGIONS_MAX_WIDTH = 100
+const MIN_REGIONS_MAX_WIDTH = 30
+const MAX_REGIONS_MAX_WIDTH = 100
+
+interface HeroSlidePhoto {
+    url: string
+    alt: string
+    path: string | null
+}
+interface HeroSlide {
+    id: number
+    order: number
+    is_active: boolean
+    photos: [HeroSlidePhoto, HeroSlidePhoto, HeroSlidePhoto]
 }
 
 interface PageProps {
     hero: HeroBlock
+    heroSlides: HeroSlide[]
     stats: Stat[]
     priorities: Priority[]
     commitments: Commitment[]
@@ -94,18 +115,22 @@ function FileButton({
     )
 }
 
-function HeroEditor({ hero }: { hero: HeroBlock }) {
+function HeroSlideRow({ slide }: { slide: HeroSlide }) {
     const [alts, setAlts] = useState<[string, string, string]>([
-        hero.photos[0].alt,
-        hero.photos[1].alt,
-        hero.photos[2].alt,
+        slide.photos[0].alt,
+        slide.photos[1].alt,
+        slide.photos[2].alt,
     ])
-    const [files, setFiles] = useState<[File | null, File | null, File | null]>([null, null, null])
-    const [previews, setPreviews] = useState<[string | null, string | null, string | null]>([
+    const [files, setFiles] = useState<[File | null, File | null, File | null]>([
         null,
         null,
         null,
     ])
+    const [previews, setPreviews] = useState<
+        [string | null, string | null, string | null]
+    >([null, null, null])
+    const [order, setOrder] = useState<number>(slide.order)
+    const [isActive, setIsActive] = useState<boolean>(slide.is_active)
     const [saving, setSaving] = useState(false)
 
     const setFile = (i: 0 | 1 | 2, file: File | null) => {
@@ -120,15 +145,17 @@ function HeroEditor({ hero }: { hero: HeroBlock }) {
 
     const save = () => {
         setSaving(true)
-        const payload: Record<string, string | File> = {
+        const payload: Record<string, string | number | File> = {
             photo1_alt: alts[0],
             photo2_alt: alts[1],
             photo3_alt: alts[2],
+            order,
+            is_active: isActive ? 1 : 0,
         }
         files.forEach((f, i) => {
             if (f) payload[`photo${i + 1}_file`] = f
         })
-        router.post(`/admin/home-page/hero/${hero.id}`, payload, {
+        router.post(`/admin/home-page/hero-slides/${slide.id}`, payload, {
             forceFormData: true,
             preserveScroll: true,
             onFinish: () => setSaving(false),
@@ -139,22 +166,62 @@ function HeroEditor({ hero }: { hero: HeroBlock }) {
         })
     }
 
+    const remove = () => {
+        if (!confirm(`Delete slide #${slide.order}?`)) return
+        router.delete(`/admin/home-page/hero-slides/${slide.id}`, {
+            preserveScroll: true,
+        })
+    }
+
     return (
-        <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-                <div>
-                    <h2 className="text-lg font-semibold">Hero strip</h2>
-                    <p className="text-xs text-muted-foreground">
-                        The 3 photos at the top of the home page.
-                    </p>
+        <div className="rounded-lg border border-border bg-background p-4">
+            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+                <h3 className="text-sm font-semibold">Slide #{slide.order}</h3>
+                <div className="flex flex-wrap items-end gap-3">
+                    <div className="flex items-center gap-2">
+                        <Label className="text-xs">Order</Label>
+                        <Input
+                            type="number"
+                            min={0}
+                            value={order}
+                            onChange={(e) =>
+                                setOrder(parseInt(e.target.value, 10) || 0)
+                            }
+                            className="w-20"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            id={`slide-active-${slide.id}`}
+                            checked={isActive}
+                            onCheckedChange={(v) => setIsActive(!!v)}
+                        />
+                        <Label
+                            htmlFor={`slide-active-${slide.id}`}
+                            className="text-xs"
+                        >
+                            Active
+                        </Label>
+                    </div>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={remove}
+                        className="text-destructive hover:text-destructive"
+                    >
+                        <Trash2 className="mr-1 h-3.5 w-3.5" />
+                        Delete
+                    </Button>
+                    <Button size="sm" onClick={save} disabled={saving}>
+                        {saving ? 'Saving…' : 'Save slide'}
+                    </Button>
                 </div>
-                <Button onClick={save} disabled={saving}>
-                    {saving ? 'Saving…' : 'Save hero'}
-                </Button>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                 {([0, 1, 2] as const).map((i) => {
-                    const shown = previews[i] ?? hero.photos[i].url
+                    const shown = previews[i] ?? slide.photos[i].url
                     return (
                         <div
                             key={i}
@@ -167,14 +234,22 @@ function HeroEditor({ hero }: { hero: HeroBlock }) {
                                         alt={alts[i]}
                                         className="h-full w-full object-cover"
                                     />
-                                ) : null}
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
+                                        Photo {i + 1}
+                                    </div>
+                                )}
                             </div>
                             <div className="space-y-1">
                                 <Label className="text-xs">Alt text</Label>
                                 <Input
                                     value={alts[i]}
                                     onChange={(e) => {
-                                        const next = [...alts] as [string, string, string]
+                                        const next = [...alts] as [
+                                            string,
+                                            string,
+                                            string,
+                                        ]
                                         next[i] = e.target.value
                                         setAlts(next)
                                     }}
@@ -194,12 +269,62 @@ function HeroEditor({ hero }: { hero: HeroBlock }) {
                     )
                 })}
             </div>
+        </div>
+    )
+}
+
+function HeroSlidesEditor({ slides }: { slides: HeroSlide[] }) {
+    const [adding, setAdding] = useState(false)
+
+    const addSlide = () => {
+        setAdding(true)
+        router.post(
+            '/admin/home-page/hero-slides',
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setAdding(false),
+            },
+        )
+    }
+
+    return (
+        <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                    <h2 className="text-lg font-semibold">
+                        Hero strip — slides
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                        Each slide is a row of 3 photos shown at the top of the
+                        home page. With 2+ active slides, the strip becomes a
+                        slider that auto-advances every 6 seconds.
+                    </p>
+                </div>
+                <Button onClick={addSlide} disabled={adding}>
+                    <Plus className="mr-1 h-4 w-4" />
+                    {adding ? 'Adding…' : 'Add slide'}
+                </Button>
+            </div>
+
+            {slides.length === 0 ? (
+                <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                    No slides yet. Click "Add slide" to create one.
+                </p>
+            ) : (
+                <div className="space-y-4">
+                    {slides.map((s) => (
+                        <HeroSlideRow key={s.id} slide={s} />
+                    ))}
+                </div>
+            )}
         </section>
     )
 }
 
 function StatRow({ stat }: { stat: Stat }) {
     const [label, setLabel] = useState(stat.label)
+    const [size, setSize] = useState<number>(stat.size_scale ?? 100)
     const [file, setFile] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
     const [saving, setSaving] = useState(false)
@@ -212,7 +337,10 @@ function StatRow({ stat }: { stat: Stat }) {
 
     const save = () => {
         setSaving(true)
-        const payload: Record<string, string | File> = { label }
+        const payload: Record<string, string | number | File> = {
+            label,
+            size_scale: size,
+        }
         if (file) payload.svg_file = file
         router.post(`/admin/home-page/stats/${stat.id}`, payload, {
             forceFormData: true,
@@ -225,13 +353,16 @@ function StatRow({ stat }: { stat: Stat }) {
         })
     }
 
+    const previewHeight = `${(size / 100) * 64}px`
+
     return (
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-background p-3">
-            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-gray-100">
+        <div className="flex items-start gap-3 rounded-lg border border-border bg-background p-3">
+            <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-gray-100">
                 <img
                     src={preview ?? stat.svg_url}
                     alt={label}
-                    className="h-full w-full object-contain"
+                    className="w-auto object-contain"
+                    style={{ height: previewHeight, maxHeight: '100%' }}
                 />
             </div>
             <div className="flex-1 space-y-2">
@@ -241,6 +372,23 @@ function StatRow({ stat }: { stat: Stat }) {
                     onPick={pick}
                     onReset={() => pick(null)}
                 />
+                <div className="flex items-center gap-2">
+                    <span className="w-10 text-xs text-muted-foreground">
+                        Size
+                    </span>
+                    <input
+                        type="range"
+                        min={50}
+                        max={200}
+                        step={5}
+                        value={size}
+                        onChange={(e) => setSize(parseInt(e.target.value, 10))}
+                        className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                    />
+                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                        {size}%
+                    </span>
+                </div>
             </div>
             <Button size="sm" onClick={save} disabled={saving}>
                 {saving ? '…' : 'Save'}
@@ -252,6 +400,7 @@ function StatRow({ stat }: { stat: Stat }) {
 function PriorityRow({ priority }: { priority: Priority }) {
     const [title, setTitle] = useState(priority.title)
     const [href, setHref] = useState(priority.href)
+    const [size, setSize] = useState<number>(priority.size_scale ?? 100)
     const [file, setFile] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
     const [saving, setSaving] = useState(false)
@@ -264,7 +413,11 @@ function PriorityRow({ priority }: { priority: Priority }) {
 
     const save = () => {
         setSaving(true)
-        const payload: Record<string, string | File> = { title, href }
+        const payload: Record<string, string | number | File> = {
+            title,
+            href,
+            size_scale: size,
+        }
         if (file) payload.svg_file = file
         router.post(`/admin/home-page/priorities/${priority.id}`, payload, {
             forceFormData: true,
@@ -277,13 +430,16 @@ function PriorityRow({ priority }: { priority: Priority }) {
         })
     }
 
+    const scale = size / 100
+
     return (
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-background p-3 md:flex-row md:items-center">
             <div className="flex h-20 w-32 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-gray-100">
                 <img
                     src={preview ?? priority.svg_url}
                     alt={title}
-                    className="h-full w-full object-contain"
+                    className="h-full w-full object-contain transition-transform duration-150"
+                    style={{ transform: `scale(${scale})` }}
                 />
             </div>
             <div className="flex-1 space-y-2">
@@ -296,6 +452,23 @@ function PriorityRow({ priority }: { priority: Priority }) {
                     <Input value={href} onChange={(e) => setHref(e.target.value)} />
                 </div>
                 <FileButton hasFile={!!file} onPick={pick} onReset={() => pick(null)} />
+                <div className="flex items-center gap-2">
+                    <span className="w-10 text-xs text-muted-foreground">
+                        Size
+                    </span>
+                    <input
+                        type="range"
+                        min={50}
+                        max={200}
+                        step={5}
+                        value={size}
+                        onChange={(e) => setSize(parseInt(e.target.value, 10))}
+                        className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                    />
+                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                        {size}%
+                    </span>
+                </div>
             </div>
             <Button size="sm" onClick={save} disabled={saving}>
                 {saving ? '…' : 'Save'}
@@ -351,6 +524,9 @@ function CommitmentRow({ commitment }: { commitment: Commitment }) {
 
 function RegionsEditor({ regions }: { regions: RegionsBlock }) {
     const [alt, setAlt] = useState(regions.alt)
+    const [maxWidth, setMaxWidth] = useState<number>(
+        regions.max_width ?? DEFAULT_REGIONS_MAX_WIDTH,
+    )
     const [file, setFile] = useState<File | null>(null)
     const [preview, setPreview] = useState<string | null>(null)
     const [saving, setSaving] = useState(false)
@@ -363,7 +539,10 @@ function RegionsEditor({ regions }: { regions: RegionsBlock }) {
 
     const save = () => {
         setSaving(true)
-        const payload: Record<string, string | File> = { regions_image_alt: alt }
+        const payload: Record<string, string | number | File> = {
+            regions_image_alt: alt,
+            regions_image_max_width: maxWidth,
+        }
         if (file) payload.regions_image_file = file
         router.post('/admin/home-page/regions', payload, {
             forceFormData: true,
@@ -391,15 +570,19 @@ function RegionsEditor({ regions }: { regions: RegionsBlock }) {
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_1fr]">
                 <div className="rounded-lg border border-dashed border-border bg-background p-3">
-                    <div className="aspect-[4/3] w-full overflow-hidden rounded bg-gray-100">
+                    <div className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded bg-gray-100">
                         {(preview ?? regions.image_url) ? (
                             <img
                                 src={preview ?? regions.image_url}
                                 alt={alt}
-                                className="h-full w-full object-contain"
+                                className="h-auto object-contain"
+                                style={{
+                                    width: `${maxWidth}%`,
+                                    maxHeight: '100%',
+                                }}
                             />
                         ) : (
-                            <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
+                            <div className="text-xs text-gray-400">
                                 (no image)
                             </div>
                         )}
@@ -412,17 +595,60 @@ function RegionsEditor({ regions }: { regions: RegionsBlock }) {
                         />
                     </div>
                 </div>
-                <div className="space-y-2">
-                    <Label className="text-xs">Alt text</Label>
-                    <textarea
-                        value={alt}
-                        onChange={(e) => setAlt(e.target.value)}
-                        rows={5}
-                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    {file && (
-                        <p className="truncate text-xs text-muted-foreground">{file.name}</p>
-                    )}
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label className="text-xs">Alt text</Label>
+                        <textarea
+                            value={alt}
+                            onChange={(e) => setAlt(e.target.value)}
+                            rows={5}
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        />
+                        {file && (
+                            <p className="truncate text-xs text-muted-foreground">{file.name}</p>
+                        )}
+                    </div>
+                    <div className="space-y-2">
+                        <Label className="text-xs">Width: {maxWidth}%</Label>
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="range"
+                                min={MIN_REGIONS_MAX_WIDTH}
+                                max={MAX_REGIONS_MAX_WIDTH}
+                                value={maxWidth}
+                                onChange={(e) =>
+                                    setMaxWidth(parseInt(e.target.value))
+                                }
+                                className="h-2 flex-1 cursor-pointer"
+                            />
+                            <input
+                                type="number"
+                                min={MIN_REGIONS_MAX_WIDTH}
+                                max={MAX_REGIONS_MAX_WIDTH}
+                                value={maxWidth}
+                                onChange={(e) => {
+                                    const v = parseInt(e.target.value)
+                                    if (Number.isNaN(v)) {
+                                        setMaxWidth(DEFAULT_REGIONS_MAX_WIDTH)
+                                    } else {
+                                        setMaxWidth(
+                                            Math.min(
+                                                MAX_REGIONS_MAX_WIDTH,
+                                                Math.max(
+                                                    MIN_REGIONS_MAX_WIDTH,
+                                                    v,
+                                                ),
+                                            ),
+                                        )
+                                    }
+                                }}
+                                className="w-20 rounded-md border border-input bg-background px-2 py-1 text-sm"
+                            />
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">
+                            Percent of the column width. {MIN_REGIONS_MAX_WIDTH}–{MAX_REGIONS_MAX_WIDTH}%. Default {DEFAULT_REGIONS_MAX_WIDTH}.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -452,7 +678,7 @@ function MapAdminLink() {
     )
 }
 
-export default function AdminHomePage({ hero, stats, priorities, commitments, regions }: PageProps) {
+export default function AdminHomePage({ heroSlides, stats, priorities, commitments, regions }: PageProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Home Page" />
@@ -464,7 +690,7 @@ export default function AdminHomePage({ hero, stats, priorities, commitments, re
                     </p>
                 </div>
 
-                <HeroEditor hero={hero} />
+                <HeroSlidesEditor slides={heroSlides ?? []} />
 
                 <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
                     <h2 className="mb-4 text-lg font-semibold">Key Impact Numbers</h2>
@@ -483,8 +709,6 @@ export default function AdminHomePage({ hero, stats, priorities, commitments, re
                         ))}
                     </div>
                 </section>
-
-                <MapAdminLink />
 
                 <RegionsEditor regions={regions} />
 

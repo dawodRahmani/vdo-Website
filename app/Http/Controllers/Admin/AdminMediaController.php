@@ -25,8 +25,11 @@ class AdminMediaController extends Controller
         if ($request->hasFile('image_file')) {
             $data['image'] = $request->file('image_file')->store('media-items', 'public');
         }
+        if ($request->hasFile('video_file')) {
+            $data['video_path'] = $request->file('video_file')->store('media-videos', 'public');
+        }
 
-        unset($data['image_file']);
+        unset($data['image_file'], $data['video_file'], $data['clear_image'], $data['clear_video']);
         MediaItem::create($data);
 
         return back();
@@ -44,7 +47,20 @@ class AdminMediaController extends Controller
             $data['image'] = null;
         }
 
-        unset($data['image_file'], $data['clear_image']);
+        if ($request->hasFile('video_file')) {
+            $this->deleteVideoIfStored($item);
+            $data['video_path'] = $request->file('video_file')->store('media-videos', 'public');
+        } elseif ($request->boolean('clear_video')) {
+            $this->deleteVideoIfStored($item);
+            $data['video_path'] = null;
+        }
+
+        unset(
+            $data['image_file'],
+            $data['clear_image'],
+            $data['video_file'],
+            $data['clear_video'],
+        );
         $item->update($data);
 
         return back();
@@ -53,6 +69,7 @@ class AdminMediaController extends Controller
     public function destroy(MediaItem $item)
     {
         $this->deleteImageIfStored($item);
+        $this->deleteVideoIfStored($item);
         $item->delete();
 
         return back();
@@ -70,8 +87,13 @@ class AdminMediaController extends Controller
             'video_url' => 'nullable|string|max:500',
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
+            'size_scale' => 'nullable|integer|min:40|max:150',
             'image_file' => 'nullable|image|max:5120',
             'clear_image' => 'nullable|boolean',
+            // Up to ~100 MB per video (Laravel kilobytes). Larger files require
+            // chunked upload + bumping PHP upload_max_filesize / post_max_size.
+            'video_file' => 'nullable|file|mimetypes:video/mp4,video/webm,video/quicktime,video/ogg|max:102400',
+            'clear_video' => 'nullable|boolean',
         ]);
     }
 
@@ -81,6 +103,13 @@ class AdminMediaController extends Controller
         // Seeded items reference public folder paths like "/Header and Gallary Photos/..."
         if ($item->image && ! str_starts_with($item->image, '/') && ! str_starts_with($item->image, 'http')) {
             Storage::disk('public')->delete($item->image);
+        }
+    }
+
+    private function deleteVideoIfStored(MediaItem $item): void
+    {
+        if ($item->video_path && ! str_starts_with($item->video_path, '/') && ! str_starts_with($item->video_path, 'http')) {
+            Storage::disk('public')->delete($item->video_path);
         }
     }
 }

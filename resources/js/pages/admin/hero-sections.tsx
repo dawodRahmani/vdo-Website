@@ -18,6 +18,7 @@ interface HeroSectionRow {
     id: number
     page_key: string
     page_label: string
+    background_color: string | null
     photos: [HeroPhoto, HeroPhoto, HeroPhoto]
 }
 
@@ -35,6 +36,7 @@ interface RowDraft {
     alts: [string, string, string]
     files: [File | null, File | null, File | null]
     previews: [string | null, string | null, string | null]
+    background_color: string
 }
 
 function emptyDraft(section: HeroSectionRow): RowDraft {
@@ -42,7 +44,29 @@ function emptyDraft(section: HeroSectionRow): RowDraft {
         alts: [section.photos[0].alt, section.photos[1].alt, section.photos[2].alt],
         files: [null, null, null],
         previews: [null, null, null],
+        background_color: section.background_color ?? '',
     }
+}
+
+const HERO_BG_PRESETS = [
+    '',
+    'rgb(189,191,193)',
+    'rgb(243,244,246)',
+    'rgb(255,255,255)',
+    'rgb(62,64,149)',
+    'rgb(0,175,239)',
+]
+
+function toHexForPicker(value: string): string {
+    if (/^#[0-9a-fA-F]{6}$/.test(value)) return value
+    const m = value.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/)
+    if (m) {
+        const [r, g, b] = [m[1], m[2], m[3]].map((n) => parseInt(n, 10))
+        return (
+            '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')
+        )
+    }
+    return '#bdbfc1'
 }
 
 export default function AdminHeroSections({ sections }: PageProps) {
@@ -89,6 +113,13 @@ export default function AdminHeroSections({ sections }: PageProps) {
         })
     }
 
+    const setBackground = (id: number, color: string, fallback: HeroSectionRow) => {
+        setDrafts((d) => {
+            const cur = d[id] ?? emptyDraft(fallback)
+            return { ...d, [id]: { ...cur, background_color: color } }
+        })
+    }
+
     const save = (section: HeroSectionRow) => {
         const draft = getDraft(section.id, section)
         setSavingId(section.id)
@@ -96,6 +127,7 @@ export default function AdminHeroSections({ sections }: PageProps) {
             photo1_alt: draft.alts[0],
             photo2_alt: draft.alts[1],
             photo3_alt: draft.alts[2],
+            background_color: draft.background_color,
         }
         draft.files.forEach((file, i) => {
             if (file) payload[`photo${i + 1}_file`] = file
@@ -112,6 +144,7 @@ export default function AdminHeroSections({ sections }: PageProps) {
                         alts: draft.alts,
                         files: [null, null, null],
                         previews: [null, null, null],
+                        background_color: draft.background_color,
                     },
                 }))
             },
@@ -172,6 +205,83 @@ export default function AdminHeroSections({ sections }: PageProps) {
                                     >
                                         {isSaving ? 'Saving…' : 'Save'}
                                     </Button>
+                                </div>
+
+                                <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-background p-3">
+                                    <div
+                                        className="h-10 w-10 flex-none rounded-md border border-border shadow-inner"
+                                        style={{
+                                            backgroundColor:
+                                                draft.background_color ||
+                                                'transparent',
+                                            backgroundImage: draft.background_color
+                                                ? undefined
+                                                : 'repeating-conic-gradient(#e5e7eb 0% 25%, #f3f4f6 0% 50%) 50% / 12px 12px',
+                                        }}
+                                        aria-hidden="true"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                        <Label className="text-xs">
+                                            Hero background color
+                                        </Label>
+                                        <p className="text-[10px] text-muted-foreground">
+                                            Color shown behind the 3 hero
+                                            photos. Leave blank to inherit the
+                                            page background.
+                                        </p>
+                                    </div>
+                                    <input
+                                        type="color"
+                                        value={toHexForPicker(
+                                            draft.background_color,
+                                        )}
+                                        onChange={(e) =>
+                                            setBackground(
+                                                section.id,
+                                                e.target.value,
+                                                section,
+                                            )
+                                        }
+                                        className="h-9 w-12 cursor-pointer rounded border border-border bg-transparent"
+                                        title="Pick a color"
+                                    />
+                                    <Input
+                                        value={draft.background_color}
+                                        onChange={(e) =>
+                                            setBackground(
+                                                section.id,
+                                                e.target.value,
+                                                section,
+                                            )
+                                        }
+                                        placeholder="(inherit)"
+                                        className="w-44 font-mono text-xs"
+                                    />
+                                    <div className="flex flex-wrap items-center gap-1">
+                                        {HERO_BG_PRESETS.map((c) => (
+                                            <button
+                                                key={c || 'none'}
+                                                type="button"
+                                                title={c || 'inherit'}
+                                                onClick={() =>
+                                                    setBackground(
+                                                        section.id,
+                                                        c,
+                                                        section,
+                                                    )
+                                                }
+                                                className="h-6 w-6 rounded border border-border"
+                                                style={
+                                                    c
+                                                        ? { backgroundColor: c }
+                                                        : {
+                                                              backgroundImage:
+                                                                  'repeating-conic-gradient(#e5e7eb 0% 25%, #f3f4f6 0% 50%) 50% / 8px 8px',
+                                                          }
+                                                }
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

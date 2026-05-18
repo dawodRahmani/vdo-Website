@@ -18,6 +18,7 @@ class AdminHeroSectionController extends Controller
                 'id' => $s->id,
                 'page_key' => $s->page_key,
                 'page_label' => $s->page_label,
+                'background_color' => $s->background_color,
                 'photos' => [
                     ['url' => $s->photo1Url(), 'alt' => $s->photo1_alt ?? '', 'path' => $s->photo1_path],
                     ['url' => $s->photo2Url(), 'alt' => $s->photo2_alt ?? '', 'path' => $s->photo2_path],
@@ -40,6 +41,7 @@ class AdminHeroSectionController extends Controller
             'photo1_file' => 'nullable|image|max:8192',
             'photo2_file' => 'nullable|image|max:8192',
             'photo3_file' => 'nullable|image|max:8192',
+            'background_color' => 'nullable|string|max:32',
         ]);
 
         $data = [
@@ -47,6 +49,10 @@ class AdminHeroSectionController extends Controller
             'photo2_alt' => $validated['photo2_alt'] ?? $section->photo2_alt,
             'photo3_alt' => $validated['photo3_alt'] ?? $section->photo3_alt,
         ];
+
+        if ($request->has('background_color')) {
+            $data['background_color'] = $validated['background_color'] ?: null;
+        }
 
         $folder = 'hero/'.$section->page_key;
 

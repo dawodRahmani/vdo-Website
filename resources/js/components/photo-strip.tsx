@@ -10,8 +10,9 @@ interface PhotoStripProps {
 }
 
 export default function PhotoStrip({ photos: fallback }: PhotoStripProps) {
-    const { heroPhotos } = usePage().props as {
+    const { heroPhotos, heroBackground } = usePage().props as {
         heroPhotos?: PhotoStripPhoto[]
+        heroBackground?: string | null
     }
     const photos =
         heroPhotos && heroPhotos.length === 3 && heroPhotos.every((p) => p.src)
@@ -19,7 +20,10 @@ export default function PhotoStrip({ photos: fallback }: PhotoStripProps) {
             : fallback
 
     return (
-        <section className="bg-gray-100 pb-10 pt-6">
+        <section
+            className="pb-10 pt-6"
+            style={heroBackground ? { backgroundColor: heroBackground } : undefined}
+        >
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
                     {photos.map((photo, i) => (

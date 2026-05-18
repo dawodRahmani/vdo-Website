@@ -16,6 +16,7 @@ interface Commitment {
     body: string
     card_svg_path: string | null
     card_svg_url: string | null
+    size_scale?: number
     order: number
     is_active: boolean
 }
@@ -25,6 +26,7 @@ interface Publication {
     title: string
     cover_path: string | null
     cover_url: string | null
+    size_scale?: number
     order: number
     is_active: boolean
 }
@@ -45,6 +47,7 @@ interface CommitDraft {
     body: string
     order: number
     is_active: boolean
+    size_scale: number
     file: File | null
     preview: string | null
     clear: boolean
@@ -54,6 +57,7 @@ interface PubDraft {
     title: string
     order: number
     is_active: boolean
+    size_scale: number
     file: File | null
     preview: string | null
     clear: boolean
@@ -65,6 +69,7 @@ function commitDraft(c: Commitment): CommitDraft {
         body: c.body,
         order: c.order,
         is_active: c.is_active,
+        size_scale: c.size_scale ?? 100,
         file: null,
         preview: null,
         clear: false,
@@ -76,6 +81,7 @@ function pubDraft(p: Publication): PubDraft {
         title: p.title,
         order: p.order,
         is_active: p.is_active,
+        size_scale: p.size_scale ?? 100,
         file: null,
         preview: null,
         clear: false,
@@ -170,6 +176,7 @@ export default function AdminCommitments() {
             body: d.body,
             order: d.order,
             is_active: d.is_active ? 1 : 0,
+            size_scale: d.size_scale,
             clear_card_svg: d.clear ? 1 : 0,
         }
         if (d.file) payload.card_svg_file = d.file
@@ -237,6 +244,7 @@ export default function AdminCommitments() {
             title: d.title,
             order: d.order,
             is_active: d.is_active ? 1 : 0,
+            size_scale: d.size_scale,
             clear_cover: d.clear ? 1 : 0,
         }
         if (d.file) payload.cover_file = d.file
@@ -516,6 +524,32 @@ export default function AdminCommitments() {
                                         />
                                     </div>
 
+                                    <div className="flex items-center gap-3">
+                                        <Label className="w-10 text-xs">
+                                            Size
+                                        </Label>
+                                        <input
+                                            type="range"
+                                            min={50}
+                                            max={200}
+                                            step={5}
+                                            value={d.size_scale}
+                                            onChange={(e) =>
+                                                updateCDraft(c.id, {
+                                                    size_scale:
+                                                        parseInt(
+                                                            e.target.value,
+                                                            10,
+                                                        ) || 100,
+                                                })
+                                            }
+                                            className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                        />
+                                        <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                            {d.size_scale}%
+                                        </span>
+                                    </div>
+
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-3">
                                             <div className="flex items-center gap-2">
@@ -740,6 +774,31 @@ export default function AdminCommitments() {
                                                     })
                                                 }
                                             />
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Label className="w-10 text-xs">
+                                                Size
+                                            </Label>
+                                            <input
+                                                type="range"
+                                                min={50}
+                                                max={200}
+                                                step={5}
+                                                value={d.size_scale}
+                                                onChange={(e) =>
+                                                    updatePDraft(p.id, {
+                                                        size_scale:
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10,
+                                                            ) || 100,
+                                                    })
+                                                }
+                                                className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                            />
+                                            <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                                {d.size_scale}%
+                                            </span>
                                         </div>
                                         <div className="flex items-center justify-between gap-2">
                                             <div className="flex items-center gap-2">

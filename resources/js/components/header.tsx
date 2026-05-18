@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, usePage } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import { ChevronDown, ChevronRight, Menu, Search, User, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -28,27 +28,6 @@ const navItems: NavItem[] = [
     {
         title: 'Strategic Priorities',
         items: [
-            { title: 'Education', href: '/strategic-priorities/education' },
-            {
-                title: 'Economic Growth',
-                href: '/strategic-priorities/economic-growth',
-            },
-            {
-                title: 'Rural Development',
-                href: '/strategic-priorities/rural-development',
-            },
-            {
-                title: 'Health and Nutrition',
-                href: '/strategic-priorities/health-and-nutrition',
-            },
-            {
-                title: 'Emergency Response',
-                href: '/strategic-priorities/emergency-response',
-            },
-            {
-                title: "VDO's Cross Cutting Areas",
-                href: '/strategic-priorities/cross-cutting-areas',
-            },
             {
                 title: 'Target Group',
                 items: [
@@ -65,6 +44,27 @@ const navItems: NavItem[] = [
                         href: '/strategic-priorities/tertiary-audience',
                     },
                 ],
+            },
+            {
+                title: "VDO's Cross Cutting Areas",
+                href: '/strategic-priorities/cross-cutting-areas',
+            },
+            { title: 'Education', href: '/strategic-priorities/education' },
+            {
+                title: 'Economic Growth',
+                href: '/strategic-priorities/economic-growth',
+            },
+            {
+                title: 'Rural Development',
+                href: '/strategic-priorities/rural-development',
+            },
+            {
+                title: 'Health and Nutrition',
+                href: '/strategic-priorities/health-and-nutrition',
+            },
+            {
+                title: 'Emergency Response',
+                href: '/strategic-priorities/emergency-response',
             },
         ],
     },
@@ -176,7 +176,10 @@ export default function Header() {
                     <img
                         src={settings.logo_url ?? '/svg/logo.png'}
                         alt="VDO Vision"
-                        className="h-16 w-auto object-contain md:h-[72px]"
+                        className="w-auto object-contain"
+                        style={{
+                            height: `${settings.logo_height ?? 72}px`,
+                        }}
                     />
                 </Link>
 
@@ -185,7 +188,7 @@ export default function Header() {
                         {/* Blue bar */}
                         <div className="mt-2 flex h-8 w-full items-center justify-between gap-4 bg-[rgb(62,64,149)] px-3 shadow-sm md:h-10">
                             {/* Desktop nav */}
-                            <nav className="hidden lg:flex">
+                            <nav className="hidden font-[Arial,sans-serif] lg:flex">
                                 <ul className="flex items-center gap-1 xl:gap-2">
                                     {navItems.map((item) => {
                                         const active = item.href
@@ -398,7 +401,12 @@ export default function Header() {
                                 <form
                                     onSubmit={(e) => {
                                         e.preventDefault()
-                                        // Search submission handled later.
+                                        const q = searchQuery.trim()
+                                        if (q.length < 2) return
+                                        router.visit(
+                                            `/search?q=${encodeURIComponent(q)}`,
+                                        )
+                                        setSearchOpen(false)
                                     }}
                                     className="flex items-center gap-2"
                                 >
@@ -440,7 +448,7 @@ export default function Header() {
                         <SheetTitle className="text-white">Menu</SheetTitle>
                     </SheetHeader>
 
-                    <nav className="px-2 py-3">
+                    <nav className="px-2 py-3 font-[Arial,sans-serif]">
                         <ul className="flex flex-col gap-1">
                             {navItems.map((item) => {
                                 const active = item.href

@@ -33,12 +33,18 @@ Route::get('/', function () use ($heroPhotos) {
     return Inertia::render('home', [
         'canRegister' => Features::enabled(Features::registration()),
         'heroPhotos' => $heroPhotos('home'),
+        'heroSlides' => \App\Models\HomeHeroSlide::active()->ordered()->get()
+            ->map(fn ($s) => $s->toSlidePayload()),
         'impactStats' => \App\Models\HomeImpactStat::ordered()->get(),
         'priorityAreas' => \App\Models\HomePriorityArea::ordered()->get(),
         'homeCommitments' => \App\Models\HomeCommitment::ordered()->get(),
         'regionsImage' => (function () {
             $s = \App\Models\HomeSetting::current();
-            return ['src' => $s->regions_image_url, 'alt' => $s->regions_image_alt ?? ''];
+            return [
+                'src' => $s->regions_image_url,
+                'alt' => $s->regions_image_alt ?? '',
+                'max_width' => $s->regions_image_max_width,
+            ];
         })(),
         'latestNews' => \App\Models\NewsPost::published()->latest()->limit(2)->get()
             ->map(fn ($p) => [
@@ -133,11 +139,13 @@ Route::get('/our-commitment', fn () => Inertia::render('our-commitment', [
         'title' => $c->title,
         'body' => $c->body,
         'card_svg_url' => $c->card_svg_url,
+        'size_scale' => (int) ($c->size_scale ?? 100),
     ]),
     'publications' => \App\Models\CommitmentPublication::active()->ordered()->get()->map(fn ($p) => [
         'id' => $p->id,
         'title' => $p->title,
         'cover_url' => $p->cover_url,
+        'size_scale' => (int) ($p->size_scale ?? 100),
     ]),
 ]))->name('our-commitment');
 Route::get('/vdo-resilience', fn () => Inertia::render('vdo-resilience', [
@@ -176,6 +184,8 @@ Route::get('/donate', fn () => Inertia::render('donate', [
     'heroPhotos' => HeroSection::photosFor('donate'),
     'items' => \App\Models\DonationItem::active()->ordered()->get(),
 ]))->name('donate');
+
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -248,6 +258,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('home-page/priorities/{priority}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updatePriority'])->name('home-page.priorities.update');
     Route::post('home-page/commitments/{commitment}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateCommitment'])->name('home-page.commitments.update');
     Route::post('home-page/regions', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateRegions'])->name('home-page.regions.update');
+    Route::post('home-page/hero-slides', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'storeHeroSlide'])->name('home-page.hero-slides.store');
+    Route::post('home-page/hero-slides/{slide}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateHeroSlide'])->name('home-page.hero-slides.update');
+    Route::delete('home-page/hero-slides/{slide}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'destroyHeroSlide'])->name('home-page.hero-slides.destroy');
 
     Route::get('news', [\App\Http\Controllers\Admin\AdminNewsController::class, 'index'])->name('news');
     Route::post('news', [\App\Http\Controllers\Admin\AdminNewsController::class, 'store'])->name('news.store');
@@ -272,6 +285,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('resilience/{item}', [\App\Http\Controllers\Admin\AdminResilienceController::class, 'update'])->name('resilience.update');
     Route::delete('resilience/{item}', [\App\Http\Controllers\Admin\AdminResilienceController::class, 'destroy'])->name('resilience.destroy');
 
+    Route::get('page-backgrounds', [\App\Http\Controllers\Admin\AdminPageBackgroundController::class, 'index'])->name('page-backgrounds');
+    Route::patch('page-backgrounds/{page}', [\App\Http\Controllers\Admin\AdminPageBackgroundController::class, 'update'])->name('page-backgrounds.update');
+
     Route::get('opportunities', [\App\Http\Controllers\Admin\AdminOpportunityController::class, 'index'])->name('opportunities');
     Route::post('opportunities/categories/{category}', [\App\Http\Controllers\Admin\AdminOpportunityController::class, 'updateCategory'])->name('opportunities.categories.update');
     Route::post('opportunities/listings', [\App\Http\Controllers\Admin\AdminOpportunityController::class, 'storeListing'])->name('opportunities.listings.store');
@@ -294,6 +310,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('mail-settings', [\App\Http\Controllers\Admin\AdminMailSettingsController::class, 'edit'])->name('mail-settings');
     Route::patch('mail-settings', [\App\Http\Controllers\Admin\AdminMailSettingsController::class, 'update'])->name('mail-settings.update');
     Route::post('mail-settings/test', [\App\Http\Controllers\Admin\AdminMailSettingsController::class, 'sendTest'])->name('mail-settings.test');
+
+    Route::get('users', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('users');
+    Route::post('users', [\App\Http\Controllers\Admin\AdminUserController::class, 'store'])->name('users.store');
+    Route::patch('users/{user}', [\App\Http\Controllers\Admin\AdminUserController::class, 'update'])->name('users.update');
+    Route::patch('users/{user}/password', [\App\Http\Controllers\Admin\AdminUserController::class, 'updatePassword'])->name('users.password.update');
+    Route::delete('users/{user}', [\App\Http\Controllers\Admin\AdminUserController::class, 'destroy'])->name('users.destroy');
 
     Route::get('site/header', [\App\Http\Controllers\Admin\AdminSiteSettingsController::class, 'editHeader'])->name('site.header');
     Route::post('site/header', [\App\Http\Controllers\Admin\AdminSiteSettingsController::class, 'updateHeader'])->name('site.header.update');

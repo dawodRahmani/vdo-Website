@@ -16,16 +16,19 @@ class MediaItem extends Model
         'title',
         'image',
         'video_url',
+        'video_path',
         'order',
         'is_active',
+        'size_scale',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
+        'size_scale' => 'integer',
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'video_file_url'];
 
     protected function imageUrl(): Attribute
     {
@@ -35,6 +38,17 @@ class MediaItem extends Model
                 return $this->image;
             }
             return '/storage/'.ltrim($this->image, '/');
+        });
+    }
+
+    protected function videoFileUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            if (! $this->video_path) return null;
+            if (str_starts_with($this->video_path, '/') || str_starts_with($this->video_path, 'http')) {
+                return $this->video_path;
+            }
+            return '/storage/'.ltrim($this->video_path, '/');
         });
     }
 

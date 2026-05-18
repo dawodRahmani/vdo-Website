@@ -87,9 +87,11 @@ interface VdoResilienceProps {
 function CarouselArrowButton({
     direction,
     onClick,
+    disabled = false,
 }: {
     direction: 'prev' | 'next'
     onClick: () => void
+    disabled?: boolean
 }) {
     const Icon = direction === 'prev' ? ChevronLeft : ChevronRight
     return (
@@ -97,7 +99,8 @@ function CarouselArrowButton({
             type="button"
             aria-label={direction === 'prev' ? 'Previous' : 'Next'}
             onClick={onClick}
-            className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-gray-300 bg-white text-gray-500 shadow hover:bg-gray-100"
+            disabled={disabled}
+            className="flex h-10 w-10 flex-none items-center justify-center rounded-full border border-gray-300 bg-white text-gray-500 shadow transition-colors hover:bg-[rgb(189,191,193)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
         >
             <Icon className="h-5 w-5" />
         </button>
@@ -106,22 +109,63 @@ function CarouselArrowButton({
 
 function useHorizontalScroll() {
     const ref = useRef<HTMLDivElement>(null)
+    const [canPrev, setCanPrev] = useState(false)
+    const [canNext, setCanNext] = useState(false)
+
+    const recalc = () => {
+        const el = ref.current
+        if (!el) return
+        const maxScroll = el.scrollWidth - el.clientWidth
+        setCanPrev(el.scrollLeft > 1)
+        setCanNext(el.scrollLeft < maxScroll - 1)
+    }
+
+    useEffect(() => {
+        const el = ref.current
+        if (!el) return
+        recalc()
+        el.addEventListener('scroll', recalc, { passive: true })
+        const ro = new ResizeObserver(recalc)
+        ro.observe(el)
+        for (const child of Array.from(el.children)) ro.observe(child)
+        return () => {
+            el.removeEventListener('scroll', recalc)
+            ro.disconnect()
+        }
+    }, [])
+
     const scrollBy = (direction: 'prev' | 'next') => {
         const el = ref.current
         if (!el) return
         const firstChild = el.firstElementChild as HTMLElement | null
-        const step = firstChild
-            ? firstChild.getBoundingClientRect().width + 24
-            : el.clientWidth
-        el.scrollBy({
-            left: direction === 'next' ? step : -step,
-            behavior: 'smooth',
-        })
+        if (!firstChild) {
+            el.scrollBy({
+                left: direction === 'next' ? el.clientWidth : -el.clientWidth,
+                behavior: 'smooth',
+            })
+            return
+        }
+        const second = firstChild.nextElementSibling as HTMLElement | null
+        const itemWidth = firstChild.getBoundingClientRect().width
+        const gap = second
+            ? second.getBoundingClientRect().left -
+              firstChild.getBoundingClientRect().right
+            : 8
+        const step = itemWidth + Math.max(gap, 0)
+        const maxScroll = el.scrollWidth - el.clientWidth
+        const target =
+            direction === 'next'
+                ? Math.min(el.scrollLeft + step, maxScroll)
+                : Math.max(el.scrollLeft - step, 0)
+        el.scrollTo({ left: target, behavior: 'smooth' })
     }
+
     return {
         ref,
         onPrev: () => scrollBy('prev'),
         onNext: () => scrollBy('next'),
+        canPrev,
+        canNext,
     }
 }
 
@@ -143,20 +187,21 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
         <SiteLayout title="VDO's Resilience">
             <PhotoStrip photos={photos} />
 
-            {/* Our Capacity + booklets */}
+            {/* Annual Organization Resilience Publication + booklets */}
             {capacities.length > 0 && (
-                <section className="bg-gray-100 py-8">
+                <section className="bg-[rgb(189,191,193)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="our-capacity"
                             className="mb-6 scroll-mt-24 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl"
                         >
-                            Our Capacity:
+                            Annual Organization Resilience Publication:
                         </h2>
                         <div className="flex items-center gap-3 md:gap-4">
                             <CarouselArrowButton
                                 direction="prev"
                                 onClick={capacity.onPrev}
+                                disabled={!capacity.canPrev}
                             />
                             <div
                                 ref={capacity.ref}
@@ -167,7 +212,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
                                     return (
                                         <div
                                             key={c.id}
-                                            className="flex w-[90%] flex-none snap-start flex-col items-center sm:w-[calc(50%-4px)] md:w-[calc(33.333%-6px)] lg:w-[calc(25%-6px)]"
+                                            className="flex w-[80%] flex-none snap-start flex-col items-center sm:w-[calc(50%-4px)] md:w-[calc(33.333%-6px)]"
                                         >
                                             {url && <CapacitySvg url={url} />}
                                             {url && (
@@ -190,6 +235,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
                             <CarouselArrowButton
                                 direction="next"
                                 onClick={capacity.onNext}
+                                disabled={!capacity.canNext}
                             />
                         </div>
                     </div>
@@ -198,7 +244,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Policies grid */}
             {policies.length > 0 && (
-                <section className="bg-gray-100 py-8">
+                <section className="bg-[rgb(189,191,193)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="policies"
@@ -212,16 +258,14 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
                                     key={p.id}
                                     className="md:border-l-2 md:border-dotted md:border-[rgb(0,175,239)]/70 md:pl-6 md:[&:nth-child(2n+1)]:border-l-0 md:[&:nth-child(2n+1)]:pl-0 lg:[&:nth-child(2n+1)]:border-l-2 lg:[&:nth-child(2n+1)]:pl-6 lg:[&:nth-child(3n+1)]:border-l-0 lg:[&:nth-child(3n+1)]:pl-0"
                                 >
-                                    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[rgb(0,175,239)] shadow-sm">
-                                        {p.image_url && (
-                                            <img
-                                                src={encodeURI(p.image_url)}
-                                                alt=""
-                                                className="h-8 w-8"
-                                                draggable={false}
-                                            />
-                                        )}
-                                    </div>
+                                    {p.image_url && (
+                                        <img
+                                            src={encodeURI(p.image_url)}
+                                            alt=""
+                                            className="mb-4 h-10 w-10 object-contain"
+                                            draggable={false}
+                                        />
+                                    )}
                                     <h3 className="text-sm font-bold text-[rgb(62,64,149)]">
                                         {p.title}
                                     </h3>
@@ -237,7 +281,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Programmatic Approach */}
             {programmatic && (
-                <section className="bg-gray-100 py-8">
+                <section className="bg-[rgb(189,191,193)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="programmatic-approach"
@@ -272,7 +316,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Contributing to Collective Resilience */}
             {collective && (
-                <section className="bg-gray-100 py-8 pb-14">
+                <section className="bg-[rgb(189,191,193)] py-8 pb-14">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="collective-resilience"

@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\HeroSection;
+use App\Models\PageBackground;
 use App\Models\SiteSetting;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -40,6 +42,9 @@ class HandleInertiaRequests extends Middleware
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
         $settings = SiteSetting::current();
+        $routeName = optional($request->route())->getName();
+        $pageBackground = $routeName ? PageBackground::colorFor($routeName) : PageBackground::DEFAULT_COLOR;
+        $heroBackground = $routeName ? HeroSection::backgroundColorFor($routeName) : null;
 
         return [
             ...parent::share($request),
@@ -51,6 +56,7 @@ class HandleInertiaRequests extends Middleware
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'siteSettings' => [
                 'logo_url' => $settings->logoUrl(),
+                'logo_height' => $settings->logo_height,
                 'contact_phone' => $settings->contact_phone,
                 'contact_email' => $settings->contact_email,
                 'social_facebook_url' => $settings->social_facebook_url,
@@ -64,6 +70,8 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'reportSent' => fn () => $request->session()->get('reportSent'),
             ],
+            'pageBackground' => $pageBackground,
+            'heroBackground' => $heroBackground,
         ];
     }
 }

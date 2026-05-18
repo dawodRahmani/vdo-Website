@@ -26,9 +26,11 @@ import {
     PanelTop,
     Mail,
     MapPin,
+    Palette,
     Shield,
     ShieldCheck,
     Target,
+    Users,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -90,6 +92,16 @@ const adminNavItems: NavItem[] = [
         title: 'Email Settings',
         href: '/admin/mail-settings',
         icon: Mail,
+    },
+    {
+        title: 'Users',
+        href: '/admin/users',
+        icon: Users,
+    },
+    {
+        title: 'Page Colors',
+        href: '/admin/page-backgrounds',
+        icon: Palette,
     },
 ];
 

@@ -4,12 +4,15 @@ import { CheckCircle2 } from 'lucide-react'
 import {
     Bullets,
     PageSection,
+    Paragraph,
     SectionHeading,
     photos,
 } from '@/components/strategic-priorities/blocks'
 import {
+    paragraphs,
     pickBullets,
     pickHeading,
+    renderRich,
     type SpContent,
 } from '@/components/strategic-priorities/dynamic'
 
@@ -23,7 +26,14 @@ const defaultBullets = [
 
 export default function ContributionProject({ content }: { content?: SpContent }) {
     const title = pickHeading(content?.heading, 'VDO Contribution Project:')
-    const items = pickBullets(content?.bullets, defaultBullets)
+    const body = paragraphs(content?.body ?? '')
+    const between = paragraphs(content?.between_body ?? '')
+    const bullets = pickBullets(content?.bullets, defaultBullets)
+    const achievementsHeading = content?.achievements_heading?.trim() ?? ''
+    const infographic = content?.infographic_url ?? ''
+    const infographicAlt = content?.infographic_alt ?? ''
+    const beneficiary = content?.beneficiary_url ?? ''
+    const beneficiaryAlt = content?.beneficiary_alt ?? ''
 
     return (
         <SiteLayout title="VDO's Contribution Project">
@@ -31,7 +41,49 @@ export default function ContributionProject({ content }: { content?: SpContent }
 
             <PageSection>
                 <SectionHeading icon={CheckCircle2} title={title} />
-                <Bullets items={items} />
+
+                {body.map((p, i) => (
+                    <Paragraph key={i}>{p}</Paragraph>
+                ))}
+
+                {infographic && (
+                    <div className="mt-6 flex justify-center">
+                        <img
+                            src={infographic}
+                            alt={infographicAlt}
+                            className="h-auto w-full max-w-3xl"
+                        />
+                    </div>
+                )}
+
+                {between.length > 0 && (
+                    <div className="mt-4 space-y-3">
+                        {between.map((p, i) => (
+                            <Paragraph key={i}>{renderRich(p)}</Paragraph>
+                        ))}
+                    </div>
+                )}
+
+                {bullets.length > 0 && (
+                    <div className="mt-6">
+                        {achievementsHeading && (
+                            <h3 className="text-base font-bold text-[rgb(62,64,149)]">
+                                {achievementsHeading}
+                            </h3>
+                        )}
+                        <Bullets items={bullets} />
+                    </div>
+                )}
+
+                {beneficiary && (
+                    <div className="mt-6 flex justify-center">
+                        <img
+                            src={beneficiary}
+                            alt={beneficiaryAlt}
+                            className="h-auto w-full max-w-xl"
+                        />
+                    </div>
+                )}
             </PageSection>
         </SiteLayout>
     )

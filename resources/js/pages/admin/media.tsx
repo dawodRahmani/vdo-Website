@@ -18,8 +18,11 @@ interface MediaItem {
     image: string | null
     image_url: string | null
     video_url: string | null
+    video_path: string | null
+    video_file_url: string | null
     order: number
     is_active: boolean
+    size_scale: number
 }
 
 interface AdminMediaProps {
@@ -43,8 +46,12 @@ export default function AdminMedia() {
     const [items, setItems] = useState<MediaItem[]>(props.items)
     const [savingId, setSavingId] = useState<number | null>(null)
     const [pendingFiles, setPendingFiles] = useState<Record<number, File>>({})
+    const [pendingVideoFiles, setPendingVideoFiles] = useState<
+        Record<number, File>
+    >({})
     const [search, setSearch] = useState('')
     const fileInputs = useRef<Record<number, HTMLInputElement | null>>({})
+    const videoInputs = useRef<Record<number, HTMLInputElement | null>>({})
 
     const update = (id: number, patch: Partial<MediaItem>) => {
         setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)))
@@ -59,9 +66,12 @@ export default function AdminMedia() {
             video_url: item.video_url ?? '',
             order: item.order,
             is_active: item.is_active ? 1 : 0,
+            size_scale: item.size_scale ?? 100,
         }
         const file = pendingFiles[item.id]
         if (file) payload.image_file = file
+        const vfile = pendingVideoFiles[item.id]
+        if (vfile) payload.video_file = vfile
 
         router.post(`/admin/media/${item.id}`, payload, {
             preserveScroll: true,
@@ -72,12 +82,52 @@ export default function AdminMedia() {
                     delete next[item.id]
                     return next
                 })
+                setPendingVideoFiles((p) => {
+                    const next = { ...p }
+                    delete next[item.id]
+                    return next
+                })
                 if (fileInputs.current[item.id]) {
                     fileInputs.current[item.id]!.value = ''
+                }
+                if (videoInputs.current[item.id]) {
+                    videoInputs.current[item.id]!.value = ''
                 }
             },
             onFinish: () => setSavingId(null),
         })
+    }
+
+    const clearVideo = (item: MediaItem) => {
+        setSavingId(item.id)
+        router.post(
+            `/admin/media/${item.id}`,
+            {
+                _method: 'patch',
+                kind: item.kind,
+                title: item.title ?? '',
+                video_url: item.video_url ?? '',
+                order: item.order,
+                is_active: item.is_active ? 1 : 0,
+                size_scale: item.size_scale ?? 100,
+                clear_video: 1,
+            },
+            {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    setPendingVideoFiles((p) => {
+                        const next = { ...p }
+                        delete next[item.id]
+                        return next
+                    })
+                    if (videoInputs.current[item.id]) {
+                        videoInputs.current[item.id]!.value = ''
+                    }
+                },
+                onFinish: () => setSavingId(null),
+            },
+        )
     }
 
     const clearImage = (item: MediaItem) => {
@@ -91,6 +141,7 @@ export default function AdminMedia() {
                 video_url: item.video_url ?? '',
                 order: item.order,
                 is_active: item.is_active ? 1 : 0,
+                size_scale: item.size_scale ?? 100,
                 clear_image: 1,
             },
             {
@@ -121,6 +172,7 @@ export default function AdminMedia() {
                 video_url: '',
                 order: sameKind.length + 1,
                 is_active: true,
+                size_scale: 100,
             },
             { preserveScroll: true },
         )
@@ -208,7 +260,7 @@ export default function AdminMedia() {
 
                 <MediaListSection
                     title="Documentaries"
-                    description="Each card shows a play button and a title on the documentaries carousel."
+                    description="Paste a YouTube URL OR upload a video file (mp4/webm/mov, max 100 MB). Add a thumbnail to show on the card. Clicking the card opens the video in a player on the site."
                     kind="documentary"
                     items={documentaries}
                     onAdd={() => add('documentary')}
@@ -219,12 +271,20 @@ export default function AdminMedia() {
                         setPendingFiles((p) => ({ ...p, [id]: file }))
                     }
                     onClearImage={clearImage}
+                    onPickVideo={(id, file) =>
+                        setPendingVideoFiles((p) => ({ ...p, [id]: file }))
+                    }
+                    onClearVideo={clearVideo}
                     pendingFiles={pendingFiles}
+                    pendingVideoFiles={pendingVideoFiles}
                     fileInputs={fileInputs}
+                    videoInputs={videoInputs}
                     savingId={savingId}
                     searchActive={searchActive}
-                    showImage={false}
+                    showImage={true}
                     showVideoUrl={true}
+                    showVideoUpload={true}
+                    imageLabelOverride="Thumbnail (shown on the card)"
                 />
 
                 <MediaListSection
@@ -251,7 +311,7 @@ export default function AdminMedia() {
 
                 <MediaListSection
                     title="Publications"
-                    description="Each card has a cover image (which is also used as the download)."
+                    description="Each card has a cover image (which is also used as the download). Card size can be scaled per item."
                     kind="publication"
                     items={publications}
                     onAdd={() => add('publication')}
@@ -268,6 +328,7 @@ export default function AdminMedia() {
                     searchActive={searchActive}
                     showImage={true}
                     showVideoUrl={false}
+                    showSize={true}
                 />
             </div>
         </AppLayout>
@@ -285,13 +346,20 @@ function MediaListSection({
     onDelete,
     onPickFile,
     onClearImage,
+    onPickVideo,
+    onClearVideo,
     pendingFiles,
+    pendingVideoFiles,
     fileInputs,
+    videoInputs,
     savingId,
     searchActive,
     showImage,
     showVideoUrl,
+    showVideoUpload = false,
+    showSize = false,
     hideTitle = false,
+    imageLabelOverride,
 }: {
     title: string
     description: string
@@ -303,13 +371,22 @@ function MediaListSection({
     onDelete: (item: MediaItem) => void
     onPickFile: (id: number, file: File) => void
     onClearImage: (item: MediaItem) => void
+    onPickVideo?: (id: number, file: File) => void
+    onClearVideo?: (item: MediaItem) => void
     pendingFiles: Record<number, File>
+    pendingVideoFiles?: Record<number, File>
     fileInputs: React.MutableRefObject<Record<number, HTMLInputElement | null>>
+    videoInputs?: React.MutableRefObject<
+        Record<number, HTMLInputElement | null>
+    >
     savingId: number | null
     searchActive: boolean
     showImage: boolean
     showVideoUrl: boolean
+    showVideoUpload?: boolean
+    showSize?: boolean
     hideTitle?: boolean
+    imageLabelOverride?: string
 }) {
     if (searchActive && items.length === 0) return null
 
@@ -414,9 +491,10 @@ function MediaListSection({
                                 {showImage && (
                                     <div className="space-y-2 md:col-span-2">
                                         <Label>
-                                            {kind === 'publication'
-                                                ? 'Cover image'
-                                                : 'Image'}
+                                            {imageLabelOverride ??
+                                                (kind === 'publication'
+                                                    ? 'Cover image'
+                                                    : 'Image')}
                                         </Label>
                                         <div className="flex flex-wrap items-center gap-3">
                                             {previewImg && (
@@ -462,6 +540,77 @@ function MediaListSection({
                                     </div>
                                 )}
 
+                                {showVideoUpload && (
+                                    <div className="space-y-2 md:col-span-2">
+                                        <Label>
+                                            Upload video file (alternative to
+                                            YouTube URL)
+                                        </Label>
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            {item.video_file_url && (
+                                                <video
+                                                    src={item.video_file_url}
+                                                    className="h-20 w-32 rounded border border-border bg-black object-cover"
+                                                    muted
+                                                />
+                                            )}
+                                            <input
+                                                ref={(el) => {
+                                                    if (videoInputs) {
+                                                        videoInputs.current[
+                                                            item.id
+                                                        ] = el
+                                                    }
+                                                }}
+                                                type="file"
+                                                accept="video/mp4,video/webm,video/quicktime,video/ogg"
+                                                onChange={(e) => {
+                                                    const f =
+                                                        e.target.files?.[0]
+                                                    if (!f || !onPickVideo)
+                                                        return
+                                                    onPickVideo(item.id, f)
+                                                }}
+                                                className="text-sm"
+                                            />
+                                            {item.video_path && onClearVideo && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        onClearVideo(item)
+                                                    }
+                                                    disabled={
+                                                        savingId === item.id
+                                                    }
+                                                >
+                                                    Remove video file
+                                                </Button>
+                                            )}
+                                        </div>
+                                        {pendingVideoFiles?.[item.id] && (
+                                            <p className="text-xs text-muted-foreground">
+                                                Selected:{' '}
+                                                {pendingVideoFiles[item.id]
+                                                    .name}{' '}
+                                                (
+                                                {(
+                                                    pendingVideoFiles[item.id]
+                                                        .size /
+                                                    1024 /
+                                                    1024
+                                                ).toFixed(1)}{' '}
+                                                MB)
+                                            </p>
+                                        )}
+                                        <p className="text-[10px] text-muted-foreground">
+                                            MP4 / WebM / MOV up to 100 MB. If an
+                                            uploaded file is present, it
+                                            overrides the YouTube URL.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="space-y-1">
                                     <Label>Order</Label>
                                     <Input
@@ -479,6 +628,65 @@ function MediaListSection({
                                         }
                                     />
                                 </div>
+
+                                {showSize && (
+                                    <div className="space-y-1 md:col-span-2">
+                                        <Label>
+                                            Card size: {item.size_scale ?? 100}%
+                                        </Label>
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="range"
+                                                min={40}
+                                                max={150}
+                                                value={item.size_scale ?? 100}
+                                                onChange={(e) =>
+                                                    onChange(item.id, {
+                                                        size_scale:
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10,
+                                                            ) || 100,
+                                                    })
+                                                }
+                                                className="h-2 flex-1 cursor-pointer"
+                                            />
+                                            <Input
+                                                type="number"
+                                                min={40}
+                                                max={150}
+                                                value={item.size_scale ?? 100}
+                                                onChange={(e) => {
+                                                    const v = parseInt(
+                                                        e.target.value,
+                                                        10,
+                                                    )
+                                                    if (Number.isNaN(v)) {
+                                                        onChange(item.id, {
+                                                            size_scale: 100,
+                                                        })
+                                                    } else {
+                                                        onChange(item.id, {
+                                                            size_scale:
+                                                                Math.min(
+                                                                    150,
+                                                                    Math.max(
+                                                                        40,
+                                                                        v,
+                                                                    ),
+                                                                ),
+                                                        })
+                                                    }
+                                                }}
+                                                className="w-20"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] text-muted-foreground">
+                                            40–150%. Default 100. Click "Save"
+                                            to apply.
+                                        </p>
+                                    </div>
+                                )}
 
                                 <div className="flex items-end">
                                     <label className="flex items-center gap-2 text-sm">

@@ -1,6 +1,5 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
-import CoordinationDiagram from '@/components/about/coordination-diagram'
 
 const photos = [
     {
@@ -59,8 +58,10 @@ interface AboutProps {
     content?: AboutContent
 }
 
+// undefined → prop wasn't sent at all (use hardcoded fallback so the page still renders).
+// null or "" → admin cleared the field intentionally; show nothing.
 function paragraphs(value: string | null | undefined, fallback: string): string[] {
-    const source = (value && value.trim().length > 0 ? value : fallback) ?? ''
+    const source = value === undefined ? fallback : (value ?? '')
     return source
         .split(/\n{2,}/)
         .map((p) => p.trim())
@@ -68,7 +69,8 @@ function paragraphs(value: string | null | undefined, fallback: string): string[
 }
 
 function val(value: string | null | undefined, fallback: string): string {
-    return value && value.trim().length > 0 ? value : fallback
+    if (value === undefined) return fallback
+    return value ?? ''
 }
 
 export default function About({ content }: AboutProps) {
@@ -81,10 +83,6 @@ export default function About({ content }: AboutProps) {
 
     const historyHeading = val(content?.history_heading, 'History:')
     const historyBody = paragraphs(content?.history_body, defaultHistory)
-    const coordinationIntro = val(
-        content?.coordination_intro,
-        "VDO's credibility is further strengthened by its active membership and leadership roles in major coordination bodies:",
-    )
     const coordinationOutro = val(
         content?.coordination_outro,
         'These roles allow VDO to shape policies, influence programming priorities, and advocate for principled, needs-driven humanitarian response in Afghanistan.',
@@ -163,40 +161,16 @@ export default function About({ content }: AboutProps) {
 
                     {/* Coordination bodies */}
                     <div className="mt-12">
-                        <p className="mb-10 text-center text-sm font-bold text-gray-900 md:text-base">
-                            {coordinationIntro}
-                        </p>
-
-                        {/* Coordination bodies diagram */}
-                        <div className="mx-auto max-w-4xl">
-                            <CoordinationDiagram />
-                        </div>
-
-                        <p className="mt-10 text-sm leading-relaxed text-gray-700 md:text-[15px]">
+                        <p className="text-sm leading-relaxed text-gray-700 md:text-[15px]">
                             {coordinationOutro}
                         </p>
                     </div>
                 </div>
             </section>
 
-            {/* Mission, Vision, Looking Ahead */}
+            {/* Vision, Mission, Looking Ahead */}
             <section className="bg-gray-100 pb-14 pt-2">
                 <div className="mx-auto max-w-[1240px] space-y-10 px-6 md:px-10 lg:px-14">
-                    {/* Mission */}
-                    <div className="flex items-start gap-4 md:gap-6">
-                        <img
-                            src="/svg/Missed Icons/About Us/03.svg"
-                            alt=""
-                            className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
-                        />
-                        <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
-                            <strong className="font-bold text-[rgb(62,64,149)]">
-                                {missionLead}
-                            </strong>{' '}
-                            {missionBody}
-                        </p>
-                    </div>
-
                     {/* Vision */}
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
@@ -212,6 +186,21 @@ export default function About({ content }: AboutProps) {
                         </p>
                     </div>
 
+                    {/* Mission */}
+                    <div className="flex items-start gap-4 md:gap-6">
+                        <img
+                            src="/svg/Missed Icons/About Us/03.svg"
+                            alt=""
+                            className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
+                        />
+                        <p className="text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
+                            <strong className="font-bold text-[rgb(62,64,149)]">
+                                {missionLead}
+                            </strong>{' '}
+                            {missionBody}
+                        </p>
+                    </div>
+
                     {/* Looking Ahead */}
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
@@ -220,12 +209,16 @@ export default function About({ content }: AboutProps) {
                             className="mt-1 h-8 w-8 flex-shrink-0 md:h-10 md:w-10"
                         />
                         <div className="flex-1">
-                            <h2 className="mb-4 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
-                                {lookingAheadHeading}
-                            </h2>
-                            <h3 className="mb-4 text-sm font-bold text-gray-900 md:text-base">
-                                {lookingAheadSub}
-                            </h3>
+                            {lookingAheadHeading && (
+                                <h2 className="mb-4 text-2xl font-semibold text-[rgb(62,64,149)] md:text-3xl">
+                                    {lookingAheadHeading}
+                                </h2>
+                            )}
+                            {lookingAheadSub && (
+                                <h3 className="mb-4 text-sm font-bold text-gray-900 md:text-base">
+                                    {lookingAheadSub}
+                                </h3>
+                            )}
                             <div className="space-y-4 text-justify text-sm leading-relaxed text-gray-700 md:text-[15px]">
                                 {lookingAheadBody.map((para, i) => (
                                     <p key={i}>{para}</p>
