@@ -1,8 +1,9 @@
+import DocumentReaderModal from '@/components/document-reader-modal'
 import PhotoStrip from '@/components/photo-strip'
 import SiteLayout from '@/layouts/site-layout'
 import { type SharedData } from '@/types'
 import { router, usePage } from '@inertiajs/react'
-import { Paperclip, X } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Download, Paperclip, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 interface HeroPhoto {
@@ -18,13 +19,18 @@ interface CommitmentItem {
     body: string
     card_svg_url: string | null
     size_scale?: number
+    offset_x?: number
+    offset_y?: number
 }
 
 interface Publication {
     id: number
     title: string
     cover_url: string | null
+    document_url: string | null
     size_scale?: number
+    offset_x?: number
+    offset_y?: number
 }
 
 interface PageProps {
@@ -75,6 +81,9 @@ export default function OurCommitmentPage({
 
     const items = commitments ?? []
     const pubs = publications ?? []
+    const [activeDocument, setActiveDocument] = useState<Publication | null>(
+        null,
+    )
 
     // Report form state
     const [subject, setSubject] = useState('')
@@ -130,7 +139,7 @@ export default function OurCommitmentPage({
             <PhotoStrip photos={photos} />
 
             <div
-                className="bg-gray-100"
+                className="bg-[rgb(245,245,245)]"
                 style={{
                     backgroundImage: 'url(/svg/Map.svg)',
                     backgroundSize: '100% auto',
@@ -149,6 +158,8 @@ export default function OurCommitmentPage({
                             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4">
                                 {items.map((c) => {
                                     const scale = (c.size_scale ?? 100) / 100
+                                    const ox = c.offset_x ?? 0
+                                    const oy = c.offset_y ?? 0
                                     return (
                                         <a
                                             key={c.id}
@@ -162,7 +173,7 @@ export default function OurCommitmentPage({
                                                     alt={c.title}
                                                     className="mx-auto h-auto w-full max-w-[150px] object-contain transition-transform duration-200"
                                                     style={{
-                                                        transform: `scale(${scale})`,
+                                                        transform: `translate(${ox}px, ${oy}px) scale(${scale})`,
                                                     }}
                                                     draggable={false}
                                                     loading="lazy"
@@ -178,6 +189,53 @@ export default function OurCommitmentPage({
                                 <h3 className="mb-3 text-base font-semibold text-[rgb(62,64,149)] md:text-lg">
                                     Make a Report:
                                 </h3>
+
+                                {justSent && (
+                                    <div
+                                        role="status"
+                                        aria-live="polite"
+                                        className="mb-4 flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 shadow-sm"
+                                    >
+                                        <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-600" />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold text-green-800">
+                                                Report sent
+                                            </p>
+                                            <p className="mt-0.5 text-xs text-green-700">
+                                                Thanks — we've received your
+                                                report and our team will follow
+                                                up if needed.
+                                            </p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setJustSent(false)}
+                                            aria-label="Dismiss"
+                                            className="rounded p-0.5 text-green-700 transition-colors hover:bg-green-100"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                )}
+
+                                {errors.report && !justSent && (
+                                    <div
+                                        role="alert"
+                                        aria-live="assertive"
+                                        className="mb-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 shadow-sm"
+                                    >
+                                        <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-semibold text-red-800">
+                                                Couldn't send your report
+                                            </p>
+                                            <p className="mt-0.5 text-xs text-red-700">
+                                                {errors.report}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <form
                                     onSubmit={handleSubmit}
                                     className="space-y-3"
@@ -254,16 +312,6 @@ export default function OurCommitmentPage({
                                             {errors.attachment}
                                         </p>
                                     )}
-                                    {errors.report && (
-                                        <p className="pl-20 text-xs text-red-600">
-                                            {errors.report}
-                                        </p>
-                                    )}
-                                    {justSent && (
-                                        <p className="pl-20 text-xs text-green-700">
-                                            Thanks — your report has been sent.
-                                        </p>
-                                    )}
                                     <input
                                         ref={fileInputRef}
                                         type="file"
@@ -306,26 +354,72 @@ export default function OurCommitmentPage({
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 {pubs.map((pub) => {
                                     const scale = (pub.size_scale ?? 100) / 100
+                                    const ox = pub.offset_x ?? 0
+                                    const oy = pub.offset_y ?? 0
+                                    const canOpen = !!pub.document_url
                                     return (
                                         <div
                                             key={pub.id}
-                                            className="mx-auto w-full max-w-[180px] rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md"
+                                            className="mx-auto flex w-full max-w-[180px] flex-col items-center"
                                         >
-                                            <div className="aspect-[3/4] w-full overflow-hidden bg-white">
-                                                {pub.cover_url && (
-                                                    <img
-                                                        src={encodeURI(
-                                                            pub.cover_url,
-                                                        )}
-                                                        alt={pub.title}
-                                                        className="h-full w-full object-contain transition-transform duration-200"
-                                                        style={{
-                                                            transform: `scale(${scale})`,
-                                                        }}
-                                                        loading="lazy"
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    canOpen &&
+                                                    setActiveDocument(pub)
+                                                }
+                                                disabled={!canOpen}
+                                                aria-label={
+                                                    canOpen
+                                                        ? `Read ${pub.title}`
+                                                        : pub.title
+                                                }
+                                                className="group w-full rounded-sm border border-dashed border-gray-400 bg-white p-2 text-left shadow-sm transition-shadow hover:shadow-md disabled:cursor-default"
+                                            >
+                                                <div className="aspect-[3/4] w-full overflow-hidden bg-white">
+                                                    {pub.cover_url && (
+                                                        <img
+                                                            src={encodeURI(
+                                                                pub.cover_url,
+                                                            )}
+                                                            alt={pub.title}
+                                                            className="h-full w-full object-contain transition-transform duration-200 group-enabled:group-hover:scale-[1.03]"
+                                                            style={{
+                                                                transform: `translate(${ox}px, ${oy}px) scale(${scale})`,
+                                                            }}
+                                                            loading="lazy"
+                                                        />
+                                                    )}
+                                                </div>
+                                            </button>
+                                            {pub.document_url ? (
+                                                <a
+                                                    href={pub.document_url}
+                                                    download
+                                                    aria-label={`Download ${pub.title}`}
+                                                    className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
+                                                >
+                                                    <Download
+                                                        className="h-6 w-6"
+                                                        strokeWidth={1.5}
                                                     />
-                                                )}
-                                            </div>
+                                                </a>
+                                            ) : pub.cover_url ? (
+                                                <a
+                                                    href={encodeURI(pub.cover_url)}
+                                                    download
+                                                    aria-label={`Download cover for ${pub.title}`}
+                                                    title="No document uploaded — downloads cover image"
+                                                    className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
+                                                >
+                                                    <Download
+                                                        className="h-6 w-6"
+                                                        strokeWidth={1.5}
+                                                    />
+                                                </a>
+                                            ) : (
+                                                <span className="mt-3 h-8" />
+                                            )}
                                         </div>
                                     )
                                 })}
@@ -369,6 +463,12 @@ export default function OurCommitmentPage({
                     </section>
                 )}
             </div>
+            <DocumentReaderModal
+                open={!!activeDocument}
+                onClose={() => setActiveDocument(null)}
+                title={activeDocument?.title ?? null}
+                documentUrl={activeDocument?.document_url ?? null}
+            />
         </SiteLayout>
     )
 }

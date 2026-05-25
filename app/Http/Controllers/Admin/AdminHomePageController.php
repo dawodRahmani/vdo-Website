@@ -54,7 +54,29 @@ class AdminHomePageController extends Controller
                 'alt' => $settings->regions_image_alt ?? '',
                 'max_width' => $settings->regions_image_max_width,
             ],
+            'prioritiesSection' => [
+                'offset_x' => (int) ($settings->priorities_offset_x ?? 0),
+                'offset_y' => (int) ($settings->priorities_offset_y ?? 0),
+                'scale' => (int) ($settings->priorities_scale ?? 100),
+            ],
         ]);
+    }
+
+    public function updatePrioritiesSection(Request $request)
+    {
+        $data = $request->validate([
+            'offset_x' => 'required|integer|min:-400|max:400',
+            'offset_y' => 'required|integer|min:-200|max:200',
+            'scale' => 'required|integer|min:50|max:200',
+        ]);
+
+        HomeSetting::current()->update([
+            'priorities_offset_x' => (int) $data['offset_x'],
+            'priorities_offset_y' => (int) $data['offset_y'],
+            'priorities_scale' => (int) $data['scale'],
+        ]);
+
+        return back();
     }
 
     public function storeHeroSlide(Request $request)
@@ -72,19 +94,13 @@ class AdminHomePageController extends Controller
     {
         $validated = $request->validate([
             'photo1_alt' => 'nullable|string|max:191',
-            'photo2_alt' => 'nullable|string|max:191',
-            'photo3_alt' => 'nullable|string|max:191',
             'photo1_file' => 'nullable|image|max:8192',
-            'photo2_file' => 'nullable|image|max:8192',
-            'photo3_file' => 'nullable|image|max:8192',
             'order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
 
         $data = [
             'photo1_alt' => $validated['photo1_alt'] ?? $slide->photo1_alt,
-            'photo2_alt' => $validated['photo2_alt'] ?? $slide->photo2_alt,
-            'photo3_alt' => $validated['photo3_alt'] ?? $slide->photo3_alt,
         ];
         if ($request->has('order')) {
             $data['order'] = (int) $request->input('order');
@@ -93,16 +109,11 @@ class AdminHomePageController extends Controller
             $data['is_active'] = $request->boolean('is_active');
         }
 
-        $folder = 'home/hero-slides';
-        foreach ([1, 2, 3] as $i) {
-            $field = "photo{$i}_file";
-            if ($request->hasFile($field)) {
-                $existing = $slide->{"photo{$i}_path"};
-                if ($existing && Str::startsWith($existing, ['home/hero-slides/'])) {
-                    Storage::disk('public')->delete($existing);
-                }
-                $data["photo{$i}_path"] = $request->file($field)->store($folder, 'public');
+        if ($request->hasFile('photo1_file')) {
+            if ($slide->photo1_path && Str::startsWith($slide->photo1_path, ['home/hero-slides/'])) {
+                Storage::disk('public')->delete($slide->photo1_path);
             }
+            $data['photo1_path'] = $request->file('photo1_file')->store('home/hero-slides', 'public');
         }
 
         $slide->update($data);
@@ -112,11 +123,8 @@ class AdminHomePageController extends Controller
 
     public function destroyHeroSlide(HomeHeroSlide $slide)
     {
-        foreach ([1, 2, 3] as $i) {
-            $existing = $slide->{"photo{$i}_path"};
-            if ($existing && Str::startsWith($existing, ['home/hero-slides/'])) {
-                Storage::disk('public')->delete($existing);
-            }
+        if ($slide->photo1_path && Str::startsWith($slide->photo1_path, ['home/hero-slides/'])) {
+            Storage::disk('public')->delete($slide->photo1_path);
         }
         $slide->delete();
 

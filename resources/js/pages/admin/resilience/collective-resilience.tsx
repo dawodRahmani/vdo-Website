@@ -60,7 +60,6 @@ export default function AdminCollectiveResilience() {
     const save = () => {
         setSaving(true)
         const fd = new FormData()
-        fd.append('_method', 'patch')
         fd.append('section', 'collective_resilience')
         fd.append('title', item.title ?? '')
         fd.append('body', item.body ?? '')

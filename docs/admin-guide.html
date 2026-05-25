@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VDO Admin Panel — User Guide</title>
+<style>
+    :root {
+        --brand: rgb(62, 64, 149);
+        --accent: rgb(0, 175, 239);
+        --text: #1f2937;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --bg: #ffffff;
+        --bg-soft: #f9fafb;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 12pt;
+        line-height: 1.55;
+    }
+    .page {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 40px 56px;
+    }
+    h1 { font-size: 28pt; color: var(--brand); margin: 0 0 4px; }
+    h2 {
+        font-size: 17pt;
+        color: var(--brand);
+        margin: 36px 0 10px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent);
+        page-break-after: avoid;
+    }
+    h3 {
+        font-size: 13pt;
+        color: var(--brand);
+        margin: 22px 0 6px;
+        page-break-after: avoid;
+    }
+    h4 {
+        font-size: 11.5pt;
+        color: var(--text);
+        margin: 16px 0 4px;
+        page-break-after: avoid;
+    }
+    p { margin: 0 0 10px; }
+    .tagline { color: var(--muted); font-size: 11pt; margin: 0 0 24px; }
+    ul, ol { margin: 0 0 12px; padding-left: 22px; }
+    li { margin: 2px 0; }
+    .meta {
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--accent);
+        padding: 10px 14px;
+        margin: 14px 0;
+        font-size: 10.5pt;
+    }
+    .meta b { color: var(--brand); }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 8px 0 16px;
+        font-size: 10.5pt;
+    }
+    th, td {
+        border: 1px solid var(--line);
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background: var(--bg-soft);
+        color: var(--brand);
+        font-weight: 600;
+    }
+    code {
+        background: #f3f4f6;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-family: Consolas, Menlo, monospace;
+        font-size: 10pt;
+    }
+    .nav { display: inline-block; background: var(--brand); color: white; padding: 1px 7px; border-radius: 4px; font-size: 10pt; font-weight: 600; }
+    .tip {
+        background: #ecfeff;
+        border-left: 3px solid var(--accent);
+        padding: 8px 12px;
+        margin: 10px 0;
+        font-size: 10.5pt;
+    }
+    .warn {
+        background: #fff7ed;
+        border-left: 3px solid #f59e0b;
+        padding: 8px 12px;
+        margin: 10px 0;
+        font-size: 10.5pt;
+    }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+    .toc { columns: 2; column-gap: 26px; font-size: 10.5pt; }
+    .toc a { color: var(--brand); text-decoration: none; }
+    .footer {
+        margin-top: 40px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        font-size: 9.5pt;
+        color: var(--muted);
+        text-align: center;
+    }
+
+    .print-only { display: none; }
+    @media print {
+        .page { padding: 16mm; max-width: none; }
+        .no-print { display: none; }
+        .print-only { display: block; }
+        h2 { page-break-after: avoid; }
+        h3, h4 { page-break-after: avoid; }
+        tr, table { page-break-inside: avoid; }
+        a { color: var(--text); text-decoration: none; }
+        body { font-size: 11pt; }
+    }
+    @page { margin: 16mm; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="no-print" style="background: #fffbeb; border: 1px solid #fde68a; padding: 10px 14px; border-radius: 6px; font-size: 10.5pt; margin-bottom: 24px;">
+    <b>To save as PDF:</b> press <code>Ctrl + P</code> (Windows) or <code>Cmd + P</code> (Mac) → set <b>Destination</b> to <b>Save as PDF</b> → click <b>Save</b>. This yellow box won't appear in the PDF.
+</div>
+
+<h1>VDO Admin Panel — User Guide</h1>
+<p class="tagline">A walkthrough of every section in the VDO admin panel and what each lets you change on the public website.</p>
+
+<h2 id="getting-started">Getting started</h2>
+<div class="meta">
+    <b>Sign in:</b> visit <code>/login</code> on the website and sign in with an admin account.<br>
+    <b>Admin home:</b> after login, the admin panel is reachable at <code>/admin</code>.<br>
+    <b>Permissions:</b> only users with the <b>admin</b> role see the admin sidebar items below. Regular users only see the Dashboard.
+</div>
+
+<h3>Sidebar overview</h3>
+<p>The left sidebar groups every admin screen. Items shown only to admins are listed in order:</p>
+<table>
+    <tr><th>Section</th><th>What it controls</th></tr>
+    <tr><td>Dashboard</td><td>Welcome page after login.</td></tr>
+    <tr><td>Home Page</td><td>Hero slider, impact numbers, priority cards, commitments, regions image.</td></tr>
+    <tr><td>About Page</td><td>All text on the About Us page.</td></tr>
+    <tr><td>News &amp; Announcements</td><td>Public news posts (CRUD).</td></tr>
+    <tr><td>Hero Sections</td><td>Top photo strip on each non-home page.</td></tr>
+    <tr><td>Donate</td><td>Cards and items shown on the Donate page.</td></tr>
+    <tr><td>Media</td><td>Documentaries, Program Snapshots (photos), Publications.</td></tr>
+    <tr><td>Opportunities</td><td>4 categories and individual job/bid/volunteer listings.</td></tr>
+    <tr><td>Our Commitment</td><td>Commitment cards (icons + body text) and Publications grid.</td></tr>
+    <tr><td>Where We Work</td><td>Region sections (text, map image, video URL, layout).</td></tr>
+    <tr><td>Email Settings</td><td>SMTP server and the destination for "Make a Report" emails.</td></tr>
+    <tr><td>Users</td><td>Add admins, edit roles, reset passwords, delete accounts.</td></tr>
+    <tr><td>Page Colors</td><td>Background color per public page.</td></tr>
+    <tr><td><b>Strategic Priorities</b> (collapsible)</td><td>Hub cards plus 10 individual SP pages.</td></tr>
+    <tr><td><b>VDO's Resilience</b> (collapsible)</td><td>Capacity, Policies, Programmatic Approach, Collective Resilience.</td></tr>
+    <tr><td><b>Header &amp; Footer</b></td><td>Logo + size, footer contact info, social links, newsletter heading, donate button.</td></tr>
+</table>
+
+<hr>
+
+<h2 id="home">Home Page</h2>
+<p>Sidebar: <span class="nav">Home Page</span></p>
+
+<h3>Hero strip — slides</h3>
+<p>The top photo strip is now a slider. Each <b>slide</b> is a row of 3 photos.</p>
+<ul>
+    <li><b>Add slide</b> button creates a new empty slide.</li>
+    <li>Each slide has 3 photo upload slots, alt text per photo, <b>Order</b> (sequence), and <b>Active</b> toggle.</li>
+    <li><b>Save slide</b> applies changes; <b>Delete</b> removes it.</li>
+</ul>
+<div class="tip">With 2 or more active slides, the strip becomes a slider that auto-advances every 6 seconds and shows ← / → arrows and dot indicators. With 1 slide it stays static (same as before).</div>
+
+<h3>Key Impact Numbers</h3>
+<p>Each stat row (e.g. "Regions", "Lives Impact") has:</p>
+<ul>
+    <li>Label text</li>
+    <li>SVG/icon upload</li>
+    <li>Size scale slider (50–200%)</li>
+</ul>
+
+<h3>Strategic Priority Areas (5 cards)</h3>
+<ul>
+    <li>Title, link URL, icon SVG, size scale.</li>
+</ul>
+
+<h3>Regions &amp; Provinces image</h3>
+<ul>
+    <li>Upload the image (SVG/PNG/JPG/WEBP).</li>
+    <li>Alt text.</li>
+    <li><b>Width</b> slider 30–100% so you can shrink/enlarge it inside its column.</li>
+</ul>
+
+<h3>Our Commitment icons (12 cards)</h3>
+<ul>
+    <li>Each icon's image upload and size scale.</li>
+</ul>
+
+<hr>
+
+<h2 id="about">About Page</h2>
+<p>Sidebar: <span class="nav">About Page</span></p>
+<p>Every paragraph and heading on About Us is editable as plain text. Paragraphs are separated by blank lines.</p>
+<ul>
+    <li>Executive Summary — heading, sub-heading, body</li>
+    <li>History — heading, body</li>
+    <li>Coordination outro paragraph</li>
+    <li>Mission — lead phrase, body</li>
+    <li>Vision — lead phrase, body</li>
+    <li>Looking Ahead — heading, sub-heading, body</li>
+</ul>
+<div class="tip">Leaving a field empty restores the original default text. Clear it intentionally if you want the default back.</div>
+
+<hr>
+
+<h2 id="news">News &amp; Announcements</h2>
+<p>Sidebar: <span class="nav">News &amp; Announcements</span></p>
+<ul>
+    <li>Create / edit / delete posts.</li>
+    <li>Fields: title, slug, category, body, cover image, published date.</li>
+    <li>Drafts vs published — only published posts appear on the public site.</li>
+</ul>
+
+<hr>
+
+<h2 id="hero-sections">Hero Sections</h2>
+<p>Sidebar: <span class="nav">Hero Sections</span></p>
+<p>The top 3-image strip on each non-home page. Each row corresponds to one page (e.g., About, Where We Work, etc.).</p>
+<ul>
+    <li>Upload 3 photos per page with alt text.</li>
+</ul>
+<div class="tip">For the home page hero, use <b>Home Page → Hero strip — slides</b> instead. Hero Sections still drives the strip on all other pages.</div>
+
+<hr>
+
+<h2 id="donate">Donate</h2>
+<p>Sidebar: <span class="nav">Donate</span></p>
+<p>Manage the cards displayed on the Donate page.</p>
+<ul>
+    <li>Create / edit / delete items.</li>
+    <li>Kind: intro, cause, or method.</li>
+    <li>Icon name (Lucide icon), title, body text, order, active toggle.</li>
+</ul>
+
+<hr>
+
+<h2 id="media">Media</h2>
+<p>Sidebar: <span class="nav">Media</span></p>
+<p>The Media page has three sections: <b>Documentaries</b>, <b>Program Snapshots</b>, and <b>Publications</b>.</p>
+
+<h3>Documentaries</h3>
+<ul>
+    <li>Title</li>
+    <li><b>YouTube URL</b> (paste a link) <i>or</i> <b>Upload video file</b> (mp4/webm/mov, up to 100 MB) — if both, the uploaded file wins.</li>
+    <li>Thumbnail image (shown on the card before play).</li>
+    <li>Order &amp; Active toggle.</li>
+</ul>
+<div class="tip">Clicking a documentary card on the public site opens an in-page modal player (YouTube embed for links, HTML5 video for uploaded files). The thumbnail is used as the poster image.</div>
+
+<h3>Program Snapshots (Photos)</h3>
+<ul>
+    <li>Upload photos one at a time.</li>
+    <li>Order determines which photo-mosaic page it appears on (6 per page).</li>
+</ul>
+
+<h3>Publications</h3>
+<ul>
+    <li>Title, cover image (used as download).</li>
+    <li><b>Card size</b> per item (40–150%). Layout is always 4 per row with a slider for overflow.</li>
+</ul>
+
+<hr>
+
+<h2 id="opportunities">Opportunities</h2>
+<p>Sidebar: <span class="nav">Opportunities</span></p>
+
+<h3>Categories (4 fixed cards)</h3>
+<p>Jobs, Bids, Volunteer, Participation. For each:</p>
+<ul>
+    <li>Icon image, title, body description, order, active.</li>
+</ul>
+
+<h3>Current Listings</h3>
+<ul>
+    <li><b>Add listing</b> — category, title, reference, summary, location, deadline, order.</li>
+    <li>Edit or delete existing listings.</li>
+</ul>
+
+<hr>
+
+<h2 id="commitment">Our Commitment</h2>
+<p>Sidebar: <span class="nav">Our Commitment</span></p>
+
+<h3>Commitments (12 by default — add / remove freely)</h3>
+<ul>
+    <li>Slug (URL anchor), title, body (paragraphs separated by blank lines).</li>
+    <li>Card icon SVG/PNG upload (with preview).</li>
+    <li>Order, active toggle.</li>
+</ul>
+
+<h3>Publications</h3>
+<ul>
+    <li>Add / edit / delete publications with title and cover image.</li>
+</ul>
+
+<h3>"Make a Report" form on the public page</h3>
+<p>The form (Subject, Comment, Attachment up to 5 MB) emails the configured destination via SMTP. See <b>Email Settings</b>.</p>
+
+<hr>
+
+<h2 id="where-we-work">Where We Work</h2>
+<p>Sidebar: <span class="nav">Where We Work</span></p>
+<p>Manage the 6 region sections (or more — fully CRUD).</p>
+<ul>
+    <li>Slug (URL anchor), title, subtitle, body (paragraphs), order, active.</li>
+    <li>Map image upload (SVG/PNG/JPG/WEBP).</li>
+    <li><b>Video URL</b> — YouTube link renders as an embedded iframe; any other URL renders an HTML5 video.</li>
+    <li><b>Map on right</b> toggle — flips the layout per region.</li>
+</ul>
+
+<hr>
+
+<h2 id="email">Email Settings</h2>
+<p>Sidebar: <span class="nav">Email Settings</span></p>
+
+<h3>Report destination</h3>
+<p>Email address that receives submissions from the public <b>Make a Report</b> form (Our Commitment page).</p>
+
+<h3>From identity</h3>
+<p>From address &amp; from name used in outgoing email envelopes.</p>
+
+<h3>SMTP server</h3>
+<table>
+    <tr><th>Field</th><th>Notes</th></tr>
+    <tr><td>Driver</td><td>SMTP (production) or Log (testing — writes to <code>storage/logs/laravel.log</code> instead of sending).</td></tr>
+    <tr><td>Encryption</td><td>None, TLS, SSL, or STARTTLS.</td></tr>
+    <tr><td>Host / Port</td><td>e.g. <code>smtp.gmail.com</code> / <code>587</code>.</td></tr>
+    <tr><td>Username</td><td>Account that sends the email.</td></tr>
+    <tr><td>Password</td><td>Stored encrypted. Leave blank when editing to keep the existing one.</td></tr>
+</table>
+
+<h3>Send a test email</h3>
+<p>Use the "Send test" button to verify SMTP — it sends a small test message to the address you enter.</p>
+
+<hr>
+
+<h2 id="users">Users</h2>
+<p>Sidebar: <span class="nav">Users</span></p>
+<ul>
+    <li><b>Add user</b> — name, email, role (Admin or User), password + confirm.</li>
+    <li>Edit name, email, role (cannot edit your own role).</li>
+    <li>Change password (no current-password required — admin-set).</li>
+    <li>Delete user (cannot delete your own account).</li>
+</ul>
+<div class="warn">You cannot demote yourself out of admin or delete your own account, so you can't accidentally lock yourself out.</div>
+
+<hr>
+
+<h2 id="page-colors">Page Colors</h2>
+<p>Sidebar: <span class="nav">Page Colors</span></p>
+<p>Set the body background color for each public page (Home, About, Where We Work, etc.). Each route has its own color picker.</p>
+
+<hr>
+
+<h2 id="strategic-priorities">Strategic Priorities</h2>
+<p>Sidebar: <span class="nav">Strategic Priorities</span> (collapsible group called <b>Pages</b>)</p>
+
+<h3>Overview (Hub Cards)</h3>
+<p>The 5 hub cards shown on <code>/strategic-priorities</code>. Edit each card's title, href, icon name, and description.</p>
+
+<h3>Individual pages (10)</h3>
+<p>Education, Economic Growth, Rural Development, Health and Nutrition, Emergency Response, Cross-Cutting Areas, Target Group, Secondary Beneficiaries, Tertiary Audience, Contribution Project.</p>
+<p>Each page exposes the same editable fields:</p>
+<table>
+    <tr><th>Field</th><th>Shown as</th></tr>
+    <tr><td>Heading</td><td>Page title (with icon).</td></tr>
+    <tr><td>Body</td><td>Paragraphs before the main image. Blank lines split paragraphs.</td></tr>
+    <tr><td>Main infographic image</td><td>SVG/PNG uploaded centerpiece + alt text.</td></tr>
+    <tr><td>Between-body text</td><td>Paragraphs shown between the infographic and the bullets. Supports <code>**bold**</code>.</td></tr>
+    <tr><td>Achievements heading</td><td>e.g., "Key Achievements:".</td></tr>
+    <tr><td>Bullets</td><td>Add, edit, delete one bullet at a time.</td></tr>
+    <tr><td>Beneficiary stats image</td><td>Optional secondary image (donut chart / breakdown) + alt text.</td></tr>
+</table>
+<div class="tip">Every field is optional — sections that you leave empty simply don't render on the public page.</div>
+
+<hr>
+
+<h2 id="resilience">VDO's Resilience</h2>
+<p>Sidebar group with 4 sub-pages: <b>Our Capacity</b>, <b>Policies</b>, <b>Programmatic Approach</b>, <b>Collective Resilience</b>.</p>
+<ul>
+    <li>Add / edit / delete items in each section.</li>
+    <li>Each item: title, body, optional icon/image upload, order, active.</li>
+</ul>
+
+<hr>
+
+<h2 id="header-footer">Header &amp; Footer</h2>
+<p>Sidebar group with two items.</p>
+
+<h3>Header</h3>
+<ul>
+    <li><b>Logo</b> — upload PNG/JPG/SVG (max 4 MB). Remove button reverts to the default.</li>
+    <li><b>Logo height (px)</b> — slider 24–200, default 72. Live preview shows the chosen size.</li>
+</ul>
+
+<h3>Footer</h3>
+<ul>
+    <li><b>Contact info</b> — phone &amp; email. Shared with the header top bar (if you ever re-enable it).</li>
+    <li><b>Social media URLs</b> — Facebook, X (Twitter), LinkedIn, YouTube. Each renders only if filled.</li>
+    <li><b>Newsletter heading</b> — text above the newsletter form.</li>
+    <li><b>Donate button</b> — text and destination URL.</li>
+</ul>
+
+<hr>
+
+<h2 id="general-tips">General tips</h2>
+<ul>
+    <li><b>Image uploads</b> generally accept PNG, JPG, WEBP, and SVG. Logo / icons up to ~4 MB; hero photos up to ~8 MB; documentary videos up to 100 MB.</li>
+    <li><b>Order fields</b> control display sequence on the public page. Lower number = earlier.</li>
+    <li><b>Active toggles</b> hide an item from the public site without deleting it.</li>
+    <li><b>Paragraphs</b> in body fields are separated by <i>blank lines</i>, not single line breaks.</li>
+    <li><b>Bold</b> emphasis in "between body" fields uses <code>**text**</code>.</li>
+    <li><b>Saving</b> takes effect immediately — refresh the public page to see the change. Inertia.js handles all navigation, so no full page reload is needed in the admin.</li>
+</ul>
+
+<div class="footer">
+    VDO Admin Panel User Guide · Generated for the VDO website project.
+</div>
+
+</div>
+</body>
+</html>

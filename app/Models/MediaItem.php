@@ -17,6 +17,7 @@ class MediaItem extends Model
         'image',
         'video_url',
         'video_path',
+        'document_path',
         'order',
         'is_active',
         'size_scale',
@@ -28,7 +29,7 @@ class MediaItem extends Model
         'size_scale' => 'integer',
     ];
 
-    protected $appends = ['image_url', 'video_file_url'];
+    protected $appends = ['image_url', 'video_file_url', 'document_url'];
 
     protected function imageUrl(): Attribute
     {
@@ -49,6 +50,17 @@ class MediaItem extends Model
                 return $this->video_path;
             }
             return '/storage/'.ltrim($this->video_path, '/');
+        });
+    }
+
+    protected function documentUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            if (! $this->document_path) return null;
+            if (str_starts_with($this->document_path, '/') || str_starts_with($this->document_path, 'http')) {
+                return $this->document_path;
+            }
+            return '/storage/'.ltrim($this->document_path, '/');
         });
     }
 

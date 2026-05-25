@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\StrategicPriorityBullet;
 use App\Models\StrategicPriorityCard;
 use App\Models\StrategicPriorityPage;
+use App\Services\SvgTextEditor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,6 +14,8 @@ use Inertia\Inertia;
 
 class AdminStrategicPrioritiesController extends Controller
 {
+    private const SLOTS = ['infographic', 'beneficiary', 'extra'];
+
     public function index()
     {
         return Inertia::render('admin/strategic-priorities/index', [
@@ -51,11 +54,12 @@ class AdminStrategicPrioritiesController extends Controller
                 'heading' => $page->heading,
                 'body' => $page->body,
                 'between_body' => $page->between_body,
-                'infographic_url' => $page->infographic_url,
-                'infographic_alt' => $page->infographic_alt,
                 'achievements_heading' => $page->achievements_heading,
-                'beneficiary_url' => $page->beneficiary_url,
-                'beneficiary_alt' => $page->beneficiary_alt,
+                'infographics' => [
+                    'infographic' => $this->slotPayload($page, 'infographic'),
+                    'beneficiary' => $this->slotPayload($page, 'beneficiary'),
+                    'extra' => $this->slotPayload($page, 'extra'),
+                ],
             ],
             'bullets' => StrategicPriorityBullet::where('page_key', $pageKey)->orderBy('order')->get(),
         ]);
@@ -69,34 +73,50 @@ class AdminStrategicPrioritiesController extends Controller
             'heading' => 'nullable|string|max:191',
             'body' => 'nullable|string|max:20000',
             'between_body' => 'nullable|string|max:10000',
-            'infographic_alt' => 'nullable|string|max:500',
             'achievements_heading' => 'nullable|string|max:191',
-            'beneficiary_alt' => 'nullable|string|max:500',
+
             'infographic_file' => 'nullable|file|mimes:svg,png,jpg,jpeg,webp|max:8192',
+            'infographic_alt' => 'nullable|string|max:500',
+            'infographic_scale' => 'nullable|integer|min:25|max:400',
+            'infographic_offset_x' => 'nullable|integer|min:-500|max:500',
+            'infographic_offset_y' => 'nullable|integer|min:-500|max:500',
+            'infographic_text_overrides' => 'nullable|array',
+            'infographic_text_overrides.*' => 'nullable|string|max:1000',
+
             'beneficiary_file' => 'nullable|file|mimes:svg,png,jpg,jpeg,webp|max:8192',
+            'beneficiary_alt' => 'nullable|string|max:500',
+            'beneficiary_scale' => 'nullable|integer|min:25|max:400',
+            'beneficiary_offset_x' => 'nullable|integer|min:-500|max:500',
+            'beneficiary_offset_y' => 'nullable|integer|min:-500|max:500',
+            'beneficiary_text_overrides' => 'nullable|array',
+            'beneficiary_text_overrides.*' => 'nullable|string|max:1000',
+
+            'extra_file' => 'nullable|file|mimes:svg,png,jpg,jpeg,webp|max:8192',
+            'extra_alt' => 'nullable|string|max:500',
+            'extra_scale' => 'nullable|integer|min:25|max:400',
+            'extra_offset_x' => 'nullable|integer|min:-500|max:500',
+            'extra_offset_y' => 'nullable|integer|min:-500|max:500',
+            'extra_text_overrides' => 'nullable|array',
+            'extra_text_overrides.*' => 'nullable|string|max:1000',
+
+            'clear_extra' => 'nullable|boolean',
         ]);
 
         $data = [
             'heading' => $validated['heading'] ?? null,
             'body' => $validated['body'] ?? null,
             'between_body' => $validated['between_body'] ?? null,
-            'infographic_alt' => $validated['infographic_alt'] ?? null,
             'achievements_heading' => $validated['achievements_heading'] ?? null,
-            'beneficiary_alt' => $validated['beneficiary_alt'] ?? null,
         ];
 
-        $folder = 'strategic-priorities/'.$pageKey;
-        if ($request->hasFile('infographic_file')) {
-            if ($page->infographic_path && Str::startsWith($page->infographic_path, ['strategic-priorities/'])) {
-                Storage::disk('public')->delete($page->infographic_path);
-            }
-            $data['infographic_path'] = $request->file('infographic_file')->store($folder, 'public');
+        foreach (self::SLOTS as $slot) {
+            $this->applySlot($request, $page, $data, $pageKey, $slot);
         }
-        if ($request->hasFile('beneficiary_file')) {
-            if ($page->beneficiary_path && Str::startsWith($page->beneficiary_path, ['strategic-priorities/'])) {
-                Storage::disk('public')->delete($page->beneficiary_path);
-            }
-            $data['beneficiary_path'] = $request->file('beneficiary_file')->store($folder, 'public');
+
+        if ($request->boolean('clear_extra')) {
+            $this->deleteIfStored($page->extra_path);
+            $data['extra_path'] = null;
+            $data['extra_text_overrides'] = null;
         }
 
         $page->update($data);
@@ -136,5 +156,110 @@ class AdminStrategicPrioritiesController extends Controller
         $bullet->delete();
 
         return back();
+    }
+
+    /**
+     * Build the admin payload for one infographic slot, including the list of
+     * `<text>` element default contents so the admin can see what's editable.
+     */
+    private function slotPayload(StrategicPriorityPage $page, string $slot): array
+    {
+        $pathField = $slot.'_path';
+        $altField = $slot.'_alt';
+        $scaleField = $slot.'_scale';
+        $offsetXField = $slot.'_offset_x';
+        $offsetYField = $slot.'_offset_y';
+        $overridesField = $slot.'_text_overrides';
+
+        // Existing slots use a custom URL accessor; "extra" uses the new one.
+        $url = match ($slot) {
+            'infographic' => $page->infographic_url,
+            'beneficiary' => $page->beneficiary_url,
+            'extra' => $page->extra_url,
+        };
+
+        $path = $page->{$pathField};
+        $textLabels = [];
+        if ($path) {
+            $content = $this->readFileContent($path);
+            if ($content !== null) {
+                $textLabels = SvgTextEditor::extractTexts($content);
+            }
+        }
+
+        return [
+            'path' => $path,
+            'url' => $url,
+            'render_url' => $path
+                ? route('strategic-priorities.infographic.render', [
+                    'pageKey' => $page->page_key,
+                    'slot' => $slot,
+                ]).'?v='.optional($page->updated_at)->timestamp
+                : '',
+            'alt' => $page->{$altField},
+            'scale' => (int) ($page->{$scaleField} ?? 100),
+            'offset_x' => (int) ($page->{$offsetXField} ?? 0),
+            'offset_y' => (int) ($page->{$offsetYField} ?? 0),
+            'text_labels' => $textLabels,
+            'text_overrides' => $page->{$overridesField} ?? [],
+        ];
+    }
+
+    private function applySlot(Request $request, StrategicPriorityPage $page, array &$data, string $pageKey, string $slot): void
+    {
+        $fileKey = $slot.'_file';
+        $altKey = $slot.'_alt';
+        $scaleKey = $slot.'_scale';
+        $offsetXKey = $slot.'_offset_x';
+        $offsetYKey = $slot.'_offset_y';
+        $overridesKey = $slot.'_text_overrides';
+
+        $data[$altKey] = $request->input($altKey);
+        $data[$scaleKey] = (int) $request->input($scaleKey, 100);
+        $data[$offsetXKey] = (int) $request->input($offsetXKey, 0);
+        $data[$offsetYKey] = (int) $request->input($offsetYKey, 0);
+
+        if ($request->hasFile($fileKey)) {
+            $this->deleteIfStored($page->{$slot.'_path'});
+            $folder = 'strategic-priorities/'.$pageKey;
+            $data[$slot.'_path'] = $request->file($fileKey)->store($folder, 'public');
+            // A new file replaces the canvas — discard old text overrides since
+            // they're indexed by the old SVG's <text> ordering.
+            $data[$overridesKey] = null;
+
+            return;
+        }
+
+        if ($request->has($overridesKey)) {
+            $overrides = $request->input($overridesKey) ?? [];
+            $clean = [];
+            foreach ($overrides as $i => $value) {
+                $clean[(int) $i] = is_string($value) ? $value : '';
+            }
+            $data[$overridesKey] = empty($clean) ? null : $clean;
+        }
+    }
+
+    private function deleteIfStored(?string $path): void
+    {
+        if ($path && Str::startsWith($path, 'strategic-priorities/')) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    private function readFileContent(string $path): ?string
+    {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return null;
+        }
+        if (str_starts_with($path, '/')) {
+            $full = public_path(ltrim($path, '/'));
+
+            return is_file($full) ? (string) file_get_contents($full) : null;
+        }
+
+        return Storage::disk('public')->exists($path)
+            ? Storage::disk('public')->get($path)
+            : null;
     }
 }

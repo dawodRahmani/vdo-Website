@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class HomeCommitment extends Model
 {
-    protected $fillable = ['title', 'svg_path', 'order'];
+    protected $fillable = ['title', 'svg_path', 'order', 'crop_scale', 'crop_offset_x', 'crop_offset_y'];
 
-    protected $casts = ['order' => 'integer'];
+    protected $casts = [
+        'order' => 'integer',
+        'crop_scale' => 'integer',
+        'crop_offset_x' => 'integer',
+        'crop_offset_y' => 'integer',
+    ];
 
     protected $appends = ['svg_url'];
 

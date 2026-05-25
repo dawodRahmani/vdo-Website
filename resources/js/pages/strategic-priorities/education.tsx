@@ -11,10 +11,11 @@ import {
     pickBody,
     pickBullets,
     pickHeading,
-    pickImage,
     renderRich,
     type SpContent,
+    type SpInfographicSlot,
 } from '@/components/strategic-priorities/dynamic'
+import { ManagedInfographic } from '@/components/strategic-priorities/managed-infographic'
 
 const defaultBody = [
     "VDO is a development organization in Afghanistan dedicated to improving quality education through a strong focus on access, equity, safety, and inclusion. By working in the country's most underserved communities, VDO strives to ensure that every child—regardless of gender, ability, or background—has the opportunity to learn in a safe and supportive environment.",
@@ -33,23 +34,78 @@ const defaultBullets = [
     'Demonstrated successful transition of community schools to formal education systems.',
 ]
 
-const defaultInfographic = '/svg/education.svg'
-const defaultBeneficiary = '/svg/Strategic Priorities/03.svg'
+const defaults = {
+    infographic: {
+        url: '/svg/education.svg',
+        alt: 'Education coverage: target groups, coverage areas, and beneficiary breakdown',
+    },
+    beneficiary: {
+        url: '/svg/Strategic Priorities/03.svg',
+        alt: 'Education beneficiaries: Female 166,920 (48%), Male 153,080 (52%), Total 321,000',
+    },
+}
+
+/**
+ * The original main-infographic placement used a CSS background-image so the
+ * SVG could bleed to the page gutters at a fixed 5:2 aspect ratio. Reproduced
+ * here, but only when no admin scale/offset is applied — otherwise we fall
+ * through to the transformable <img> path.
+ */
+function MainInfographic({
+    slot,
+    url,
+    alt,
+}: {
+    slot?: SpInfographicSlot
+    url: string
+    alt: string
+}) {
+    const scale = slot?.scale ?? 100
+    const offsetX = slot?.offset_x ?? 0
+    const offsetY = slot?.offset_y ?? 0
+    const hasTransform = scale !== 100 || offsetX !== 0 || offsetY !== 0
+
+    if (!hasTransform) {
+        return (
+            <div
+                className="-mx-6 mt-6 md:-mx-10 lg:-mx-14"
+                role="img"
+                aria-label={alt}
+                style={{
+                    backgroundImage: `url('${url}')`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center top',
+                    aspectRatio: '500 / 200',
+                }}
+            />
+        )
+    }
+
+    return (
+        <ManagedInfographic
+            slot={slot}
+            fallbackUrl={url}
+            fallbackAlt={alt}
+            wrapperClassName="-mx-6 mt-6 md:-mx-10 lg:-mx-14"
+            imgClassName="h-auto w-full object-contain"
+        />
+    )
+}
 
 export default function Education({ content }: { content?: SpContent }) {
     const title = pickHeading(content?.heading, 'Education:')
     const body = paragraphs(pickBody(content?.body, defaultBody))
     const between = paragraphs(pickBody(content?.between_body, defaultBetween))
     const bullets = pickBullets(content?.bullets, defaultBullets)
-    const infographic = pickImage(content?.infographic_url, defaultInfographic)
-    const infographicAlt =
-        content?.infographic_alt ??
-        'Education coverage: target groups, coverage areas, and beneficiary breakdown'
-    const achievementsHeading = pickHeading(content?.achievements_heading, 'Key Achievements:')
-    const beneficiary = pickImage(content?.beneficiary_url, defaultBeneficiary)
-    const beneficiaryAlt =
-        content?.beneficiary_alt ??
-        'Education beneficiaries: Female 166,920 (48%), Male 153,080 (52%), Total 321,000'
+    const achievementsHeading = pickHeading(
+        content?.achievements_heading,
+        'Key Achievements:',
+    )
+
+    const slots = content?.infographics
+    const mainUrl = slots?.infographic?.url || defaults.infographic.url
+    const mainAlt = slots?.infographic?.alt ?? defaults.infographic.alt
 
     return (
         <SiteLayout title="Education">
@@ -65,18 +121,10 @@ export default function Education({ content }: { content?: SpContent }) {
                     ))}
                 </div>
 
-                <div
-                    className="-mx-6 mt-6 md:-mx-10 lg:-mx-14"
-                    role="img"
-                    aria-label={infographicAlt}
-                    style={{
-                        backgroundImage: `url('${infographic}')`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize: 'contain',
-                        backgroundPosition: 'center top',
-                        aspectRatio: '500 / 200',
-                        backgroundColor: 'transparent',
-                    }}
+                <MainInfographic
+                    slot={slots?.infographic}
+                    url={mainUrl}
+                    alt={mainAlt}
                 />
 
                 <div className="space-y-3">
@@ -94,13 +142,25 @@ export default function Education({ content }: { content?: SpContent }) {
                     </div>
 
                     <div className="flex justify-center md:justify-end">
-                        <img
-                            src={beneficiary}
-                            alt={beneficiaryAlt}
-                            className="h-auto w-[180px] md:w-[210px]"
+                        <ManagedInfographic
+                            slot={slots?.beneficiary}
+                            fallbackUrl={defaults.beneficiary.url}
+                            fallbackAlt={defaults.beneficiary.alt}
+                            imgClassName="h-auto w-[180px] md:w-[210px]"
                         />
                     </div>
                 </div>
+
+                {/* Third slot — only rendered when admin has actually uploaded one. */}
+                {slots?.extra?.url && (
+                    <div className="mt-8">
+                        <ManagedInfographic
+                            slot={slots.extra}
+                            wrapperClassName="-mx-6 md:-mx-10 lg:-mx-14"
+                            imgClassName="h-auto w-full object-contain"
+                        />
+                    </div>
+                )}
             </PageSection>
         </SiteLayout>
     )

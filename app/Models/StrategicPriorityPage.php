@@ -9,7 +9,13 @@ class StrategicPriorityPage extends Model
 {
     protected $guarded = [];
 
-    protected $appends = ['infographic_url', 'beneficiary_url'];
+    protected $casts = [
+        'infographic_text_overrides' => 'array',
+        'beneficiary_text_overrides' => 'array',
+        'extra_text_overrides' => 'array',
+    ];
+
+    protected $appends = ['infographic_url', 'beneficiary_url', 'extra_url'];
 
     private static function url(?string $path): string
     {
@@ -31,6 +37,11 @@ class StrategicPriorityPage extends Model
     protected function beneficiaryUrl(): Attribute
     {
         return Attribute::get(fn () => static::url($this->beneficiary_path));
+    }
+
+    protected function extraUrl(): Attribute
+    {
+        return Attribute::get(fn () => static::url($this->extra_path));
     }
 
     public function bullets()

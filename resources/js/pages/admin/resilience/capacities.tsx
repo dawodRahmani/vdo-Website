@@ -15,8 +15,13 @@ interface ResilienceItem {
     body: string | null
     image: string | null
     image_url: string | null
+    document: string | null
+    document_url: string | null
     order: number
     is_active: boolean
+    size_scale: number
+    offset_x: number
+    offset_y: number
 }
 
 interface Props {
@@ -27,7 +32,7 @@ interface Props {
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Resilience', href: '#' },
-    { title: 'Our Capacity', href: '/admin/resilience/capacities' },
+    { title: 'Annual Organization Resilience Publication', href: '/admin/resilience/capacities' },
 ]
 
 export default function AdminCapacities() {
@@ -35,7 +40,10 @@ export default function AdminCapacities() {
     const [items, setItems] = useState<ResilienceItem[]>(props.items)
     const [savingId, setSavingId] = useState<number | null>(null)
     const [pendingFiles, setPendingFiles] = useState<Record<number, File>>({})
+    const [pendingDocs, setPendingDocs] = useState<Record<number, File>>({})
+    const [clearDocs, setClearDocs] = useState<Record<number, boolean>>({})
     const fileInputs = useRef<Record<number, HTMLInputElement | null>>({})
+    const docInputs = useRef<Record<number, HTMLInputElement | null>>({})
 
     const update = (id: number, patch: Partial<ResilienceItem>) =>
         setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)))
@@ -43,15 +51,20 @@ export default function AdminCapacities() {
     const save = (item: ResilienceItem) => {
         setSavingId(item.id)
         const payload: Record<string, string | number | File> = {
-            _method: 'patch',
             section: 'capacity',
             title: item.title ?? '',
             body: item.body ?? '',
             order: item.order,
             is_active: item.is_active ? 1 : 0,
+            size_scale: item.size_scale ?? 100,
+            offset_x: item.offset_x ?? 0,
+            offset_y: item.offset_y ?? 0,
         }
         const file = pendingFiles[item.id]
         if (file) payload.image_file = file
+        const doc = pendingDocs[item.id]
+        if (doc) payload.document_file = doc
+        if (clearDocs[item.id] && !doc) payload.clear_document = 1
 
         router.post(`/admin/resilience/${item.id}`, payload, {
             preserveScroll: true,
@@ -62,8 +75,20 @@ export default function AdminCapacities() {
                     delete next[item.id]
                     return next
                 })
+                setPendingDocs((p) => {
+                    const next = { ...p }
+                    delete next[item.id]
+                    return next
+                })
+                setClearDocs((p) => {
+                    const next = { ...p }
+                    delete next[item.id]
+                    return next
+                })
                 if (fileInputs.current[item.id])
                     fileInputs.current[item.id]!.value = ''
+                if (docInputs.current[item.id])
+                    docInputs.current[item.id]!.value = ''
             },
             onFinish: () => setSavingId(null),
         })
@@ -89,18 +114,20 @@ export default function AdminCapacities() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Our Capacity — Admin" />
+            <Head title="Annual Organization Resilience Publication — Admin" />
             <div className="flex flex-1 flex-col gap-6 p-4">
                 <section className="rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
                     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h2 className="text-lg font-semibold">
-                                Our Capacity ({items.length})
+                                Annual Organization Resilience Publication ({items.length})
                             </h2>
                             <p className="mt-1 text-xs text-muted-foreground">
-                                Slides shown in the "Our Capacity" carousel.
-                                Image is used both as the visible card and the
-                                download link.
+                                Cards shown in the "Annual Organization
+                                Resilience Publication" carousel. The image is
+                                the visible card; the uploaded document
+                                (PDF/Office file) is what opens and downloads
+                                from the card.
                             </p>
                         </div>
                         <Button
@@ -201,6 +228,224 @@ export default function AdminCapacities() {
                                             <p className="text-[10px] text-muted-foreground">
                                                 Up to 5 MB. Click "Save" to
                                                 upload.
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label>Publication file (PDF preferred)</Label>
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                {item.document_url &&
+                                                    !clearDocs[item.id] &&
+                                                    !pendingDocs[item.id] && (
+                                                        <a
+                                                            href={item.document_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="rounded border border-border bg-muted px-2 py-1 text-xs text-foreground hover:bg-accent"
+                                                        >
+                                                            View current
+                                                        </a>
+                                                    )}
+                                                <input
+                                                    ref={(el) => {
+                                                        docInputs.current[
+                                                            item.id
+                                                        ] = el
+                                                    }}
+                                                    type="file"
+                                                    accept="application/pdf,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                                    onChange={(e) => {
+                                                        const f =
+                                                            e.target.files?.[0]
+                                                        if (!f) return
+                                                        setPendingDocs((p) => ({
+                                                            ...p,
+                                                            [item.id]: f,
+                                                        }))
+                                                        setClearDocs((p) => ({
+                                                            ...p,
+                                                            [item.id]: false,
+                                                        }))
+                                                    }}
+                                                    className="text-sm"
+                                                />
+                                                {(item.document_url ||
+                                                    pendingDocs[item.id]) && (
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => {
+                                                            setPendingDocs(
+                                                                (p) => {
+                                                                    const next =
+                                                                        { ...p }
+                                                                    delete next[
+                                                                        item.id
+                                                                    ]
+                                                                    return next
+                                                                },
+                                                            )
+                                                            setClearDocs(
+                                                                (p) => ({
+                                                                    ...p,
+                                                                    [item.id]:
+                                                                        true,
+                                                                }),
+                                                            )
+                                                            if (
+                                                                docInputs
+                                                                    .current[
+                                                                    item.id
+                                                                ]
+                                                            )
+                                                                docInputs.current[
+                                                                    item.id
+                                                                ]!.value = ''
+                                                        }}
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                )}
+                                            </div>
+                                            {pendingDocs[item.id] && (
+                                                <p className="text-[10px] text-muted-foreground">
+                                                    Selected:{' '}
+                                                    {pendingDocs[item.id].name} (
+                                                    {(
+                                                        pendingDocs[item.id]
+                                                            .size /
+                                                        1024 /
+                                                        1024
+                                                    ).toFixed(1)}{' '}
+                                                    MB)
+                                                </p>
+                                            )}
+                                            <p className="text-[10px] text-muted-foreground">
+                                                PDF, DOC/DOCX, XLS/XLSX or
+                                                PPT/PPTX, up to 50 MB. Click
+                                                "Save" to upload.
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2 md:col-span-2">
+                                            <Label>Card position &amp; size</Label>
+                                            <div className="grid gap-3 sm:grid-cols-3">
+                                                <div className="flex items-center gap-2">
+                                                    <Label className="w-12 text-xs">
+                                                        Scale
+                                                    </Label>
+                                                    <input
+                                                        type="range"
+                                                        min={25}
+                                                        max={300}
+                                                        step={5}
+                                                        value={
+                                                            item.size_scale ??
+                                                            100
+                                                        }
+                                                        onChange={(e) =>
+                                                            update(item.id, {
+                                                                size_scale:
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                        10,
+                                                                    ) || 100,
+                                                            })
+                                                        }
+                                                        className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                                    />
+                                                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                                        {item.size_scale ?? 100}%
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Label className="w-12 text-xs">
+                                                        X
+                                                    </Label>
+                                                    <input
+                                                        type="range"
+                                                        min={-200}
+                                                        max={200}
+                                                        step={1}
+                                                        value={item.offset_x ?? 0}
+                                                        onChange={(e) =>
+                                                            update(item.id, {
+                                                                offset_x:
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                        10,
+                                                                    ) || 0,
+                                                            })
+                                                        }
+                                                        className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        min={-500}
+                                                        max={500}
+                                                        value={item.offset_x ?? 0}
+                                                        onChange={(e) =>
+                                                            update(item.id, {
+                                                                offset_x:
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                        10,
+                                                                    ) || 0,
+                                                            })
+                                                        }
+                                                        className="h-8 w-16 text-xs"
+                                                    />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Label className="w-12 text-xs">
+                                                        Y
+                                                    </Label>
+                                                    <input
+                                                        type="range"
+                                                        min={-200}
+                                                        max={200}
+                                                        step={1}
+                                                        value={item.offset_y ?? 0}
+                                                        onChange={(e) =>
+                                                            update(item.id, {
+                                                                offset_y:
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                        10,
+                                                                    ) || 0,
+                                                            })
+                                                        }
+                                                        className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        min={-500}
+                                                        max={500}
+                                                        value={item.offset_y ?? 0}
+                                                        onChange={(e) =>
+                                                            update(item.id, {
+                                                                offset_y:
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                        10,
+                                                                    ) || 0,
+                                                            })
+                                                        }
+                                                        className="h-8 w-16 text-xs"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground">
+                                                Live preview applies to the card
+                                                shown on the public Resilience
+                                                page. Scale 100% = original; X/Y
+                                                shift the image in pixels.
                                             </p>
                                         </div>
 

@@ -45,7 +45,6 @@ export default function AdminPolicies() {
     const save = (item: ResilienceItem) => {
         setSavingId(item.id)
         const payload: Record<string, string | number | File> = {
-            _method: 'patch',
             section: 'policy',
             title: item.title ?? '',
             body: item.body ?? '',

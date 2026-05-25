@@ -113,7 +113,7 @@ export default function About({ content }: AboutProps) {
             <PhotoStrip photos={photos} />
 
             {/* Executive Summary */}
-            <section className="bg-gray-100 py-10 md:py-14">
+            <section className="bg-[rgb(245,245,245)] py-10 md:py-14">
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
@@ -139,7 +139,7 @@ export default function About({ content }: AboutProps) {
             </section>
 
             {/* History */}
-            <section className="bg-gray-100 pb-14 pt-2">
+            <section className="bg-[rgb(245,245,245)] pb-6 pt-2">
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <div className="flex items-start gap-4 md:gap-6">
                         <img
@@ -169,7 +169,7 @@ export default function About({ content }: AboutProps) {
             </section>
 
             {/* Vision, Mission, Looking Ahead */}
-            <section className="bg-gray-100 pb-14 pt-2">
+            <section className="bg-[rgb(245,245,245)] pb-14 pt-2">
                 <div className="mx-auto max-w-[1240px] space-y-10 px-6 md:px-10 lg:px-14">
                     {/* Vision */}
                     <div className="flex items-start gap-4 md:gap-6">

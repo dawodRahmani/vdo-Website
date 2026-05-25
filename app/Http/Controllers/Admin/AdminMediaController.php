@@ -28,8 +28,18 @@ class AdminMediaController extends Controller
         if ($request->hasFile('video_file')) {
             $data['video_path'] = $request->file('video_file')->store('media-videos', 'public');
         }
+        if ($request->hasFile('document_file')) {
+            $data['document_path'] = $request->file('document_file')->store('media-documents', 'public');
+        }
 
-        unset($data['image_file'], $data['video_file'], $data['clear_image'], $data['clear_video']);
+        unset(
+            $data['image_file'],
+            $data['video_file'],
+            $data['document_file'],
+            $data['clear_image'],
+            $data['clear_video'],
+            $data['clear_document'],
+        );
         MediaItem::create($data);
 
         return back();
@@ -55,11 +65,21 @@ class AdminMediaController extends Controller
             $data['video_path'] = null;
         }
 
+        if ($request->hasFile('document_file')) {
+            $this->deleteDocumentIfStored($item);
+            $data['document_path'] = $request->file('document_file')->store('media-documents', 'public');
+        } elseif ($request->boolean('clear_document')) {
+            $this->deleteDocumentIfStored($item);
+            $data['document_path'] = null;
+        }
+
         unset(
             $data['image_file'],
             $data['clear_image'],
             $data['video_file'],
             $data['clear_video'],
+            $data['document_file'],
+            $data['clear_document'],
         );
         $item->update($data);
 
@@ -70,6 +90,7 @@ class AdminMediaController extends Controller
     {
         $this->deleteImageIfStored($item);
         $this->deleteVideoIfStored($item);
+        $this->deleteDocumentIfStored($item);
         $item->delete();
 
         return back();
@@ -94,6 +115,10 @@ class AdminMediaController extends Controller
             // chunked upload + bumping PHP upload_max_filesize / post_max_size.
             'video_file' => 'nullable|file|mimetypes:video/mp4,video/webm,video/quicktime,video/ogg|max:102400',
             'clear_video' => 'nullable|boolean',
+            // Publication document (PDF preferred; other office formats also accepted).
+            // 50 MB cap; raise here AND in php.ini if larger is needed.
+            'document_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:51200',
+            'clear_document' => 'nullable|boolean',
         ]);
     }
 
@@ -110,6 +135,13 @@ class AdminMediaController extends Controller
     {
         if ($item->video_path && ! str_starts_with($item->video_path, '/') && ! str_starts_with($item->video_path, 'http')) {
             Storage::disk('public')->delete($item->video_path);
+        }
+    }
+
+    private function deleteDocumentIfStored(MediaItem $item): void
+    {
+        if ($item->document_path && ! str_starts_with($item->document_path, '/') && ! str_starts_with($item->document_path, 'http')) {
+            Storage::disk('public')->delete($item->document_path);
         }
     }
 }

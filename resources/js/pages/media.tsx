@@ -1,5 +1,6 @@
 import SiteLayout from '@/layouts/site-layout'
 import PhotoStrip from '@/components/photo-strip'
+import DocumentReaderModal from '@/components/document-reader-modal'
 import {
     Dialog,
     DialogContent,
@@ -7,7 +8,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, Download, Play } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 interface HeroPhoto {
     src?: string
@@ -25,12 +26,22 @@ function photoSrc(p: HeroPhoto): string {
     return p.src ?? p.url ?? ''
 }
 
-function youtubeEmbedUrl(url: string): string | null {
+function youtubeId(url: string): string | null {
     const m =
         url.match(
             /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/,
         ) || url.match(/^([\w-]{11})$/)
-    return m ? `https://www.youtube.com/embed/${m[1]}` : null
+    return m ? m[1] : null
+}
+
+function youtubeEmbedUrl(url: string): string | null {
+    const id = youtubeId(url)
+    return id ? `https://www.youtube.com/embed/${id}` : null
+}
+
+function youtubeThumbnailUrl(url: string): string | null {
+    const id = youtubeId(url)
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null
 }
 
 interface MediaItem {
@@ -42,6 +53,8 @@ interface MediaItem {
     video_url: string | null
     video_path: string | null
     video_file_url: string | null
+    document_path: string | null
+    document_url: string | null
     order: number
     is_active: boolean
     size_scale?: number
@@ -62,74 +75,46 @@ const photoMosaicPositions = [
 ]
 const PHOTOS_PER_PAGE = 6
 
-type PhotoLayer = { id: number; src: string; direction: 'next' | 'prev' }
-
 function PhotoTile({
     src,
-    direction,
     delay,
     position,
+    fromX,
+    fromY,
+    animKey,
+    tileRef,
 }: {
     src: string
-    direction: 'next' | 'prev'
     delay: number
     position: string
+    fromX: number
+    fromY: number
+    animKey: string | number
+    tileRef?: (el: HTMLDivElement | null) => void
 }) {
-    const [layers, setLayers] = useState<PhotoLayer[]>(() => [
-        { id: 0, src, direction },
-    ])
-    const nextIdRef = useRef(1)
-
-    useEffect(() => {
-        setLayers((prev) => {
-            const top = prev[prev.length - 1]
-            if (top.src === src) return prev
-            return [...prev, { id: nextIdRef.current++, src, direction }]
-        })
-    }, [src, direction])
-
-    const dropOlderLayers = (keepId: number) => {
-        setLayers((prev) =>
-            prev.length > 1 ? prev.filter((l) => l.id === keepId) : prev,
-        )
-    }
-
     return (
         <div
+            ref={tileRef}
             className={`group relative overflow-hidden rounded-md bg-gray-200 shadow-sm ${position}`}
         >
-            {layers.map((layer, idx) => {
-                const isTop = idx === layers.length - 1
-                const isAnimating = isTop && layers.length > 1
-                const animationClass = isAnimating
-                    ? layer.direction === 'next'
-                        ? 'photo-crossfade-right'
-                        : 'photo-crossfade-left'
-                    : ''
-                return (
-                    <div
-                        key={layer.id}
-                        className={`absolute inset-0 ${animationClass}`}
-                        style={
-                            isAnimating
-                                ? { animationDelay: `${delay}ms` }
-                                : undefined
-                        }
-                        onAnimationEnd={
-                            isAnimating
-                                ? () => dropOlderLayers(layer.id)
-                                : undefined
-                        }
-                    >
-                        <img
-                            src={encodeURI(layer.src)}
-                            alt="VDO photograph"
-                            className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
-                            loading="lazy"
-                        />
-                    </div>
-                )
-            })}
+            <div
+                key={animKey}
+                className="photo-fly-from-icon absolute inset-0"
+                style={
+                    {
+                        '--from-x': `${fromX}px`,
+                        '--from-y': `${fromY}px`,
+                        animationDelay: `${delay}ms`,
+                    } as React.CSSProperties
+                }
+            >
+                <img
+                    src={encodeURI(src)}
+                    alt="VDO photograph"
+                    className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110"
+                    loading="lazy"
+                />
+            </div>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         </div>
     )
@@ -143,7 +128,8 @@ function VideoCard({
     onPlay: (item: MediaItem) => void
 }) {
     const title = item.title ?? ''
-    const thumb = item.image_url
+    const youtubeThumb = item.video_url ? youtubeThumbnailUrl(item.video_url) : null
+    const thumb = item.image_url ?? youtubeThumb
     const hasPlayable = !!item.video_file_url || !!item.video_url
 
     return (
@@ -308,6 +294,12 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
     const docs = useHorizontalScroll()
     const pubs = useHorizontalScroll()
     const [activeVideo, setActiveVideo] = useState<MediaItem | null>(null)
+    const [activeDocument, setActiveDocument] = useState<MediaItem | null>(null)
+    const iconRef = useRef<HTMLDivElement>(null)
+    const tileRefs = useRef<(HTMLDivElement | null)[]>([])
+    const [tileOffsets, setTileOffsets] = useState<
+        { x: number; y: number }[]
+    >([])
 
     const photos =
         heroPhotos && heroPhotos.length > 0
@@ -343,12 +335,42 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
         setPhotoPage((p) => (p + 1) % totalPhotoPages)
     }
 
+    const nextPhotoPage = (photoPage + 1) % totalPhotoPages
+    const nextVisiblePhotos = galleryPhotos.slice(
+        nextPhotoPage * PHOTOS_PER_PAGE,
+        nextPhotoPage * PHOTOS_PER_PAGE + PHOTOS_PER_PAGE,
+    )
+
+    useLayoutEffect(() => {
+        const measure = () => {
+            const icon = iconRef.current
+            if (!icon) return
+            const iconRect = icon.getBoundingClientRect()
+            const iconCenter = {
+                x: iconRect.left + iconRect.width / 2,
+                y: iconRect.top + iconRect.height / 2,
+            }
+            const next = tileRefs.current.map((tile) => {
+                if (!tile) return { x: 0, y: 0 }
+                const r = tile.getBoundingClientRect()
+                return {
+                    x: iconCenter.x - (r.left + r.width / 2),
+                    y: iconCenter.y - (r.top + r.height / 2),
+                }
+            })
+            setTileOffsets(next)
+        }
+        measure()
+        window.addEventListener('resize', measure)
+        return () => window.removeEventListener('resize', measure)
+    }, [visiblePhotos.length])
+
     return (
         <SiteLayout title="Media">
             <PhotoStrip photos={photos} />
 
             {/* Documentaries */}
-            <section id="documentaries" className="bg-gray-100 py-8 scroll-mt-24">
+            <section id="documentaries" className="bg-[rgb(245,245,245)] py-8 scroll-mt-24">
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Documentaries:
@@ -376,7 +398,7 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
             {/* Photographs */}
             <section
                 id="photographs"
-                className="relative bg-gray-100 py-8 scroll-mt-24"
+                className="relative bg-[rgb(245,245,245)] py-8 scroll-mt-24"
                 style={{
                     backgroundImage: 'url(/svg/Map.svg)',
                     backgroundSize: 'cover',
@@ -384,7 +406,7 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <div className="absolute inset-0 bg-gray-100/70" />
+                <div className="absolute inset-0 bg-[rgb(245,245,245)]/70" />
                 <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Program Snapshots:
@@ -395,32 +417,66 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
                             onClick={goToPrevPhotoPage}
                         />
                         <div className="grid flex-1 grid-cols-3 gap-3 auto-rows-[100px] md:gap-4 md:auto-rows-[150px] lg:auto-rows-[175px]">
-                            {visiblePhotos.map((src, i) => (
-                                <PhotoTile
-                                    key={i}
-                                    src={src}
-                                    direction={photoDirection}
-                                    delay={i * 90}
-                                    position={photoMosaicPositions[i]}
-                                />
-                            ))}
+                            {visiblePhotos.map((src, i) => {
+                                const offset = tileOffsets[i] ?? {
+                                    x: 600,
+                                    y: 0,
+                                }
+                                return (
+                                    <PhotoTile
+                                        key={i}
+                                        src={src}
+                                        delay={i * 120}
+                                        position={photoMosaicPositions[i]}
+                                        fromX={offset.x}
+                                        fromY={offset.y}
+                                        animKey={`${photoPage}-${photoDirection}-${i}`}
+                                        tileRef={(el) => {
+                                            tileRefs.current[i] = el
+                                        }}
+                                    />
+                                )
+                            })}
                         </div>
                         <CarouselArrowButton
                             direction="next"
                             onClick={goToNextPhotoPage}
                         />
-                        <img
-                            src="/svg/Missed%20Icons/Media/01.svg"
-                            alt=""
+                        <div
+                            ref={iconRef}
                             aria-hidden="true"
-                            className="ml-2 hidden h-12 w-auto select-none opacity-80 md:block lg:h-14"
-                        />
+                            title="Next page preview"
+                            className="ml-2 hidden aspect-[3/2] h-12 flex-shrink-0 select-none opacity-90 md:block lg:h-14"
+                        >
+                            {nextVisiblePhotos.length > 0 ? (
+                                <div className="grid h-full w-full grid-cols-3 grid-rows-2 gap-[2px] overflow-hidden rounded-sm bg-white/40 p-[2px] shadow-sm ring-1 ring-black/10 transition-transform hover:scale-105">
+                                    {nextVisiblePhotos.map((src, i) => (
+                                        <img
+                                            key={`${nextPhotoPage}-${i}`}
+                                            src={encodeURI(src)}
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="h-full w-full rounded-[1px] object-cover"
+                                            loading="eager"
+                                            decoding="async"
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <img
+                                    src="/svg/Missed%20Icons/Media/01.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                    className="h-full w-auto"
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* Publications */}
-            <section id="publications" className="bg-gray-100 pb-14 pt-8 scroll-mt-24">
+            <section id="publications" className="bg-[rgb(245,245,245)] pb-14 pt-8 scroll-mt-24">
                 <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                     <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                         Publications:
@@ -433,7 +489,9 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
                         >
                             {publications.map((pub) => {
                                 const cover = pub.image_url ?? ''
+                                const doc = pub.document_url
                                 const scale = (pub.size_scale ?? 100) / 100
+                                const canOpen = !!doc
                                 return (
                                     <div
                                         key={pub.id}
@@ -443,28 +501,56 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
                                             transformOrigin: 'top center',
                                         }}
                                     >
-                                        <div className="w-full rounded-sm border border-dashed border-gray-400 bg-white p-2 shadow-sm transition-shadow hover:shadow-md">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                canOpen && setActiveDocument(pub)
+                                            }
+                                            disabled={!canOpen}
+                                            aria-label={
+                                                canOpen
+                                                    ? `Read ${pub.title ?? 'publication'}`
+                                                    : pub.title ?? ''
+                                            }
+                                            className="group w-full rounded-sm border border-dashed border-gray-400 bg-white p-2 text-left shadow-sm transition-shadow hover:shadow-md disabled:cursor-default"
+                                        >
                                             <div className="aspect-[3/4] w-full overflow-hidden bg-white">
                                                 {cover && (
                                                     <img
                                                         src={encodeURI(cover)}
                                                         alt={pub.title ?? ''}
-                                                        className="h-full w-full object-contain"
+                                                        className="h-full w-full object-contain transition-transform duration-500 group-enabled:group-hover:scale-105"
                                                         loading="lazy"
                                                     />
                                                 )}
                                             </div>
-                                        </div>
-                                        {cover && (
+                                        </button>
+                                        {doc ? (
                                             <a
-                                                href={encodeURI(cover)}
+                                                href={doc}
                                                 download
                                                 aria-label={`Download ${pub.title ?? ''}`}
                                                 className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
                                             >
-                                                <Download className="h-6 w-6" strokeWidth={1.5} />
+                                                <Download
+                                                    className="h-6 w-6"
+                                                    strokeWidth={1.5}
+                                                />
                                             </a>
-                                        )}
+                                        ) : cover ? (
+                                            <a
+                                                href={encodeURI(cover)}
+                                                download
+                                                aria-label={`Download cover for ${pub.title ?? ''}`}
+                                                className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-300 transition-colors hover:text-[rgb(0,175,239)]"
+                                                title="No document uploaded — downloads cover image"
+                                            >
+                                                <Download
+                                                    className="h-6 w-6"
+                                                    strokeWidth={1.5}
+                                                />
+                                            </a>
+                                        ) : null}
                                     </div>
                                 )
                             })}
@@ -477,6 +563,12 @@ export default function Media({ heroPhotos, items = [] }: MediaProps) {
             <VideoPlayerModal
                 item={activeVideo}
                 onClose={() => setActiveVideo(null)}
+            />
+            <DocumentReaderModal
+                open={!!activeDocument}
+                onClose={() => setActiveDocument(null)}
+                title={activeDocument?.title ?? null}
+                documentUrl={activeDocument?.document_url ?? null}
             />
         </SiteLayout>
     )

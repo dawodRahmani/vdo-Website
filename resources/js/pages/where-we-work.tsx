@@ -108,7 +108,7 @@ export default function WhereWeWork({
         <SiteLayout title="Where We Work">
             <PhotoStrip photos={photos} />
 
-            <section className="bg-gray-100 pb-14">
+            <section className="bg-[rgb(245,245,245)] pb-14">
                 <div className="mx-auto max-w-[1240px] space-y-8 px-6 py-8 md:px-10 lg:px-14">
                     {regions.map((region, index) => {
                         const altText = `Afghanistan — ${region.title.replace(

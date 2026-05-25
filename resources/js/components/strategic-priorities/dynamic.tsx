@@ -1,5 +1,19 @@
 import { type ReactNode } from 'react'
 
+export interface SpInfographicSlot {
+    url: string
+    alt: string | null
+    scale: number
+    offset_x: number
+    offset_y: number
+}
+
+export interface SpInfographics {
+    infographic: SpInfographicSlot
+    beneficiary: SpInfographicSlot
+    extra: SpInfographicSlot
+}
+
 export interface SpContent {
     page_key: string
     heading?: string | null
@@ -10,6 +24,7 @@ export interface SpContent {
     achievements_heading?: string | null
     beneficiary_url?: string | null
     beneficiary_alt?: string | null
+    infographics?: SpInfographics
     bullets?: string[]
 }
 

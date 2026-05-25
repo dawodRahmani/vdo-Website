@@ -26,6 +26,8 @@ class AdminSiteSettingsController extends Controller
             'logo_file' => 'nullable|image|max:4096',
             'clear_logo' => 'nullable|boolean',
             'logo_height' => 'nullable|integer|min:24|max:200',
+            'logo_offset_x' => 'nullable|integer|min:-200|max:400',
+            'logo_offset_y' => 'nullable|integer|min:-100|max:200',
         ]);
 
         $settings = SiteSetting::current();
@@ -33,6 +35,8 @@ class AdminSiteSettingsController extends Controller
             'logo_height' => $request->filled('logo_height')
                 ? (int) $request->input('logo_height')
                 : null,
+            'logo_offset_x' => (int) $request->input('logo_offset_x', 0),
+            'logo_offset_y' => (int) $request->input('logo_offset_y', 0),
         ];
 
         if ($request->hasFile('logo_file')) {
@@ -87,6 +91,8 @@ class AdminSiteSettingsController extends Controller
             'logo_url' => $settings->logoUrl(),
             'logo_path' => $settings->logo_path,
             'logo_height' => $settings->logo_height,
+            'logo_offset_x' => $settings->logo_offset_x,
+            'logo_offset_y' => $settings->logo_offset_y,
             'contact_phone' => $settings->contact_phone,
             'contact_email' => $settings->contact_email,
             'social_facebook_url' => $settings->social_facebook_url,

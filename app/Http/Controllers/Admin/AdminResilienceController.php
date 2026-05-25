@@ -67,7 +67,10 @@ class AdminResilienceController extends Controller
         if ($request->hasFile('image_file')) {
             $data['image'] = $request->file('image_file')->store('resilience', 'public');
         }
-        unset($data['image_file'], $data['clear_image']);
+        if ($request->hasFile('document_file')) {
+            $data['document'] = $request->file('document_file')->store('resilience-documents', 'public');
+        }
+        unset($data['image_file'], $data['clear_image'], $data['document_file'], $data['clear_document']);
 
         ResilienceItem::create($data);
 
@@ -79,13 +82,22 @@ class AdminResilienceController extends Controller
         $data = $this->validatedData($request);
 
         if ($request->hasFile('image_file')) {
-            $this->deleteImageIfStored($item);
+            $this->deleteStoredFile($item->image);
             $data['image'] = $request->file('image_file')->store('resilience', 'public');
         } elseif ($request->boolean('clear_image')) {
-            $this->deleteImageIfStored($item);
+            $this->deleteStoredFile($item->image);
             $data['image'] = null;
         }
-        unset($data['image_file'], $data['clear_image']);
+
+        if ($request->hasFile('document_file')) {
+            $this->deleteStoredFile($item->document);
+            $data['document'] = $request->file('document_file')->store('resilience-documents', 'public');
+        } elseif ($request->boolean('clear_document')) {
+            $this->deleteStoredFile($item->document);
+            $data['document'] = null;
+        }
+
+        unset($data['image_file'], $data['clear_image'], $data['document_file'], $data['clear_document']);
 
         $item->update($data);
 
@@ -102,7 +114,8 @@ class AdminResilienceController extends Controller
             return back();
         }
 
-        $this->deleteImageIfStored($item);
+        $this->deleteStoredFile($item->image);
+        $this->deleteStoredFile($item->document);
         $item->delete();
 
         return back();
@@ -124,15 +137,20 @@ class AdminResilienceController extends Controller
             'bullets.*' => 'string|max:500',
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
+            'size_scale' => 'nullable|integer|min:25|max:300',
+            'offset_x' => 'nullable|integer|min:-500|max:500',
+            'offset_y' => 'nullable|integer|min:-500|max:500',
             'image_file' => 'nullable|image|max:5120',
             'clear_image' => 'nullable|boolean',
+            'document_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:51200',
+            'clear_document' => 'nullable|boolean',
         ]);
     }
 
-    private function deleteImageIfStored(ResilienceItem $item): void
+    private function deleteStoredFile(?string $path): void
     {
-        if ($item->image && ! str_starts_with($item->image, '/') && ! str_starts_with($item->image, 'http')) {
-            Storage::disk('public')->delete($item->image);
+        if ($path && ! str_starts_with($path, '/') && ! str_starts_with($path, 'http')) {
+            Storage::disk('public')->delete($path);
         }
     }
 }

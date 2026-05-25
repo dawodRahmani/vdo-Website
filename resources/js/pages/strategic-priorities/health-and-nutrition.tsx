@@ -12,10 +12,10 @@ import {
     pickBody,
     pickBullets,
     pickHeading,
-    pickImage,
     renderRich,
     type SpContent,
 } from '@/components/strategic-priorities/dynamic'
+import { ManagedInfographic } from '@/components/strategic-priorities/managed-infographic'
 
 function DashList({ items }: { items: string[] }) {
     return (
@@ -57,15 +57,17 @@ export default function HealthAndNutrition({ content }: { content?: SpContent })
     const body = paragraphs(pickBody(content?.body, defaultBody))
     const between = paragraphs(pickBody(content?.between_body, defaultBetween))
     const bullets = pickBullets(content?.bullets, defaultBullets)
-    const infographic = pickImage(content?.infographic_url, defaultInfographic)
+    const slots = content?.infographics
     const infographicAlt =
         content?.infographic_alt ??
         'Health and Nutrition coverage: Central, Northeastern, West, Eastern regions'
     const achievementsHeading = pickHeading(content?.achievements_heading, 'Key Achievements:')
-    const beneficiary = pickImage(content?.beneficiary_url, defaultBeneficiary)
     const beneficiaryAlt =
         content?.beneficiary_alt ??
         'Health and Nutrition beneficiaries: Children 288,154 (30%), Women 480,257 (50%), Others 192,103 (20%), Total 960,515 (100%)'
+    const defaultInterventions = '/svg/Strategic Priorities/09.svg'
+    const interventionsAlt =
+        slots?.extra?.alt ?? 'VDO interventions in Health sector'
 
     return (
         <SiteLayout title="Health and Nutrition">
@@ -86,10 +88,11 @@ export default function HealthAndNutrition({ content }: { content?: SpContent })
                             Health and Nutrition Geographic Presence:
                         </h3>
                         <div className="mt-4 flex justify-start">
-                            <img
-                                src={encodeURI(infographic)}
-                                alt={infographicAlt}
-                                className="h-auto w-full max-w-[460px]"
+                            <ManagedInfographic
+                                slot={slots?.infographic}
+                                fallbackUrl={defaultInfographic}
+                                fallbackAlt={infographicAlt}
+                                imgClassName="h-auto w-full max-w-[460px]"
                             />
                         </div>
                     </div>
@@ -99,10 +102,11 @@ export default function HealthAndNutrition({ content }: { content?: SpContent })
                             VDO's interventions in Health sector include:
                         </h3>
                         <div className="mt-4 flex justify-center">
-                            <img
-                                src="/svg/Strategic Priorities/09.svg"
-                                alt="Health interventions"
-                                className="h-auto w-full max-w-[520px]"
+                            <ManagedInfographic
+                                slot={slots?.extra}
+                                fallbackUrl={defaultInterventions}
+                                fallbackAlt={interventionsAlt}
+                                imgClassName="h-auto w-full max-w-[520px]"
                             />
                         </div>
                     </div>
@@ -126,10 +130,11 @@ export default function HealthAndNutrition({ content }: { content?: SpContent })
                         </div>
 
                         <div className="flex justify-center md:justify-end">
-                            <img
-                                src={encodeURI(beneficiary)}
-                                alt={beneficiaryAlt}
-                                className="h-auto w-full max-w-[320px]"
+                            <ManagedInfographic
+                                slot={slots?.beneficiary}
+                                fallbackUrl={defaultBeneficiary}
+                                fallbackAlt={beneficiaryAlt}
+                                imgClassName="h-auto w-full max-w-[320px]"
                             />
                         </div>
                     </div>

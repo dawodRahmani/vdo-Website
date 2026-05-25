@@ -7,21 +7,50 @@ use Laravel\Fortify\Features;
 
 $heroPhotos = fn (string $key) => HeroSection::photosFor($key);
 
-$spPage = function (string $key) {
+$spSlot = function (\App\Models\StrategicPriorityPage $page, string $slot): array {
+    $path = $page->{$slot.'_path'};
+
+    return [
+        'url' => $path
+            ? route('strategic-priorities.infographic.render', [
+                'pageKey' => $page->page_key,
+                'slot' => $slot,
+            ]).'?v='.optional($page->updated_at)->timestamp
+            : '',
+        'alt' => $page->{$slot.'_alt'},
+        'scale' => (int) ($page->{$slot.'_scale'} ?? 100),
+        'offset_x' => (int) ($page->{$slot.'_offset_x'} ?? 0),
+        'offset_y' => (int) ($page->{$slot.'_offset_y'} ?? 0),
+    ];
+};
+
+$spPage = function (string $key) use ($spSlot) {
     $page = \App\Models\StrategicPriorityPage::where('page_key', $key)->first();
     if (! $page) {
         return null;
     }
+
+    $infographic = $spSlot($page, 'infographic');
+    $beneficiary = $spSlot($page, 'beneficiary');
+    $extra = $spSlot($page, 'extra');
+
     return [
         'page_key' => $page->page_key,
         'heading' => $page->heading,
         'body' => $page->body,
         'between_body' => $page->between_body,
-        'infographic_url' => $page->infographic_url,
-        'infographic_alt' => $page->infographic_alt,
+        // Flat fields kept for pages that haven't migrated to the slot object yet.
+        'infographic_url' => $infographic['url'],
+        'infographic_alt' => $infographic['alt'],
         'achievements_heading' => $page->achievements_heading,
-        'beneficiary_url' => $page->beneficiary_url,
-        'beneficiary_alt' => $page->beneficiary_alt,
+        'beneficiary_url' => $beneficiary['url'],
+        'beneficiary_alt' => $beneficiary['alt'],
+        // Full per-slot payload (url + alt + scale + offsets).
+        'infographics' => [
+            'infographic' => $infographic,
+            'beneficiary' => $beneficiary,
+            'extra' => $extra,
+        ],
         'bullets' => \App\Models\StrategicPriorityBullet::where('page_key', $key)
             ->orderBy('order')
             ->pluck('content')
@@ -37,7 +66,16 @@ Route::get('/', function () use ($heroPhotos) {
             ->map(fn ($s) => $s->toSlidePayload()),
         'impactStats' => \App\Models\HomeImpactStat::ordered()->get(),
         'priorityAreas' => \App\Models\HomePriorityArea::ordered()->get(),
+        'prioritiesSection' => (function () {
+            $s = \App\Models\HomeSetting::current();
+            return [
+                'offset_x' => (int) ($s->priorities_offset_x ?? 0),
+                'offset_y' => (int) ($s->priorities_offset_y ?? 0),
+                'scale' => (int) ($s->priorities_scale ?? 100),
+            ];
+        })(),
         'homeCommitments' => \App\Models\HomeCommitment::ordered()->get(),
+        'homeCommitmentsLineGap' => (int) (\App\Models\HomeSetting::current()->commitments_line_gap ?? -12),
         'regionsImage' => (function () {
             $s = \App\Models\HomeSetting::current();
             return [
@@ -66,6 +104,10 @@ Route::get('/about', function () use ($heroPhotos) {
         'content' => \App\Models\AboutPage::current(),
     ]);
 })->name('about');
+Route::get('/render/strategic-priorities/{pageKey}/{slot}.svg', [\App\Http\Controllers\StrategicPriorityInfographicController::class, 'render'])
+    ->where(['pageKey' => '[a-z0-9-]+', 'slot' => '(infographic|beneficiary|extra)'])
+    ->name('strategic-priorities.infographic.render');
+
 Route::get('/strategic-priorities', fn () => Inertia::render('strategic-priorities', [
     'heroPhotos' => HeroSection::photosFor('strategic-priorities'),
     'cards' => \App\Models\StrategicPriorityCard::ordered()->get(),
@@ -102,16 +144,12 @@ Route::prefix('strategic-priorities')->name('strategic-priorities.')->group(func
     ]))->name('cross-cutting-areas');
     Route::get('target-group', fn () => Inertia::render('strategic-priorities/target-group', [
         'heroPhotos' => HeroSection::photosFor('strategic-priorities.target-group'),
-        'content' => $spPage('target-group'),
+        'primary' => $spPage('target-group'),
+        'secondary' => $spPage('secondary-beneficiaries'),
+        'tertiary' => $spPage('tertiary-audience'),
     ]))->name('target-group');
-    Route::get('secondary-beneficiaries', fn () => Inertia::render('strategic-priorities/secondary-beneficiaries', [
-        'heroPhotos' => HeroSection::photosFor('strategic-priorities.secondary-beneficiaries'),
-        'content' => $spPage('secondary-beneficiaries'),
-    ]))->name('secondary-beneficiaries');
-    Route::get('tertiary-audience', fn () => Inertia::render('strategic-priorities/tertiary-audience', [
-        'heroPhotos' => HeroSection::photosFor('strategic-priorities.tertiary-audience'),
-        'content' => $spPage('tertiary-audience'),
-    ]))->name('tertiary-audience');
+    Route::redirect('secondary-beneficiaries', '/strategic-priorities/target-group#secondary')->name('secondary-beneficiaries');
+    Route::redirect('tertiary-audience', '/strategic-priorities/target-group#tertiary')->name('tertiary-audience');
     Route::get('contribution-project', fn () => Inertia::render('strategic-priorities/contribution-project', [
         'heroPhotos' => HeroSection::photosFor('strategic-priorities.contribution-project'),
         'content' => $spPage('contribution-project'),
@@ -140,12 +178,17 @@ Route::get('/our-commitment', fn () => Inertia::render('our-commitment', [
         'body' => $c->body,
         'card_svg_url' => $c->card_svg_url,
         'size_scale' => (int) ($c->size_scale ?? 100),
+        'offset_x' => (int) ($c->offset_x ?? 0),
+        'offset_y' => (int) ($c->offset_y ?? 0),
     ]),
     'publications' => \App\Models\CommitmentPublication::active()->ordered()->get()->map(fn ($p) => [
         'id' => $p->id,
         'title' => $p->title,
         'cover_url' => $p->cover_url,
+        'document_url' => $p->document_url,
         'size_scale' => (int) ($p->size_scale ?? 100),
+        'offset_x' => (int) ($p->offset_x ?? 0),
+        'offset_y' => (int) ($p->offset_y ?? 0),
     ]),
 ]))->name('our-commitment');
 Route::get('/vdo-resilience', fn () => Inertia::render('vdo-resilience', [
@@ -167,15 +210,50 @@ Route::get('/opportunities', fn () => Inertia::render('opportunities', [
         ->get()
         ->map(fn ($l) => [
             'id' => $l->id,
+            'slug' => $l->slug,
             'category_slug' => $l->category?->slug,
             'category_title' => $l->category?->title,
             'title' => $l->title,
             'ref' => $l->ref,
             'summary' => $l->summary,
+            'employment_type' => $l->employment_type,
+            'experience_level' => $l->experience_level,
             'location' => $l->location,
             'deadline' => $l->deadline,
+            'posted_at' => optional($l->posted_at)->toDateString(),
+            'deadline_at' => optional($l->deadline_at)->toDateString(),
         ]),
 ]))->name('opportunities');
+
+Route::get('/opportunities/{slug}', function (string $slug) {
+    $l = \App\Models\OpportunityListing::active()
+        ->where('slug', $slug)
+        ->with('category:id,slug,title,icon_path')
+        ->firstOrFail();
+
+    return Inertia::render('opportunities/show', [
+        'heroPhotos' => HeroSection::photosFor('opportunities'),
+        'listing' => [
+            'id' => $l->id,
+            'slug' => $l->slug,
+            'category_slug' => $l->category?->slug,
+            'category_title' => $l->category?->title,
+            'category_icon_url' => $l->category?->icon_url,
+            'title' => $l->title,
+            'ref' => $l->ref,
+            'summary' => $l->summary,
+            'description' => $l->description,
+            'responsibilities' => $l->responsibilities,
+            'requirements' => $l->requirements,
+            'employment_type' => $l->employment_type,
+            'experience_level' => $l->experience_level,
+            'location' => $l->location,
+            'deadline' => $l->deadline,
+            'posted_at' => optional($l->posted_at)->toDateString(),
+            'deadline_at' => optional($l->deadline_at)->toDateString(),
+        ],
+    ]);
+})->name('opportunities.show');
 Route::get('/media', fn () => Inertia::render('media', [
     'heroPhotos' => HeroSection::photosFor('media'),
     'items' => \App\Models\MediaItem::active()->ordered()->get(),
@@ -256,6 +334,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('home-page/hero/{section}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateHero'])->name('home-page.hero.update');
     Route::post('home-page/stats/{stat}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateStat'])->name('home-page.stats.update');
     Route::post('home-page/priorities/{priority}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updatePriority'])->name('home-page.priorities.update');
+    Route::post('home-page/priorities-section', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updatePrioritiesSection'])->name('home-page.priorities-section.update');
     Route::post('home-page/commitments/{commitment}', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateCommitment'])->name('home-page.commitments.update');
     Route::post('home-page/regions', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'updateRegions'])->name('home-page.regions.update');
     Route::post('home-page/hero-slides', [\App\Http\Controllers\Admin\AdminHomePageController::class, 'storeHeroSlide'])->name('home-page.hero-slides.store');
@@ -298,6 +377,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('work-regions', [\App\Http\Controllers\Admin\AdminWorkRegionController::class, 'store'])->name('work-regions.store');
     Route::post('work-regions/{region}', [\App\Http\Controllers\Admin\AdminWorkRegionController::class, 'update'])->name('work-regions.update');
     Route::delete('work-regions/{region}', [\App\Http\Controllers\Admin\AdminWorkRegionController::class, 'destroy'])->name('work-regions.destroy');
+
+    Route::get('home-commitments', [\App\Http\Controllers\Admin\AdminHomeCommitmentController::class, 'index'])->name('home-commitments');
+    Route::post('home-commitments/line-gap', [\App\Http\Controllers\Admin\AdminHomeCommitmentController::class, 'updateLineGap'])->name('home-commitments.line-gap');
+    Route::post('home-commitments', [\App\Http\Controllers\Admin\AdminHomeCommitmentController::class, 'store'])->name('home-commitments.store');
+    Route::post('home-commitments/{homeCommitment}', [\App\Http\Controllers\Admin\AdminHomeCommitmentController::class, 'update'])->name('home-commitments.update');
+    Route::delete('home-commitments/{homeCommitment}', [\App\Http\Controllers\Admin\AdminHomeCommitmentController::class, 'destroy'])->name('home-commitments.destroy');
 
     Route::get('commitments', [\App\Http\Controllers\Admin\AdminCommitmentController::class, 'index'])->name('commitments');
     Route::post('commitments', [\App\Http\Controllers\Admin\AdminCommitmentController::class, 'storeCommitment'])->name('commitments.store');

@@ -36,11 +36,9 @@ class HomeHeroSlide extends Model
         return '/storage/'.ltrim($path, '/');
     }
 
-    public function photoUrl(int $n): string
+    public function photoUrl(): string
     {
-        $col = "photo{$n}_path";
-
-        return static::resolveUrl($this->{$col});
+        return static::resolveUrl($this->photo1_path);
     }
 
     public function toSlidePayload(): array
@@ -49,10 +47,10 @@ class HomeHeroSlide extends Model
             'id' => $this->id,
             'order' => $this->order,
             'is_active' => $this->is_active,
-            'photos' => [
-                ['url' => $this->photoUrl(1), 'alt' => $this->photo1_alt ?? '', 'path' => $this->photo1_path],
-                ['url' => $this->photoUrl(2), 'alt' => $this->photo2_alt ?? '', 'path' => $this->photo2_path],
-                ['url' => $this->photoUrl(3), 'alt' => $this->photo3_alt ?? '', 'path' => $this->photo3_path],
+            'photo' => [
+                'url' => $this->photoUrl(),
+                'alt' => $this->photo1_alt ?? '',
+                'path' => $this->photo1_path,
             ],
         ];
     }

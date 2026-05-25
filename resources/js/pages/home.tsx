@@ -7,6 +7,7 @@ import HeroFirstSection, {
 } from '@/components/hero-first-section'
 import HomeSecondSection, {
     type LatestNewsItem,
+    type PrioritiesSection,
     type PriorityArea,
     type RegionsImage,
 } from '@/components/home-second-section'
@@ -20,7 +21,9 @@ interface HomeProps {
     heroSlides?: HeroSlide[]
     impactStats?: ImpactStat[]
     priorityAreas?: PriorityArea[]
+    prioritiesSection?: PrioritiesSection
     homeCommitments?: CommitmentItem[]
+    homeCommitmentsLineGap?: number
     latestNews?: LatestNewsItem[]
     regionsImage?: RegionsImage
 }
@@ -30,7 +33,9 @@ export default function Home({
     heroSlides,
     impactStats,
     priorityAreas,
+    prioritiesSection,
     homeCommitments,
+    homeCommitmentsLineGap,
     latestNews,
     regionsImage,
 }: HomeProps) {
@@ -38,7 +43,7 @@ export default function Home({
         <>
             <Head title="Home" />
 
-            <div className="min-h-screen bg-gray-100 shadow-[inset_0_10px_12px_-6px_rgba(0,0,0,0.18),inset_0_-10px_12px_-6px_rgba(0,0,0,0.18)]">
+            <div className="min-h-screen bg-[rgb(245,245,245)]">
                 <Header />
 
                 <HeroFirstSection
@@ -51,9 +56,13 @@ export default function Home({
                     priorityAreas={priorityAreas}
                     latestNews={latestNews}
                     regionsImage={regionsImage}
+                    prioritiesSection={prioritiesSection}
                 />
 
-                <OurCommitment commitments={homeCommitments} />
+                <OurCommitment
+                    commitments={homeCommitments}
+                    lineGap={homeCommitmentsLineGap}
+                />
 
                 <SiteFooter />
             </div>

@@ -15,7 +15,7 @@ class CommitmentPublication extends Model
         'order' => 'integer',
     ];
 
-    protected $appends = ['cover_url'];
+    protected $appends = ['cover_url', 'document_url'];
 
     public function scopeActive(Builder $q): Builder
     {
@@ -29,7 +29,16 @@ class CommitmentPublication extends Model
 
     public function getCoverUrlAttribute(): ?string
     {
-        $path = $this->cover_path;
+        return $this->resolveStorageUrl($this->cover_path);
+    }
+
+    public function getDocumentUrlAttribute(): ?string
+    {
+        return $this->resolveStorageUrl($this->document_path);
+    }
+
+    private function resolveStorageUrl(?string $path): ?string
+    {
         if (! $path) {
             return null;
         }

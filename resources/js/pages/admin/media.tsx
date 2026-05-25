@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { dashboard } from '@/routes'
 import { type BreadcrumbItem } from '@/types'
-import { Search, X } from 'lucide-react'
+import { Plus, Search, X } from 'lucide-react'
 
 type Kind = 'documentary' | 'photo' | 'publication'
 
@@ -20,6 +20,8 @@ interface MediaItem {
     video_url: string | null
     video_path: string | null
     video_file_url: string | null
+    document_path: string | null
+    document_url: string | null
     order: number
     is_active: boolean
     size_scale: number
@@ -49,9 +51,13 @@ export default function AdminMedia() {
     const [pendingVideoFiles, setPendingVideoFiles] = useState<
         Record<number, File>
     >({})
+    const [pendingDocumentFiles, setPendingDocumentFiles] = useState<
+        Record<number, File>
+    >({})
     const [search, setSearch] = useState('')
     const fileInputs = useRef<Record<number, HTMLInputElement | null>>({})
     const videoInputs = useRef<Record<number, HTMLInputElement | null>>({})
+    const documentInputs = useRef<Record<number, HTMLInputElement | null>>({})
 
     const update = (id: number, patch: Partial<MediaItem>) => {
         setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)))
@@ -60,7 +66,6 @@ export default function AdminMedia() {
     const save = (item: MediaItem) => {
         setSavingId(item.id)
         const payload: Record<string, string | number | File> = {
-            _method: 'patch',
             kind: item.kind,
             title: item.title ?? '',
             video_url: item.video_url ?? '',
@@ -72,6 +77,8 @@ export default function AdminMedia() {
         if (file) payload.image_file = file
         const vfile = pendingVideoFiles[item.id]
         if (vfile) payload.video_file = vfile
+        const dfile = pendingDocumentFiles[item.id]
+        if (dfile) payload.document_file = dfile
 
         router.post(`/admin/media/${item.id}`, payload, {
             preserveScroll: true,
@@ -87,15 +94,54 @@ export default function AdminMedia() {
                     delete next[item.id]
                     return next
                 })
+                setPendingDocumentFiles((p) => {
+                    const next = { ...p }
+                    delete next[item.id]
+                    return next
+                })
                 if (fileInputs.current[item.id]) {
                     fileInputs.current[item.id]!.value = ''
                 }
                 if (videoInputs.current[item.id]) {
                     videoInputs.current[item.id]!.value = ''
                 }
+                if (documentInputs.current[item.id]) {
+                    documentInputs.current[item.id]!.value = ''
+                }
             },
             onFinish: () => setSavingId(null),
         })
+    }
+
+    const clearDocument = (item: MediaItem) => {
+        setSavingId(item.id)
+        router.post(
+            `/admin/media/${item.id}`,
+            {
+                kind: item.kind,
+                title: item.title ?? '',
+                video_url: item.video_url ?? '',
+                order: item.order,
+                is_active: item.is_active ? 1 : 0,
+                size_scale: item.size_scale ?? 100,
+                clear_document: 1,
+            },
+            {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: () => {
+                    setPendingDocumentFiles((p) => {
+                        const next = { ...p }
+                        delete next[item.id]
+                        return next
+                    })
+                    if (documentInputs.current[item.id]) {
+                        documentInputs.current[item.id]!.value = ''
+                    }
+                },
+                onFinish: () => setSavingId(null),
+            },
+        )
     }
 
     const clearVideo = (item: MediaItem) => {
@@ -103,8 +149,7 @@ export default function AdminMedia() {
         router.post(
             `/admin/media/${item.id}`,
             {
-                _method: 'patch',
-                kind: item.kind,
+                    kind: item.kind,
                 title: item.title ?? '',
                 video_url: item.video_url ?? '',
                 order: item.order,
@@ -135,8 +180,7 @@ export default function AdminMedia() {
         router.post(
             `/admin/media/${item.id}`,
             {
-                _method: 'patch',
-                kind: item.kind,
+                    kind: item.kind,
                 title: item.title ?? '',
                 video_url: item.video_url ?? '',
                 order: item.order,
@@ -176,6 +220,30 @@ export default function AdminMedia() {
             },
             { preserveScroll: true },
         )
+    }
+
+    const addDocumentary = (
+        title: string,
+        videoUrl: string,
+        imageFile: File | null,
+        onDone: () => void,
+    ) => {
+        const docs = items.filter((i) => i.kind === 'documentary')
+        const payload: Record<string, string | number | File> = {
+            kind: 'documentary',
+            title,
+            video_url: videoUrl,
+            order: docs.length + 1,
+            is_active: 1,
+            size_scale: 100,
+        }
+        if (imageFile) payload.image_file = imageFile
+
+        router.post('/admin/media', payload, {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: onDone,
+        })
     }
 
     const matches = (i: MediaItem) => {
@@ -258,12 +326,17 @@ export default function AdminMedia() {
                     )}
                 </div>
 
+                {!searchActive && (
+                    <AddDocumentaryForm onSubmit={addDocumentary} />
+                )}
+
                 <MediaListSection
                     title="Documentaries"
                     description="Paste a YouTube URL OR upload a video file (mp4/webm/mov, max 100 MB). Add a thumbnail to show on the card. Clicking the card opens the video in a player on the site."
                     kind="documentary"
                     items={documentaries}
                     onAdd={() => add('documentary')}
+                    hideAddButton
                     onChange={update}
                     onSave={save}
                     onDelete={remove}
@@ -311,7 +384,7 @@ export default function AdminMedia() {
 
                 <MediaListSection
                     title="Publications"
-                    description="Each card has a cover image (which is also used as the download). Card size can be scaled per item."
+                    description="Each card has a cover image and an attached document (PDF preferred). Visitors click the cover to read inline, or use the download button."
                     kind="publication"
                     items={publications}
                     onAdd={() => add('publication')}
@@ -322,12 +395,19 @@ export default function AdminMedia() {
                         setPendingFiles((p) => ({ ...p, [id]: file }))
                     }
                     onClearImage={clearImage}
+                    onPickDocument={(id, file) =>
+                        setPendingDocumentFiles((p) => ({ ...p, [id]: file }))
+                    }
+                    onClearDocument={clearDocument}
                     pendingFiles={pendingFiles}
+                    pendingDocumentFiles={pendingDocumentFiles}
                     fileInputs={fileInputs}
+                    documentInputs={documentInputs}
                     savingId={savingId}
                     searchActive={searchActive}
                     showImage={true}
                     showVideoUrl={false}
+                    showDocument={true}
                     showSize={true}
                 />
             </div>
@@ -348,17 +428,23 @@ function MediaListSection({
     onClearImage,
     onPickVideo,
     onClearVideo,
+    onPickDocument,
+    onClearDocument,
     pendingFiles,
     pendingVideoFiles,
+    pendingDocumentFiles,
     fileInputs,
     videoInputs,
+    documentInputs,
     savingId,
     searchActive,
     showImage,
     showVideoUrl,
     showVideoUpload = false,
+    showDocument = false,
     showSize = false,
     hideTitle = false,
+    hideAddButton = false,
     imageLabelOverride,
 }: {
     title: string
@@ -373,10 +459,16 @@ function MediaListSection({
     onClearImage: (item: MediaItem) => void
     onPickVideo?: (id: number, file: File) => void
     onClearVideo?: (item: MediaItem) => void
+    onPickDocument?: (id: number, file: File) => void
+    onClearDocument?: (item: MediaItem) => void
     pendingFiles: Record<number, File>
     pendingVideoFiles?: Record<number, File>
+    pendingDocumentFiles?: Record<number, File>
     fileInputs: React.MutableRefObject<Record<number, HTMLInputElement | null>>
     videoInputs?: React.MutableRefObject<
+        Record<number, HTMLInputElement | null>
+    >
+    documentInputs?: React.MutableRefObject<
         Record<number, HTMLInputElement | null>
     >
     savingId: number | null
@@ -384,8 +476,10 @@ function MediaListSection({
     showImage: boolean
     showVideoUrl: boolean
     showVideoUpload?: boolean
+    showDocument?: boolean
     showSize?: boolean
     hideTitle?: boolean
+    hideAddButton?: boolean
     imageLabelOverride?: string
 }) {
     if (searchActive && items.length === 0) return null
@@ -401,7 +495,7 @@ function MediaListSection({
                         {description}
                     </p>
                 </div>
-                {!searchActive && (
+                {!searchActive && !hideAddButton && (
                     <Button
                         size="sm"
                         onClick={onAdd}
@@ -420,9 +514,15 @@ function MediaListSection({
                 )}
 
                 {items.map((item) => {
+                    const ytId = item.video_url
+                        ? youtubeIdFromUrl(item.video_url)
+                        : null
+                    const ytAutoThumb = ytId
+                        ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+                        : null
                     const previewImg = pendingFiles[item.id]
                         ? URL.createObjectURL(pendingFiles[item.id])
-                        : item.image_url
+                        : item.image_url ?? ytAutoThumb
 
                     return (
                         <div
@@ -536,6 +636,87 @@ function MediaListSection({
                                         <p className="text-[10px] text-muted-foreground">
                                             PNG/JPG up to 5 MB. Click "Save" to
                                             upload.
+                                        </p>
+                                    </div>
+                                )}
+
+                                {showDocument && (
+                                    <div className="space-y-2 md:col-span-2">
+                                        <Label>
+                                            Publication file (PDF preferred)
+                                        </Label>
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            {item.document_url && (
+                                                <a
+                                                    href={item.document_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded border border-border bg-muted px-3 py-1 text-xs text-foreground hover:bg-accent"
+                                                >
+                                                    View current file
+                                                </a>
+                                            )}
+                                            <input
+                                                ref={(el) => {
+                                                    if (documentInputs) {
+                                                        documentInputs.current[
+                                                            item.id
+                                                        ] = el
+                                                    }
+                                                }}
+                                                type="file"
+                                                accept="application/pdf,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                                onChange={(e) => {
+                                                    const f =
+                                                        e.target.files?.[0]
+                                                    if (!f || !onPickDocument)
+                                                        return
+                                                    onPickDocument(item.id, f)
+                                                }}
+                                                className="text-sm"
+                                            />
+                                            {item.document_path &&
+                                                onClearDocument && (
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() =>
+                                                            onClearDocument(
+                                                                item,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            savingId ===
+                                                            item.id
+                                                        }
+                                                    >
+                                                        Remove file
+                                                    </Button>
+                                                )}
+                                        </div>
+                                        {pendingDocumentFiles?.[item.id] && (
+                                            <p className="text-xs text-muted-foreground">
+                                                Selected:{' '}
+                                                {
+                                                    pendingDocumentFiles[
+                                                        item.id
+                                                    ].name
+                                                }{' '}
+                                                (
+                                                {(
+                                                    pendingDocumentFiles[
+                                                        item.id
+                                                    ].size /
+                                                    1024 /
+                                                    1024
+                                                ).toFixed(1)}{' '}
+                                                MB)
+                                            </p>
+                                        )}
+                                        <p className="text-[10px] text-muted-foreground">
+                                            PDF / DOC / XLS / PPT up to 50 MB.
+                                            Visitors will read it inline or
+                                            download.
                                         </p>
                                     </div>
                                 )}
@@ -705,6 +886,141 @@ function MediaListSection({
                         </div>
                     )
                 })}
+            </div>
+        </section>
+    )
+}
+
+function youtubeIdFromUrl(url: string): string | null {
+    const m =
+        url.match(
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{11})/,
+        ) || url.match(/^([\w-]{11})$/)
+    return m ? m[1] : null
+}
+
+function AddDocumentaryForm({
+    onSubmit,
+}: {
+    onSubmit: (
+        title: string,
+        videoUrl: string,
+        imageFile: File | null,
+        onDone: () => void,
+    ) => void
+}) {
+    const [title, setTitle] = useState('')
+    const [videoUrl, setVideoUrl] = useState('')
+    const [imageFile, setImageFile] = useState<File | null>(null)
+    const [submitting, setSubmitting] = useState(false)
+    const fileRef = useRef<HTMLInputElement | null>(null)
+
+    const ytId = youtubeIdFromUrl(videoUrl.trim())
+    const ytThumb = ytId
+        ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+        : null
+    const localThumb = imageFile ? URL.createObjectURL(imageFile) : null
+    const previewThumb = localThumb ?? ytThumb
+
+    const reset = () => {
+        setTitle('')
+        setVideoUrl('')
+        setImageFile(null)
+        if (fileRef.current) fileRef.current.value = ''
+    }
+
+    const canSubmit =
+        title.trim().length > 0 && videoUrl.trim().length > 0 && !submitting
+
+    const handleSubmit = () => {
+        if (!canSubmit) return
+        setSubmitting(true)
+        onSubmit(title.trim(), videoUrl.trim(), imageFile, () => {
+            setSubmitting(false)
+            reset()
+        })
+    }
+
+    return (
+        <section className="rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
+            <div className="mb-4">
+                <h2 className="text-lg font-semibold">
+                    Add a YouTube documentary
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                    Paste a YouTube URL — the thumbnail is pulled automatically.
+                    Upload a custom thumbnail only if you want to override the
+                    YouTube one.
+                </p>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+                <div className="grid gap-3 md:grid-cols-2">
+                    <div className="space-y-1 md:col-span-2">
+                        <Label htmlFor="new-doc-title">Title</Label>
+                        <Input
+                            id="new-doc-title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="e.g. Cash Distribution — Nangarhar"
+                        />
+                    </div>
+                    <div className="space-y-1 md:col-span-2">
+                        <Label htmlFor="new-doc-url">YouTube URL</Label>
+                        <Input
+                            id="new-doc-url"
+                            value={videoUrl}
+                            onChange={(e) => setVideoUrl(e.target.value)}
+                            placeholder="https://www.youtube.com/watch?v=…"
+                        />
+                        {videoUrl.trim() && !ytId && (
+                            <p className="text-xs text-red-600">
+                                That doesn't look like a YouTube URL. It still
+                                saves, but the auto-thumbnail won't appear.
+                            </p>
+                        )}
+                    </div>
+                    <div className="space-y-1 md:col-span-2">
+                        <Label>Custom thumbnail (optional)</Label>
+                        <input
+                            ref={fileRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) =>
+                                setImageFile(e.target.files?.[0] ?? null)
+                            }
+                            className="text-sm"
+                        />
+                        <p className="text-[10px] text-muted-foreground">
+                            PNG/JPG up to 5 MB. Leave empty to use YouTube's
+                            thumbnail.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex flex-col items-center gap-3 md:w-48">
+                    <div className="aspect-video w-full overflow-hidden rounded-md border border-dashed border-border bg-muted">
+                        {previewThumb ? (
+                            <img
+                                src={previewThumb}
+                                alt="Thumbnail preview"
+                                className="h-full w-full object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground">
+                                Thumbnail preview
+                            </div>
+                        )}
+                    </div>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={!canSubmit}
+                        className="w-full bg-[rgb(0,175,239)] text-white hover:bg-[rgb(0,175,239)]/90"
+                    >
+                        <Plus className="mr-1 h-4 w-4" />
+                        {submitting ? 'Adding…' : 'Add documentary'}
+                    </Button>
+                </div>
             </div>
         </section>
     )

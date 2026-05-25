@@ -12,10 +12,10 @@ import {
     pickBody,
     pickBullets,
     pickHeading,
-    pickImage,
     renderRich,
     type SpContent,
 } from '@/components/strategic-priorities/dynamic'
+import { ManagedInfographic } from '@/components/strategic-priorities/managed-infographic'
 
 const defaultBody =
     'VDO has advanced economic growth by equipping individuals—especially women and youth—with startup kits, small business grants, and financial literacy skills, enabling them to build sustainable livelihoods. The organization provides TVET and market-aligned skills training, coupled with entrepreneurship support, mentorship, and coaching to help participants successfully launch or expand their businesses. Through start-up toolkits and seed grants, VDO has strengthened numerous women-led enterprises and promoted financial independence. Its WAQAR Career Center initiative offers career guidance and job placement services, linking jobseekers to meaningful employment.'
@@ -40,12 +40,11 @@ export default function EconomicGrowth({ content }: { content?: SpContent }) {
     const body = paragraphs(pickBody(content?.body, defaultBody))
     const between = paragraphs(pickBody(content?.between_body, defaultBetween))
     const bullets = pickBullets(content?.bullets, defaultBullets)
-    const infographic = pickImage(content?.infographic_url, defaultInfographic)
+    const slots = content?.infographics
     const infographicAlt =
         content?.infographic_alt ??
         'Economic Growth coverage: Kabul, Northern Regions, Western Regions, Eastern Regions'
     const achievementsHeading = pickHeading(content?.achievements_heading, 'Key Achievements:')
-    const beneficiary = pickImage(content?.beneficiary_url, defaultBeneficiary)
     const beneficiaryAlt =
         content?.beneficiary_alt ??
         'Economic Growth beneficiaries: Women 36,450 (45%), Men 32,400 (40%), Children/Youth 12,150 (15%), Total 81,000'
@@ -77,10 +76,12 @@ export default function EconomicGrowth({ content }: { content?: SpContent }) {
                     </h3>
 
                     <div className="mt-4 flex justify-start">
-                        <img
-                            src={infographic}
-                            alt={infographicAlt}
-                            className="absolute right-0 top-[-18px] grid h-auto w-[600px]"
+                        <ManagedInfographic
+                            slot={slots?.infographic}
+                            fallbackUrl={defaultInfographic}
+                            fallbackAlt={infographicAlt}
+                            wrapperClassName="absolute right-0 top-[-18px] w-[600px]"
+                            imgClassName="h-auto w-full"
                         />
                     </div>
 
@@ -103,10 +104,11 @@ export default function EconomicGrowth({ content }: { content?: SpContent }) {
                             Numbers of Beneficiaries Reached:
                         </h3>
                         <div className="mt-4 flex justify-start">
-                            <img
-                                src={beneficiary}
-                                alt={beneficiaryAlt}
-                                className="h-auto w-full max-w-[240px]"
+                            <ManagedInfographic
+                                slot={slots?.beneficiary}
+                                fallbackUrl={defaultBeneficiary}
+                                fallbackAlt={beneficiaryAlt}
+                                imgClassName="h-auto w-full max-w-[240px]"
                             />
                         </div>
                     </div>

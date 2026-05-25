@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PageBackground extends Model
 {
-    public const DEFAULT_COLOR = 'rgb(189,191,193)';
+    public const DEFAULT_COLOR = 'rgb(245,245,245)';
 
     protected $fillable = ['page_key', 'label', 'background_color'];
 

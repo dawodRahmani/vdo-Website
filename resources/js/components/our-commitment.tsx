@@ -5,6 +5,9 @@ export interface CommitmentItem {
     title: string;
     svg?: string;
     svg_url?: string;
+    crop_scale?: number;
+    crop_offset_x?: number;
+    crop_offset_y?: number;
 }
 
 const defaultRow1: CommitmentItem[] = [
@@ -44,28 +47,51 @@ function itemSrc(c: CommitmentItem): string {
     return c.svg_url || c.svg || '';
 }
 
-function CommitmentRow({ items }: { items: CommitmentItem[] }) {
+function CommitmentRow({
+    items,
+    lineGap,
+}: {
+    items: CommitmentItem[];
+    lineGap: number;
+}) {
     return (
         <div className="relative">
-            <div className="grid grid-cols-2 gap-y-6 sm:grid-cols-3 md:grid-cols-6">
-                {items.map((item) => (
-                    <Link
-                        key={item.id ?? item.title}
-                        href="/our-commitment"
-                        className="flex justify-center px-1 transition-transform hover:-translate-y-0.5"
-                    >
-                        <img
-                            src={encodeURI(itemSrc(item))}
-                            alt={item.title}
-                            className="h-24 w-24 object-contain md:h-28 md:w-28 lg:h-32 lg:w-32"
-                            loading="lazy"
-                        />
-                    </Link>
-                ))}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 md:grid-cols-6">
+                {items.map((item) => {
+                    const scale = (item.crop_scale ?? 100) / 100;
+                    const ox = item.crop_offset_x ?? 0;
+                    const oy = item.crop_offset_y ?? 0;
+                    return (
+                        <Link
+                            key={item.id ?? item.title}
+                            href="/our-commitment"
+                            className="flex flex-col items-center px-1 text-center transition-transform hover:-translate-y-0.5"
+                        >
+                            <div className="relative h-20 w-20 overflow-hidden md:h-24 md:w-24 lg:h-28 lg:w-28">
+                                <img
+                                    src={encodeURI(itemSrc(item))}
+                                    alt={item.title}
+                                    className="absolute left-1/2 top-1/2 h-full w-full max-h-none max-w-none object-contain"
+                                    style={{
+                                        transform: `translate(-50%, -50%) translate(${ox}px, ${oy}px) scale(${scale})`,
+                                        transformOrigin: 'center',
+                                    }}
+                                    loading="lazy"
+                                />
+                            </div>
+                            <span className="mt-2 line-clamp-3 text-xs font-medium leading-snug text-[rgb(62,64,149)] md:text-sm">
+                                {item.title}
+                            </span>
+                        </Link>
+                    );
+                })}
             </div>
 
             {/* Dotted timeline with square markers */}
-            <div className="relative -mt-3 hidden md:block lg:-mt-4">
+            <div
+                className="relative hidden md:block"
+                style={{ marginTop: `${lineGap}px` }}
+            >
                 <div
                     className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2"
                     style={{
@@ -90,24 +116,26 @@ function CommitmentRow({ items }: { items: CommitmentItem[] }) {
 
 interface Props {
     commitments?: CommitmentItem[];
+    lineGap?: number;
 }
 
-export default function OurCommitment({ commitments }: Props) {
+export default function OurCommitment({ commitments, lineGap }: Props) {
     const all = commitments && commitments.length > 0 ? commitments : [...defaultRow1, ...defaultRow2];
     const mid = Math.ceil(all.length / 2);
     const row1 = all.slice(0, mid);
     const row2 = all.slice(mid);
+    const gap = lineGap ?? -12;
 
     return (
-        <section className="bg-gray-100 py-10 md:py-12">
+        <section className="bg-[rgb(245,245,245)] py-10 md:py-12">
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <h2 className="mb-8 text-left text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                     Our Commitment:
                 </h2>
 
                 <div className="space-y-8">
-                    <CommitmentRow items={row1} />
-                    {row2.length > 0 && <CommitmentRow items={row2} />}
+                    <CommitmentRow items={row1} lineGap={gap} />
+                    {row2.length > 0 && <CommitmentRow items={row2} lineGap={gap} />}
                 </div>
             </div>
         </section>

@@ -224,7 +224,7 @@ export function PageSection({
     showMap?: boolean
 }) {
     return (
-        <section className="bg-gray-100 pb-14">
+        <section className="bg-[rgb(245,245,245)] pb-14">
             <div
                 className="mx-auto max-w-[1240px] space-y-6 bg-center bg-no-repeat px-6 py-8 md:px-10 lg:px-14"
                 style={

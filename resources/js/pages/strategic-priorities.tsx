@@ -49,7 +49,7 @@ export default function StrategicPriorities({ cards }: Props) {
         <SiteLayout title="Strategic Priorities">
             <PhotoStrip photos={photos} />
 
-            <section className="bg-gray-100 pb-14">
+            <section className="bg-[rgb(245,245,245)] pb-14">
                 <div className="mx-auto max-w-[1240px] px-6 py-8 md:px-10 lg:px-14">
                     <div className="mb-8 max-w-3xl">
                         <h1 className="text-3xl font-semibold text-[rgb(62,64,149)] md:text-4xl">

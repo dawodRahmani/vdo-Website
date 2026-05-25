@@ -74,10 +74,15 @@ interface ResilienceItem {
     body: string | null
     image: string | null
     image_url: string | null
+    document: string | null
+    document_url: string | null
     caption: string | null
     bullets: string[] | null
     order: number
     is_active: boolean
+    size_scale?: number
+    offset_x?: number
+    offset_y?: number
 }
 
 interface VdoResilienceProps {
@@ -189,7 +194,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Annual Organization Resilience Publication + booklets */}
             {capacities.length > 0 && (
-                <section className="bg-[rgb(189,191,193)] py-8">
+                <section className="bg-[rgb(245,245,245)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="our-capacity"
@@ -208,18 +213,51 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
                                 className="flex flex-1 snap-x snap-mandatory gap-2 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                             >
                                 {capacities.map((c) => {
-                                    const url = c.image_url ?? ''
+                                    const imgUrl = c.image_url ?? ''
+                                    const docUrl = c.document_url ?? ''
+                                    const openUrl = docUrl || imgUrl
+                                    const downloadUrl = docUrl || imgUrl
+                                    const label =
+                                        c.title ?? 'resilience publication'
+                                    const scalePct = c.size_scale ?? 100
+                                    const ox = c.offset_x ?? 0
+                                    const oy = c.offset_y ?? 0
+                                    const cardInner = (
+                                        <div
+                                            className="mx-auto transition-all duration-200"
+                                            style={{
+                                                width: `${scalePct}%`,
+                                                transform: `translate(${ox}px, ${oy}px)`,
+                                            }}
+                                        >
+                                            <CapacitySvg url={imgUrl} />
+                                        </div>
+                                    )
                                     return (
                                         <div
                                             key={c.id}
                                             className="flex w-[80%] flex-none snap-start flex-col items-center sm:w-[calc(50%-4px)] md:w-[calc(33.333%-6px)]"
                                         >
-                                            {url && <CapacitySvg url={url} />}
-                                            {url && (
+                                            {imgUrl && (
+                                                openUrl ? (
+                                                    <a
+                                                        href={encodeURI(openUrl)}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        aria-label={`Open ${label}`}
+                                                        className="block w-full cursor-pointer"
+                                                    >
+                                                        {cardInner}
+                                                    </a>
+                                                ) : (
+                                                    cardInner
+                                                )
+                                            )}
+                                            {downloadUrl && (
                                                 <a
-                                                    href={encodeURI(url)}
+                                                    href={encodeURI(downloadUrl)}
                                                     download
-                                                    aria-label={`Download ${c.title ?? 'capacity booklet'}`}
+                                                    aria-label={`Download ${label}`}
                                                     className="mt-3 flex h-8 w-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-[rgb(0,175,239)]"
                                                 >
                                                     <Download
@@ -244,7 +282,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Policies grid */}
             {policies.length > 0 && (
-                <section className="bg-[rgb(189,191,193)] py-8">
+                <section className="bg-[rgb(245,245,245)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="policies"
@@ -281,7 +319,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Programmatic Approach */}
             {programmatic && (
-                <section className="bg-[rgb(189,191,193)] py-8">
+                <section className="bg-[rgb(245,245,245)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="programmatic-approach"
@@ -316,7 +354,7 @@ export default function VdoResilience({ items = [] }: VdoResilienceProps) {
 
             {/* Contributing to Collective Resilience */}
             {collective && (
-                <section className="bg-[rgb(189,191,193)] py-8 pb-14">
+                <section className="bg-[rgb(245,245,245)] py-8 pb-14">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2
                             id="collective-resilience"

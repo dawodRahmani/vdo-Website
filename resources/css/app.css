@@ -208,3 +208,30 @@
         animation: none;
     }
 }
+
+/* Program Snapshots: tiles fly in from the icon position */
+@keyframes photo-fly-from-icon {
+    0% {
+        transform: translate(var(--from-x, 200px), var(--from-y, 0px)) scale(0.05);
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+}
+
+.photo-fly-from-icon {
+    animation: photo-fly-from-icon 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: center center;
+    will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .photo-fly-from-icon {
+        animation: none;
+    }
+}

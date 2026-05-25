@@ -23,6 +23,8 @@ class AdminCommitmentController extends Controller
                 'card_svg_path' => $c->card_svg_path,
                 'card_svg_url' => $c->card_svg_url,
                 'size_scale' => (int) ($c->size_scale ?? 100),
+                'offset_x' => (int) ($c->offset_x ?? 0),
+                'offset_y' => (int) ($c->offset_y ?? 0),
                 'order' => $c->order,
                 'is_active' => $c->is_active,
             ]),
@@ -31,7 +33,11 @@ class AdminCommitmentController extends Controller
                 'title' => $p->title,
                 'cover_path' => $p->cover_path,
                 'cover_url' => $p->cover_url,
+                'document_path' => $p->document_path,
+                'document_url' => $p->document_url,
                 'size_scale' => (int) ($p->size_scale ?? 100),
+                'offset_x' => (int) ($p->offset_x ?? 0),
+                'offset_y' => (int) ($p->offset_y ?? 0),
                 'order' => $p->order,
                 'is_active' => $p->is_active,
             ]),
@@ -89,6 +95,9 @@ class AdminCommitmentController extends Controller
         if ($request->hasFile('cover_file')) {
             $data['cover_path'] = $request->file('cover_file')->store('commitment-publications', 'public');
         }
+        if ($request->hasFile('document_file')) {
+            $data['document_path'] = $request->file('document_file')->store('commitment-publication-documents', 'public');
+        }
 
         CommitmentPublication::create($data);
 
@@ -100,15 +109,19 @@ class AdminCommitmentController extends Controller
         $data = $this->validatedPublication($request);
 
         if ($request->hasFile('cover_file')) {
-            if ($publication->cover_path && Str::startsWith($publication->cover_path, 'commitment-publications/')) {
-                Storage::disk('public')->delete($publication->cover_path);
-            }
+            $this->deletePublicationCover($publication);
             $data['cover_path'] = $request->file('cover_file')->store('commitment-publications', 'public');
         } elseif ($request->boolean('clear_cover')) {
-            if ($publication->cover_path && Str::startsWith($publication->cover_path, 'commitment-publications/')) {
-                Storage::disk('public')->delete($publication->cover_path);
-            }
+            $this->deletePublicationCover($publication);
             $data['cover_path'] = null;
+        }
+
+        if ($request->hasFile('document_file')) {
+            $this->deletePublicationDocument($publication);
+            $data['document_path'] = $request->file('document_file')->store('commitment-publication-documents', 'public');
+        } elseif ($request->boolean('clear_document')) {
+            $this->deletePublicationDocument($publication);
+            $data['document_path'] = null;
         }
 
         $publication->update($data);
@@ -118,12 +131,25 @@ class AdminCommitmentController extends Controller
 
     public function destroyPublication(CommitmentPublication $publication)
     {
-        if ($publication->cover_path && Str::startsWith($publication->cover_path, 'commitment-publications/')) {
-            Storage::disk('public')->delete($publication->cover_path);
-        }
+        $this->deletePublicationCover($publication);
+        $this->deletePublicationDocument($publication);
         $publication->delete();
 
         return back();
+    }
+
+    private function deletePublicationCover(CommitmentPublication $publication): void
+    {
+        if ($publication->cover_path && Str::startsWith($publication->cover_path, 'commitment-publications/')) {
+            Storage::disk('public')->delete($publication->cover_path);
+        }
+    }
+
+    private function deletePublicationDocument(CommitmentPublication $publication): void
+    {
+        if ($publication->document_path && Str::startsWith($publication->document_path, 'commitment-publication-documents/')) {
+            Storage::disk('public')->delete($publication->document_path);
+        }
     }
 
     private function validatedCommitment(Request $request, bool $slugRequired): array
@@ -134,6 +160,8 @@ class AdminCommitmentController extends Controller
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
             'size_scale' => 'nullable|integer|min:50|max:200',
+            'offset_x' => 'nullable|integer|min:-200|max:200',
+            'offset_y' => 'nullable|integer|min:-200|max:200',
             'card_svg_file' => 'nullable|file|mimes:svg,png,jpg,jpeg,webp|max:4096',
             'clear_card_svg' => 'nullable|boolean',
         ];
@@ -149,6 +177,8 @@ class AdminCommitmentController extends Controller
             'body' => $data['body'],
             'order' => (int) $data['order'],
             'is_active' => $request->boolean('is_active'),
+            'offset_x' => (int) $request->input('offset_x', 0),
+            'offset_y' => (int) $request->input('offset_y', 0),
         ] + ($slugRequired ? ['slug' => $data['slug']] : []);
 
         if (isset($data['size_scale'])) {
@@ -165,14 +195,21 @@ class AdminCommitmentController extends Controller
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
             'size_scale' => 'nullable|integer|min:50|max:200',
+            'offset_x' => 'nullable|integer|min:-200|max:200',
+            'offset_y' => 'nullable|integer|min:-200|max:200',
             'cover_file' => 'nullable|image|max:4096',
             'clear_cover' => 'nullable|boolean',
+            // Same allowed formats as the media publications. 50 MB cap.
+            'document_file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:51200',
+            'clear_document' => 'nullable|boolean',
         ]);
 
         $out = [
             'title' => $data['title'],
             'order' => (int) $data['order'],
             'is_active' => $request->boolean('is_active'),
+            'offset_x' => (int) $request->input('offset_x', 0),
+            'offset_y' => (int) $request->input('offset_y', 0),
         ];
 
         if (isset($data['size_scale'])) {

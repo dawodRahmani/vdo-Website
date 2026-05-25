@@ -46,9 +46,22 @@ interface RegionsBlock {
     max_width: number | null
 }
 
+interface PrioritiesSection {
+    offset_x: number
+    offset_y: number
+    scale: number
+}
+
 const DEFAULT_REGIONS_MAX_WIDTH = 100
 const MIN_REGIONS_MAX_WIDTH = 30
 const MAX_REGIONS_MAX_WIDTH = 100
+
+const MIN_PRIORITY_OFFSET_X = -400
+const MAX_PRIORITY_OFFSET_X = 400
+const MIN_PRIORITY_OFFSET_Y = -200
+const MAX_PRIORITY_OFFSET_Y = 200
+const MIN_PRIORITY_SCALE = 50
+const MAX_PRIORITY_SCALE = 200
 
 interface HeroSlidePhoto {
     url: string
@@ -59,7 +72,7 @@ interface HeroSlide {
     id: number
     order: number
     is_active: boolean
-    photos: [HeroSlidePhoto, HeroSlidePhoto, HeroSlidePhoto]
+    photo: HeroSlidePhoto
 }
 
 interface PageProps {
@@ -67,6 +80,7 @@ interface PageProps {
     heroSlides: HeroSlide[]
     stats: Stat[]
     priorities: Priority[]
+    prioritiesSection: PrioritiesSection
     commitments: Commitment[]
     regions: RegionsBlock
     [key: string]: unknown
@@ -116,52 +130,35 @@ function FileButton({
 }
 
 function HeroSlideRow({ slide }: { slide: HeroSlide }) {
-    const [alts, setAlts] = useState<[string, string, string]>([
-        slide.photos[0].alt,
-        slide.photos[1].alt,
-        slide.photos[2].alt,
-    ])
-    const [files, setFiles] = useState<[File | null, File | null, File | null]>([
-        null,
-        null,
-        null,
-    ])
-    const [previews, setPreviews] = useState<
-        [string | null, string | null, string | null]
-    >([null, null, null])
+    const [alt, setAlt] = useState<string>(slide.photo.alt)
+    const [file, setFileState] = useState<File | null>(null)
+    const [preview, setPreview] = useState<string | null>(null)
     const [order, setOrder] = useState<number>(slide.order)
     const [isActive, setIsActive] = useState<boolean>(slide.is_active)
     const [saving, setSaving] = useState(false)
 
-    const setFile = (i: 0 | 1 | 2, file: File | null) => {
-        const np = [...previews] as [string | null, string | null, string | null]
-        if (np[i]) URL.revokeObjectURL(np[i] as string)
-        np[i] = file ? URL.createObjectURL(file) : null
-        setPreviews(np)
-        const nf = [...files] as [File | null, File | null, File | null]
-        nf[i] = file
-        setFiles(nf)
+    const setFile = (f: File | null) => {
+        if (preview) URL.revokeObjectURL(preview)
+        setPreview(f ? URL.createObjectURL(f) : null)
+        setFileState(f)
     }
 
     const save = () => {
         setSaving(true)
         const payload: Record<string, string | number | File> = {
-            photo1_alt: alts[0],
-            photo2_alt: alts[1],
-            photo3_alt: alts[2],
+            photo1_alt: alt,
             order,
             is_active: isActive ? 1 : 0,
         }
-        files.forEach((f, i) => {
-            if (f) payload[`photo${i + 1}_file`] = f
-        })
+        if (file) payload.photo1_file = file
         router.post(`/admin/home-page/hero-slides/${slide.id}`, payload, {
             forceFormData: true,
             preserveScroll: true,
             onFinish: () => setSaving(false),
             onSuccess: () => {
-                setFiles([null, null, null])
-                setPreviews([null, null, null])
+                if (preview) URL.revokeObjectURL(preview)
+                setFileState(null)
+                setPreview(null)
             },
         })
     }
@@ -172,6 +169,8 @@ function HeroSlideRow({ slide }: { slide: HeroSlide }) {
             preserveScroll: true,
         })
     }
+
+    const shown = preview ?? slide.photo.url
 
     return (
         <div className="rounded-lg border border-border bg-background p-4">
@@ -219,55 +218,42 @@ function HeroSlideRow({ slide }: { slide: HeroSlide }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {([0, 1, 2] as const).map((i) => {
-                    const shown = previews[i] ?? slide.photos[i].url
-                    return (
-                        <div
-                            key={i}
-                            className="space-y-2 rounded-lg border border-dashed border-border bg-background p-3"
-                        >
-                            <div className="aspect-[16/9] w-full overflow-hidden rounded-md bg-gray-100">
-                                {shown ? (
-                                    <img
-                                        src={shown}
-                                        alt={alts[i]}
-                                        className="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
-                                        Photo {i + 1}
-                                    </div>
-                                )}
-                            </div>
-                            <div className="space-y-1">
-                                <Label className="text-xs">Alt text</Label>
-                                <Input
-                                    value={alts[i]}
-                                    onChange={(e) => {
-                                        const next = [...alts] as [
-                                            string,
-                                            string,
-                                            string,
-                                        ]
-                                        next[i] = e.target.value
-                                        setAlts(next)
-                                    }}
-                                />
-                            </div>
-                            <FileButton
-                                hasFile={!!files[i]}
-                                onPick={(f) => setFile(i, f)}
-                                onReset={() => setFile(i, null)}
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-[2fr_1fr]">
+                <div className="rounded-lg border border-dashed border-border bg-background p-3">
+                    <div className="aspect-[16/6] w-full overflow-hidden rounded-md bg-gray-100">
+                        {shown ? (
+                            <img
+                                src={shown}
+                                alt={alt}
+                                className="h-full w-full object-cover"
                             />
-                            {files[i] && (
-                                <p className="truncate text-xs text-muted-foreground">
-                                    {files[i]?.name}
-                                </p>
-                            )}
-                        </div>
-                    )
-                })}
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
+                                No image — upload one to use this slide
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className="space-y-3 rounded-lg border border-dashed border-border bg-background p-3">
+                    <div className="space-y-1">
+                        <Label className="text-xs">Alt text</Label>
+                        <Input
+                            value={alt}
+                            onChange={(e) => setAlt(e.target.value)}
+                            placeholder="Describe the image for screen readers"
+                        />
+                    </div>
+                    <FileButton
+                        hasFile={!!file}
+                        onPick={(f) => setFile(f)}
+                        onReset={() => setFile(null)}
+                    />
+                    {file && (
+                        <p className="truncate text-xs text-muted-foreground">
+                            {file.name}
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     )
@@ -522,6 +508,184 @@ function CommitmentRow({ commitment }: { commitment: Commitment }) {
     )
 }
 
+function PrioritiesSectionEditor({
+    section,
+}: {
+    section: PrioritiesSection
+}) {
+    const [offsetX, setOffsetX] = useState<number>(section.offset_x)
+    const [offsetY, setOffsetY] = useState<number>(section.offset_y)
+    const [scale, setScale] = useState<number>(section.scale)
+    const [saving, setSaving] = useState(false)
+
+    const reset = () => {
+        setOffsetX(0)
+        setOffsetY(0)
+        setScale(100)
+    }
+
+    const save = () => {
+        setSaving(true)
+        router.post(
+            '/admin/home-page/priorities-section',
+            {
+                offset_x: offsetX,
+                offset_y: offsetY,
+                scale,
+            },
+            {
+                preserveScroll: true,
+                onFinish: () => setSaving(false),
+            },
+        )
+    }
+
+    return (
+        <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                    <h2 className="text-lg font-semibold">
+                        Section: position & scale
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                        Shifts and scales the whole "Strategic Priority Areas
+                        & Reached Beneficiaries" block (heading + grid of
+                        cards) on the home page.
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={reset}
+                        className="text-xs text-muted-foreground underline hover:text-foreground"
+                    >
+                        Reset
+                    </button>
+                    <Button onClick={save} disabled={saving}>
+                        {saving ? 'Saving…' : 'Save'}
+                    </Button>
+                </div>
+            </div>
+
+            <div className="space-y-3">
+                {/* Scale */}
+                <div className="flex items-center gap-3">
+                    <Label className="w-20 text-xs">Scale</Label>
+                    <input
+                        type="range"
+                        min={MIN_PRIORITY_SCALE}
+                        max={MAX_PRIORITY_SCALE}
+                        value={scale}
+                        onChange={(e) => setScale(parseInt(e.target.value))}
+                        className="h-1.5 flex-1 cursor-pointer accent-[rgb(0,175,239)]"
+                    />
+                    <Input
+                        type="number"
+                        min={MIN_PRIORITY_SCALE}
+                        max={MAX_PRIORITY_SCALE}
+                        value={scale}
+                        onChange={(e) => {
+                            const v = parseInt(e.target.value)
+                            if (Number.isNaN(v)) {
+                                setScale(100)
+                            } else {
+                                setScale(
+                                    Math.min(
+                                        MAX_PRIORITY_SCALE,
+                                        Math.max(MIN_PRIORITY_SCALE, v),
+                                    ),
+                                )
+                            }
+                        }}
+                        className="h-8 w-20 text-xs"
+                    />
+                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                        {scale}%
+                    </span>
+                </div>
+
+                {/* X */}
+                <div className="flex items-center gap-3">
+                    <Label className="w-20 text-xs">Horizontal</Label>
+                    <input
+                        type="range"
+                        min={MIN_PRIORITY_OFFSET_X}
+                        max={MAX_PRIORITY_OFFSET_X}
+                        value={offsetX}
+                        onChange={(e) => setOffsetX(parseInt(e.target.value))}
+                        className="h-1.5 flex-1 cursor-pointer accent-[rgb(0,175,239)]"
+                    />
+                    <Input
+                        type="number"
+                        min={MIN_PRIORITY_OFFSET_X}
+                        max={MAX_PRIORITY_OFFSET_X}
+                        value={offsetX}
+                        onChange={(e) => {
+                            const v = parseInt(e.target.value)
+                            if (Number.isNaN(v)) {
+                                setOffsetX(0)
+                            } else {
+                                setOffsetX(
+                                    Math.min(
+                                        MAX_PRIORITY_OFFSET_X,
+                                        Math.max(MIN_PRIORITY_OFFSET_X, v),
+                                    ),
+                                )
+                            }
+                        }}
+                        className="h-8 w-20 text-xs"
+                    />
+                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                        {offsetX}px
+                    </span>
+                </div>
+
+                {/* Y */}
+                <div className="flex items-center gap-3">
+                    <Label className="w-20 text-xs">Vertical</Label>
+                    <input
+                        type="range"
+                        min={MIN_PRIORITY_OFFSET_Y}
+                        max={MAX_PRIORITY_OFFSET_Y}
+                        value={offsetY}
+                        onChange={(e) => setOffsetY(parseInt(e.target.value))}
+                        className="h-1.5 flex-1 cursor-pointer accent-[rgb(0,175,239)]"
+                    />
+                    <Input
+                        type="number"
+                        min={MIN_PRIORITY_OFFSET_Y}
+                        max={MAX_PRIORITY_OFFSET_Y}
+                        value={offsetY}
+                        onChange={(e) => {
+                            const v = parseInt(e.target.value)
+                            if (Number.isNaN(v)) {
+                                setOffsetY(0)
+                            } else {
+                                setOffsetY(
+                                    Math.min(
+                                        MAX_PRIORITY_OFFSET_Y,
+                                        Math.max(MIN_PRIORITY_OFFSET_Y, v),
+                                    ),
+                                )
+                            }
+                        }}
+                        className="h-8 w-20 text-xs"
+                    />
+                    <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                        {offsetY}px
+                    </span>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                    Scale grows from the top-left so the heading stays
+                    anchored. Negative offsets move up / left, positive offsets
+                    move down / right.
+                </p>
+            </div>
+        </section>
+    )
+}
+
 function RegionsEditor({ regions }: { regions: RegionsBlock }) {
     const [alt, setAlt] = useState(regions.alt)
     const [maxWidth, setMaxWidth] = useState<number>(
@@ -678,7 +842,7 @@ function MapAdminLink() {
     )
 }
 
-export default function AdminHomePage({ heroSlides, stats, priorities, commitments, regions }: PageProps) {
+export default function AdminHomePage({ heroSlides, stats, priorities, prioritiesSection, commitments, regions }: PageProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Home Page" />
@@ -701,6 +865,8 @@ export default function AdminHomePage({ heroSlides, stats, priorities, commitmen
                     </div>
                 </section>
 
+                <PrioritiesSectionEditor section={prioritiesSection} />
+
                 <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
                     <h2 className="mb-4 text-lg font-semibold">Strategic Priority Areas</h2>
                     <div className="space-y-3">
@@ -712,6 +878,7 @@ export default function AdminHomePage({ heroSlides, stats, priorities, commitmen
 
                 <RegionsEditor regions={regions} />
 
+                {/* Hidden — full editor lives at /admin/home-commitments
                 <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
                     <h2 className="mb-4 text-lg font-semibold">Our Commitment icons</h2>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -720,6 +887,7 @@ export default function AdminHomePage({ heroSlides, stats, priorities, commitmen
                         ))}
                     </div>
                 </section>
+                */}
             </div>
         </AppLayout>
     )

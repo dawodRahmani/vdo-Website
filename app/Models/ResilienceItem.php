@@ -17,29 +17,44 @@ class ResilienceItem extends Model
         'title',
         'body',
         'image',
+        'document',
         'caption',
         'bullets',
         'order',
         'is_active',
+        'size_scale',
+        'offset_x',
+        'offset_y',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
         'bullets' => 'array',
+        'size_scale' => 'integer',
+        'offset_x' => 'integer',
+        'offset_y' => 'integer',
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'document_url'];
 
     protected function imageUrl(): Attribute
     {
-        return Attribute::get(function () {
-            if (! $this->image) return null;
-            if (str_starts_with($this->image, '/') || str_starts_with($this->image, 'http')) {
-                return $this->image;
-            }
-            return '/storage/'.ltrim($this->image, '/');
-        });
+        return Attribute::get(fn () => $this->resolveStorageUrl($this->image));
+    }
+
+    protected function documentUrl(): Attribute
+    {
+        return Attribute::get(fn () => $this->resolveStorageUrl($this->document));
+    }
+
+    private function resolveStorageUrl(?string $path): ?string
+    {
+        if (! $path) return null;
+        if (str_starts_with($path, '/') || str_starts_with($path, 'http')) {
+            return $path;
+        }
+        return '/storage/'.ltrim($path, '/');
     }
 
     public function scopeActive($query)

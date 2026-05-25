@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { usePage } from '@inertiajs/react'
 
 export interface HeroPhoto {
     src: string
@@ -16,7 +17,7 @@ export interface HeroSlide {
     id: number
     order: number
     is_active: boolean
-    photos: HeroSlidePhoto[]
+    photo: HeroSlidePhoto
 }
 
 export interface ImpactStat {
@@ -62,29 +63,27 @@ interface Props {
     impactStats?: ImpactStat[]
 }
 
-// Convert each source into an array of "slides" of 3 photos each so the
-// renderer can treat both cases (single static set or multi-slide carousel)
-// uniformly.
+// Each slide is now a single photo; the carousel cycles between slides.
+// Falls back to the static defaults (one per slide) when no DB slides exist.
 function buildSlides(
     heroSlides: HeroSlide[] | undefined,
     heroPhotos: HeroPhoto[] | undefined,
-): HeroPhoto[][] {
+): HeroPhoto[] {
     if (heroSlides && heroSlides.length > 0) {
-        return heroSlides
+        const fromDb = heroSlides
             .filter((s) => s.is_active !== false)
-            .map((s) =>
-                s.photos.map((p) => ({
-                    src: p.url || '',
-                    alt: p.alt || '',
-                })),
-            )
-            .filter((slide) => slide.some((p) => p.src))
+            .map((s) => ({
+                src: s.photo?.url || '',
+                alt: s.photo?.alt || '',
+            }))
+            .filter((p) => p.src)
+        if (fromDb.length > 0) return fromDb
     }
     const fallback =
-        heroPhotos && heroPhotos.length === 3 && heroPhotos.every((p) => p.src)
-            ? heroPhotos
+        heroPhotos && heroPhotos.length > 0 && heroPhotos.some((p) => p.src)
+            ? heroPhotos.filter((p) => p.src)
             : defaultPhotos
-    return [fallback]
+    return fallback
 }
 
 export default function HeroFirstSection({
@@ -94,13 +93,14 @@ export default function HeroFirstSection({
 }: Props) {
     const slides = buildSlides(heroSlides, heroPhotos)
     const stats = impactStats && impactStats.length > 0 ? impactStats : defaultStats
+    const { heroBackground } = usePage().props as { heroBackground?: string | null }
 
     const [index, setIndex] = useState(0)
     const [paused, setPaused] = useState(false)
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
     const hasMultiple = slides.length > 1
-    const safeIndex = Math.min(index, slides.length - 1)
-    const current = slides[safeIndex] ?? slides[0]
+    const safeIndex = Math.min(index, Math.max(slides.length - 1, 0))
+    const current: HeroPhoto | undefined = slides[safeIndex] ?? slides[0]
 
     const goTo = (next: number) => {
         if (!slides.length) return
@@ -121,9 +121,12 @@ export default function HeroFirstSection({
     }, [hasMultiple, paused, slides.length])
 
     return (
-        <section className="bg-gray-100 pb-6 pt-3 md:pb-8">
+        <section
+            className="pb-6 pt-3 md:pb-8"
+            style={{ backgroundColor: heroBackground ?? 'rgb(245,245,245)' }}
+        >
             <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
-                {/* 3-image strip (slider) */}
+                {/* Hero slider — 3-image window, advances one slide at a time */}
                 <div
                     className="relative"
                     onMouseEnter={() => setPaused(true)}
@@ -131,26 +134,34 @@ export default function HeroFirstSection({
                 >
                     <div
                         className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-1"
-                        key={current ? `slide-${safeIndex}` : 'empty'}
+                        key={`window-${safeIndex}`}
                     >
-                        {(current ?? defaultPhotos).map((photo, i) => (
-                            <div
-                                key={`${photo.src}-${i}`}
-                                className="hero-strip-fade relative aspect-[16/10] overflow-hidden md:aspect-[16/9]"
-                                style={{ animationDelay: `${i * 80}ms` }}
-                            >
-                                {photo.src ? (
-                                    <img
-                                        src={encodeURI(photo.src)}
-                                        alt={photo.alt}
-                                        className="h-full w-full object-cover"
-                                        loading="eager"
-                                    />
-                                ) : (
-                                    <div className="h-full w-full bg-gray-200" />
-                                )}
-                            </div>
-                        ))}
+                        {Array.from({ length: Math.min(3, slides.length || 1) }).map(
+                            (_, offset) => {
+                                const photo =
+                                    slides.length > 0
+                                        ? slides[(safeIndex + offset) % slides.length]
+                                        : null
+                                return (
+                                    <div
+                                        key={`${safeIndex}-${offset}`}
+                                        className="hero-strip-fade relative aspect-[16/10] overflow-hidden md:aspect-[16/9]"
+                                        style={{ animationDelay: `${offset * 80}ms` }}
+                                    >
+                                        {photo?.src ? (
+                                            <img
+                                                src={encodeURI(photo.src)}
+                                                alt={photo.alt}
+                                                className="h-full w-full object-cover"
+                                                loading="eager"
+                                            />
+                                        ) : (
+                                            <div className="h-full w-full bg-gray-200" />
+                                        )}
+                                    </div>
+                                )
+                            },
+                        )}
                     </div>
 
                     {hasMultiple && (

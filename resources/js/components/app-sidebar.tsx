@@ -49,6 +49,11 @@ const adminNavItems: NavItem[] = [
         icon: Home,
     },
     {
+        title: 'Home: Commitments',
+        href: '/admin/home-commitments',
+        icon: Shield,
+    },
+    {
         title: 'About Page',
         href: '/admin/about-page',
         icon: Info,
@@ -147,7 +152,7 @@ const strategicPrioritiesItems: NavItem[] = [
 ];
 
 const resilienceItems: NavItem[] = [
-    { title: 'Our Capacity', href: '/admin/resilience/capacities' },
+    { title: 'Annual Organization Resilience Publication', href: '/admin/resilience/capacities' },
     { title: 'Policies', href: '/admin/resilience/policies' },
     {
         title: 'Programmatic Approach',

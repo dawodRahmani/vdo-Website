@@ -25,6 +25,8 @@ export interface NavItem {
 export interface SiteSettings {
     logo_url: string | null;
     logo_height: number | null;
+    logo_offset_x: number | null;
+    logo_offset_y: number | null;
     contact_phone: string | null;
     contact_email: string | null;
     social_facebook_url: string | null;

@@ -12,11 +12,18 @@ interface SettingsPayload {
     logo_url: string | null
     logo_path: string | null
     logo_height: number | null
+    logo_offset_x: number | null
+    logo_offset_y: number | null
 }
 
 const DEFAULT_LOGO_HEIGHT = 72
 const MIN_LOGO_HEIGHT = 24
 const MAX_LOGO_HEIGHT = 200
+
+const MIN_OFFSET_X = -200
+const MAX_OFFSET_X = 400
+const MIN_OFFSET_Y = -100
+const MAX_OFFSET_Y = 200
 
 interface PageProps {
     settings: SettingsPayload
@@ -29,6 +36,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Header', href: '/admin/site/header' },
 ]
 
+function clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value))
+}
+
 export default function AdminSiteHeader({ settings }: PageProps) {
     const [logoFile, setLogoFile] = useState<File | null>(null)
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
@@ -37,6 +48,8 @@ export default function AdminSiteHeader({ settings }: PageProps) {
     const [logoHeight, setLogoHeight] = useState<number>(
         settings.logo_height ?? DEFAULT_LOGO_HEIGHT,
     )
+    const [offsetX, setOffsetX] = useState<number>(settings.logo_offset_x ?? 0)
+    const [offsetY, setOffsetY] = useState<number>(settings.logo_offset_y ?? 0)
     const fileInput = useRef<HTMLInputElement | null>(null)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +73,8 @@ export default function AdminSiteHeader({ settings }: PageProps) {
         const payload: Record<string, string | File | number> = {
             clear_logo: clearLogo ? 1 : 0,
             logo_height: logoHeight,
+            logo_offset_x: offsetX,
+            logo_offset_y: offsetY,
         }
         if (logoFile) payload.logo_file = logoFile
 
@@ -77,6 +92,11 @@ export default function AdminSiteHeader({ settings }: PageProps) {
         })
     }
 
+    const handleResetOffsets = () => {
+        setOffsetX(0)
+        setOffsetY(0)
+    }
+
     const shownLogo = logoPreview ?? (clearLogo ? null : settings.logo_url)
 
     return (
@@ -86,11 +106,11 @@ export default function AdminSiteHeader({ settings }: PageProps) {
                 <div>
                     <h1 className="text-2xl font-semibold">Site Header</h1>
                     <p className="text-muted-foreground text-sm">
-                        Edit the logo shown in the site header.
+                        Edit the logo and its position in the site header.
                     </p>
                 </div>
 
-                <div className="border-border bg-card max-w-2xl space-y-6 rounded-xl border p-5 shadow-sm">
+                <div className="border-border bg-card max-w-3xl space-y-6 rounded-xl border p-5 shadow-sm">
                     <div className="space-y-2">
                         <Label>Logo</Label>
                         <div className="flex items-start gap-4">
@@ -175,9 +195,10 @@ export default function AdminSiteHeader({ settings }: PageProps) {
                                         setLogoHeight(DEFAULT_LOGO_HEIGHT)
                                     } else {
                                         setLogoHeight(
-                                            Math.min(
+                                            clamp(
+                                                v,
+                                                MIN_LOGO_HEIGHT,
                                                 MAX_LOGO_HEIGHT,
-                                                Math.max(MIN_LOGO_HEIGHT, v),
                                             ),
                                         )
                                     }
@@ -186,22 +207,153 @@ export default function AdminSiteHeader({ settings }: PageProps) {
                             />
                         </div>
                         <p className="text-muted-foreground text-xs">
-                            Live preview below. Between {MIN_LOGO_HEIGHT} and{' '}
-                            {MAX_LOGO_HEIGHT} px. Default {DEFAULT_LOGO_HEIGHT}.
+                            Between {MIN_LOGO_HEIGHT} and {MAX_LOGO_HEIGHT} px.
+                            Default {DEFAULT_LOGO_HEIGHT}.
                         </p>
-                        {shownLogo && (
-                            <div className="border-border bg-background mt-2 flex items-center justify-center overflow-hidden rounded-md border p-3">
-                                <img
-                                    src={shownLogo}
-                                    alt="Logo preview"
-                                    style={{
-                                        height: `${logoHeight}px`,
-                                        width: 'auto',
-                                    }}
-                                    className="object-contain"
-                                />
+                    </div>
+
+                    {/* Logo X offset */}
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="logo-offset-x">
+                                Horizontal offset (px)
+                            </Label>
+                            <button
+                                type="button"
+                                onClick={handleResetOffsets}
+                                className="text-muted-foreground text-xs underline hover:text-foreground"
+                            >
+                                Reset position
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <input
+                                id="logo-offset-x-range"
+                                type="range"
+                                min={MIN_OFFSET_X}
+                                max={MAX_OFFSET_X}
+                                value={offsetX}
+                                onChange={(e) =>
+                                    setOffsetX(parseInt(e.target.value))
+                                }
+                                className="h-2 flex-1 cursor-pointer"
+                            />
+                            <Input
+                                id="logo-offset-x"
+                                type="number"
+                                min={MIN_OFFSET_X}
+                                max={MAX_OFFSET_X}
+                                value={offsetX}
+                                onChange={(e) => {
+                                    const v = parseInt(e.target.value)
+                                    setOffsetX(
+                                        Number.isNaN(v)
+                                            ? 0
+                                            : clamp(
+                                                  v,
+                                                  MIN_OFFSET_X,
+                                                  MAX_OFFSET_X,
+                                              ),
+                                    )
+                                }}
+                                className="w-24"
+                            />
+                        </div>
+                        <p className="text-muted-foreground text-xs">
+                            Negative moves left, positive moves right.
+                        </p>
+                    </div>
+
+                    {/* Logo Y offset */}
+                    <div className="space-y-2">
+                        <Label htmlFor="logo-offset-y">
+                            Vertical offset (px)
+                        </Label>
+                        <div className="flex items-center gap-4">
+                            <input
+                                id="logo-offset-y-range"
+                                type="range"
+                                min={MIN_OFFSET_Y}
+                                max={MAX_OFFSET_Y}
+                                value={offsetY}
+                                onChange={(e) =>
+                                    setOffsetY(parseInt(e.target.value))
+                                }
+                                className="h-2 flex-1 cursor-pointer"
+                            />
+                            <Input
+                                id="logo-offset-y"
+                                type="number"
+                                min={MIN_OFFSET_Y}
+                                max={MAX_OFFSET_Y}
+                                value={offsetY}
+                                onChange={(e) => {
+                                    const v = parseInt(e.target.value)
+                                    setOffsetY(
+                                        Number.isNaN(v)
+                                            ? 0
+                                            : clamp(
+                                                  v,
+                                                  MIN_OFFSET_Y,
+                                                  MAX_OFFSET_Y,
+                                              ),
+                                    )
+                                }}
+                                className="w-24"
+                            />
+                        </div>
+                        <p className="text-muted-foreground text-xs">
+                            Negative moves up, positive moves down.
+                        </p>
+                    </div>
+
+                    {/* Live header preview */}
+                    <div className="space-y-2">
+                        <Label>Live preview</Label>
+                        <div className="overflow-hidden rounded-md border bg-[rgb(245,245,245)]">
+                            <div
+                                className="relative mx-auto w-full px-4 py-3"
+                                style={{
+                                    minHeight: `${Math.max(80, logoHeight + 24)}px`,
+                                }}
+                            >
+                                <div className="flex items-start gap-4">
+                                    {shownLogo && (
+                                        <div
+                                            className="relative z-10 flex-shrink-0"
+                                            style={{
+                                                width: `${Math.round(logoHeight * 1.4)}px`,
+                                                height: `${logoHeight}px`,
+                                            }}
+                                        >
+                                            <img
+                                                src={shownLogo}
+                                                alt="Logo preview"
+                                                style={{
+                                                    transform: `translate(${offsetX}px, ${offsetY}px)`,
+                                                    height: `${logoHeight}px`,
+                                                    width: 'auto',
+                                                }}
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="min-w-0 flex-1">
+                                        <div className="mt-2 flex h-10 items-center justify-end gap-3 bg-[rgb(62,64,149)] px-3 text-xs text-white">
+                                            <span>About Us</span>
+                                            <span>Strategic Priorities</span>
+                                            <span>Where We Work</span>
+                                            <span>Media</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        </div>
+                        <p className="text-muted-foreground text-xs">
+                            This preview mirrors the public header layout. The
+                            logo sits in a slot to the left of the navigation;
+                            the offsets nudge it within that area.
+                        </p>
                     </div>
 
                     <div className="flex justify-end">

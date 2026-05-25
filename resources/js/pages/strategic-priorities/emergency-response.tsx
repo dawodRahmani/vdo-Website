@@ -44,18 +44,31 @@ export default function EmergencyResponse({ content }: { content?: SpContent }) 
                     <Paragraph key={i}>{p}</Paragraph>
                 ))}
 
-                {infographic && (
-                    <div className="mt-6 flex justify-center">
-                        <img
-                            src={infographic}
-                            alt={infographicAlt}
-                            className="h-auto w-full max-w-3xl"
-                        />
+                {(infographic || beneficiary) && (
+                    <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
+                        {infographic && (
+                            <div className="flex justify-center">
+                                <img
+                                    src={infographic}
+                                    alt={infographicAlt}
+                                    className="h-auto w-full max-w-md"
+                                />
+                            </div>
+                        )}
+                        {beneficiary && (
+                            <div className="flex justify-center">
+                                <img
+                                    src={beneficiary}
+                                    alt={beneficiaryAlt}
+                                    className="h-auto w-full max-w-md"
+                                />
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {between.length > 0 && (
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-6 space-y-3">
                         {between.map((p, i) => (
                             <Paragraph key={i}>{renderRich(p)}</Paragraph>
                         ))}
@@ -68,16 +81,6 @@ export default function EmergencyResponse({ content }: { content?: SpContent }) 
                             {achievementsHeading}
                         </h3>
                         <Bullets items={bullets} />
-                    </div>
-                )}
-
-                {beneficiary && (
-                    <div className="mt-6 flex justify-center">
-                        <img
-                            src={beneficiary}
-                            alt={beneficiaryAlt}
-                            className="h-auto w-full max-w-xl"
-                        />
                     </div>
                 )}
             </PageSection>

@@ -98,10 +98,17 @@ export interface RegionsImage {
     max_width?: number | null;
 }
 
+export interface PrioritiesSection {
+    offset_x: number;
+    offset_y: number;
+    scale: number;
+}
+
 interface Props {
     priorityAreas?: PriorityArea[];
     latestNews?: LatestNewsItem[];
     regionsImage?: RegionsImage;
+    prioritiesSection?: PrioritiesSection;
 }
 
 const defaultRegionsImage: RegionsImage = {
@@ -109,16 +116,19 @@ const defaultRegionsImage: RegionsImage = {
     alt: 'Regions and Provinces: Central (Kabul main office), Northeastern (Badakhshan), Northern (Kunduz), Northwestern (Faryab), Eastern (Jalalabad), Western (Herat), Southern (Qandahar)',
 };
 
-export default function HomeSecondSection({ priorityAreas, latestNews, regionsImage }: Props) {
+export default function HomeSecondSection({ priorityAreas, latestNews, regionsImage, prioritiesSection }: Props) {
     const priorities =
         priorityAreas && priorityAreas.length > 0 ? priorityAreas : defaultPriorityAreas;
     const news = latestNews && latestNews.length > 0 ? latestNews : defaultNews;
     const regions = regionsImage && regionsImage.src ? regionsImage : defaultRegionsImage;
+    const prioritiesOffsetX = prioritiesSection?.offset_x ?? 0;
+    const prioritiesOffsetY = prioritiesSection?.offset_y ?? 0;
+    const prioritiesScale = (prioritiesSection?.scale ?? 100) / 100;
     const [activeNews, setActiveNews] = useState<LatestNewsItem | null>(null);
 
     return (
         <section
-            className="relative bg-gray-100 pt-2 pb-10 md:pt-4 md:pb-14"
+            className="relative bg-[rgb(245,245,245)] pt-2 pb-10 md:pt-4 md:pb-14"
             style={{
                 backgroundImage: 'url(/svg/Map.svg)',
                 backgroundSize: 'cover',
@@ -126,7 +136,7 @@ export default function HomeSecondSection({ priorityAreas, latestNews, regionsIm
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className="absolute inset-0 bg-gray-100/58" />
+            <div className="absolute inset-0 bg-[rgb(245,245,245)]/58" />
 
             <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                 <div className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-12">
@@ -141,7 +151,13 @@ export default function HomeSecondSection({ priorityAreas, latestNews, regionsIm
                     </div>
 
                     {/* Row 1 — Right: Strategic Priority Areas */}
-                    <div className="flex flex-col">
+                    <div
+                        className="flex flex-col"
+                        style={{
+                            transform: `translate(${prioritiesOffsetX}px, ${prioritiesOffsetY}px) scale(${prioritiesScale})`,
+                            transformOrigin: 'top left',
+                        }}
+                    >
                         <h2 className="mb-4 text-lg font-bold text-[rgb(0,175,239)] md:text-xl">
                             Strategic Priority Areas &amp; Reached
                             Beneficiaries:
@@ -174,7 +190,7 @@ export default function HomeSecondSection({ priorityAreas, latestNews, regionsIm
                     </div>
 
                     {/* Row 2 — Left: Regions + Provinces */}
-                    <div className="flex items-start justify-center">
+                    <div className="flex items-start justify-start">
                         <img
                             src={encodeURI(regions.src)}
                             alt={regions.alt}

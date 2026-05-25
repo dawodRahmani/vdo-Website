@@ -47,7 +47,6 @@ export default function AdminProgrammaticApproach() {
     const save = () => {
         setSaving(true)
         const payload: Record<string, string | number | File> = {
-            _method: 'patch',
             section: 'programmatic_approach',
             title: item.title ?? '',
             body: item.body ?? '',
@@ -73,7 +72,6 @@ export default function AdminProgrammaticApproach() {
         router.post(
             `/admin/resilience/${item.id}`,
             {
-                _method: 'patch',
                 section: 'programmatic_approach',
                 title: item.title ?? '',
                 body: item.body ?? '',

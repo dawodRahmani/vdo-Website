@@ -17,6 +17,8 @@ interface Commitment {
     card_svg_path: string | null
     card_svg_url: string | null
     size_scale?: number
+    offset_x?: number
+    offset_y?: number
     order: number
     is_active: boolean
 }
@@ -26,7 +28,11 @@ interface Publication {
     title: string
     cover_path: string | null
     cover_url: string | null
+    document_path: string | null
+    document_url: string | null
     size_scale?: number
+    offset_x?: number
+    offset_y?: number
     order: number
     is_active: boolean
 }
@@ -48,6 +54,8 @@ interface CommitDraft {
     order: number
     is_active: boolean
     size_scale: number
+    offset_x: number
+    offset_y: number
     file: File | null
     preview: string | null
     clear: boolean
@@ -58,9 +66,13 @@ interface PubDraft {
     order: number
     is_active: boolean
     size_scale: number
+    offset_x: number
+    offset_y: number
     file: File | null
     preview: string | null
     clear: boolean
+    docFile: File | null
+    clearDoc: boolean
 }
 
 function commitDraft(c: Commitment): CommitDraft {
@@ -70,6 +82,8 @@ function commitDraft(c: Commitment): CommitDraft {
         order: c.order,
         is_active: c.is_active,
         size_scale: c.size_scale ?? 100,
+        offset_x: c.offset_x ?? 0,
+        offset_y: c.offset_y ?? 0,
         file: null,
         preview: null,
         clear: false,
@@ -82,9 +96,13 @@ function pubDraft(p: Publication): PubDraft {
         order: p.order,
         is_active: p.is_active,
         size_scale: p.size_scale ?? 100,
+        offset_x: p.offset_x ?? 0,
+        offset_y: p.offset_y ?? 0,
         file: null,
         preview: null,
         clear: false,
+        docFile: null,
+        clearDoc: false,
     }
 }
 
@@ -125,6 +143,7 @@ export default function AdminCommitments() {
     })
     const cFileInputs = useRef<Record<number, HTMLInputElement | null>>({})
     const pFileInputs = useRef<Record<number, HTMLInputElement | null>>({})
+    const pDocInputs = useRef<Record<number, HTMLInputElement | null>>({})
     const newCommitFileInput = useRef<HTMLInputElement | null>(null)
     const newPubFileInput = useRef<HTMLInputElement | null>(null)
 
@@ -168,6 +187,14 @@ export default function AdminCommitments() {
         if (pFileInputs.current[id]) pFileInputs.current[id]!.value = ''
     }
 
+    const setPDocFile = (id: number, file: File | null) =>
+        updatePDraft(id, { docFile: file, clearDoc: false })
+
+    const clearPDocFile = (id: number) => {
+        updatePDraft(id, { docFile: null, clearDoc: true })
+        if (pDocInputs.current[id]) pDocInputs.current[id]!.value = ''
+    }
+
     const saveCommit = (c: Commitment) => {
         const d = cDrafts[c.id]
         setSavingId(`c-${c.id}`)
@@ -177,6 +204,8 @@ export default function AdminCommitments() {
             order: d.order,
             is_active: d.is_active ? 1 : 0,
             size_scale: d.size_scale,
+            offset_x: d.offset_x,
+            offset_y: d.offset_y,
             clear_card_svg: d.clear ? 1 : 0,
         }
         if (d.file) payload.card_svg_file = d.file
@@ -245,16 +274,27 @@ export default function AdminCommitments() {
             order: d.order,
             is_active: d.is_active ? 1 : 0,
             size_scale: d.size_scale,
+            offset_x: d.offset_x,
+            offset_y: d.offset_y,
             clear_cover: d.clear ? 1 : 0,
+            clear_document: d.clearDoc ? 1 : 0,
         }
         if (d.file) payload.cover_file = d.file
+        if (d.docFile) payload.document_file = d.docFile
         router.post(`/admin/commitments/publications/${p.id}`, payload, {
             forceFormData: true,
             preserveScroll: true,
             onFinish: () => setSavingId(null),
             onSuccess: () => {
                 if (d.preview) URL.revokeObjectURL(d.preview)
-                updatePDraft(p.id, { file: null, preview: null, clear: false })
+                updatePDraft(p.id, {
+                    file: null,
+                    preview: null,
+                    clear: false,
+                    docFile: null,
+                    clearDoc: false,
+                })
+                if (pDocInputs.current[p.id]) pDocInputs.current[p.id]!.value = ''
                 router.reload({ only: ['publications'] })
             },
         })
@@ -550,6 +590,51 @@ export default function AdminCommitments() {
                                         </span>
                                     </div>
 
+                                    <div className="flex items-center gap-3">
+                                        <Label className="w-10 text-xs">X</Label>
+                                        <input
+                                            type="range"
+                                            min={-200}
+                                            max={200}
+                                            value={d.offset_x}
+                                            onChange={(e) =>
+                                                updateCDraft(c.id, {
+                                                    offset_x:
+                                                        parseInt(
+                                                            e.target.value,
+                                                            10,
+                                                        ) || 0,
+                                                })
+                                            }
+                                            className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                        />
+                                        <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                            {d.offset_x}px
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <Label className="w-10 text-xs">Y</Label>
+                                        <input
+                                            type="range"
+                                            min={-200}
+                                            max={200}
+                                            value={d.offset_y}
+                                            onChange={(e) =>
+                                                updateCDraft(c.id, {
+                                                    offset_y:
+                                                        parseInt(
+                                                            e.target.value,
+                                                            10,
+                                                        ) || 0,
+                                                })
+                                            }
+                                            className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                        />
+                                        <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                            {d.offset_y}px
+                                        </span>
+                                    </div>
                                     <div className="flex items-center justify-between gap-3">
                                         <div className="flex items-center gap-3">
                                             <div className="flex items-center gap-2">
@@ -759,6 +844,69 @@ export default function AdminCommitments() {
                                             )}
                                         </div>
                                         <div className="space-y-1.5">
+                                            <Label className="text-xs">
+                                                Document (PDF preferred)
+                                            </Label>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {p.document_url &&
+                                                    !d.clearDoc &&
+                                                    !d.docFile && (
+                                                        <a
+                                                            href={
+                                                                p.document_url
+                                                            }
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="rounded border border-border bg-muted px-2 py-1 text-[11px] text-foreground hover:bg-accent"
+                                                        >
+                                                            View current
+                                                        </a>
+                                                    )}
+                                                <input
+                                                    ref={(el) => {
+                                                        pDocInputs.current[
+                                                            p.id
+                                                        ] = el
+                                                    }}
+                                                    type="file"
+                                                    accept="application/pdf,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                                    onChange={(e) =>
+                                                        setPDocFile(
+                                                            p.id,
+                                                            e.target.files?.[0] ??
+                                                                null,
+                                                        )
+                                                    }
+                                                    className="text-xs"
+                                                />
+                                                {(p.document_url ||
+                                                    d.docFile) && (
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() =>
+                                                            clearPDocFile(p.id)
+                                                        }
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                )}
+                                            </div>
+                                            {d.docFile && (
+                                                <p className="text-[10px] text-muted-foreground">
+                                                    Selected:{' '}
+                                                    {d.docFile.name} (
+                                                    {(
+                                                        d.docFile.size /
+                                                        1024 /
+                                                        1024
+                                                    ).toFixed(1)}{' '}
+                                                    MB)
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div className="space-y-1.5">
                                             <Label
                                                 htmlFor={`p-title-${p.id}`}
                                                 className="text-xs"
@@ -798,6 +946,50 @@ export default function AdminCommitments() {
                                             />
                                             <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
                                                 {d.size_scale}%
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Label className="w-10 text-xs">X</Label>
+                                            <input
+                                                type="range"
+                                                min={-200}
+                                                max={200}
+                                                value={d.offset_x}
+                                                onChange={(e) =>
+                                                    updatePDraft(p.id, {
+                                                        offset_x:
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10,
+                                                            ) || 0,
+                                                    })
+                                                }
+                                                className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                            />
+                                            <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                                {d.offset_x}px
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Label className="w-10 text-xs">Y</Label>
+                                            <input
+                                                type="range"
+                                                min={-200}
+                                                max={200}
+                                                value={d.offset_y}
+                                                onChange={(e) =>
+                                                    updatePDraft(p.id, {
+                                                        offset_y:
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10,
+                                                            ) || 0,
+                                                    })
+                                                }
+                                                className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-gray-200 accent-[rgb(0,175,239)]"
+                                            />
+                                            <span className="w-12 text-right text-xs font-medium tabular-nums text-[rgb(62,64,149)]">
+                                                {d.offset_y}px
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between gap-2">

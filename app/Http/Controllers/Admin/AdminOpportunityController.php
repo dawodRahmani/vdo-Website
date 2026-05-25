@@ -31,11 +31,19 @@ class AdminOpportunityController extends Controller
             ->map(fn ($l) => [
                 'id' => $l->id,
                 'category_id' => $l->category_id,
+                'slug' => $l->slug,
                 'title' => $l->title,
                 'ref' => $l->ref,
                 'summary' => $l->summary,
+                'description' => $l->description,
+                'responsibilities' => $l->responsibilities,
+                'requirements' => $l->requirements,
+                'employment_type' => $l->employment_type,
+                'experience_level' => $l->experience_level,
                 'location' => $l->location,
                 'deadline' => $l->deadline,
+                'posted_at' => optional($l->posted_at)->toDateString(),
+                'deadline_at' => optional($l->deadline_at)->toDateString(),
                 'order' => $l->order,
                 'is_active' => $l->is_active,
             ]);
@@ -107,15 +115,39 @@ class AdminOpportunityController extends Controller
 
     private function validatedListing(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'category_id' => 'required|exists:opportunity_categories,id',
             'title' => 'required|string|max:191',
             'ref' => 'nullable|string|max:64',
             'summary' => 'required|string|max:2000',
+            'description' => 'nullable|string|max:50000',
+            'responsibilities' => 'nullable|string|max:50000',
+            'requirements' => 'nullable|string|max:50000',
+            'employment_type' => 'nullable|in:'.implode(',', self::EMPLOYMENT_TYPES),
+            'experience_level' => 'nullable|in:'.implode(',', self::EXPERIENCE_LEVELS),
             'location' => 'nullable|string|max:120',
             'deadline' => 'nullable|string|max:120',
+            'posted_at' => 'nullable|date',
+            'deadline_at' => 'nullable|date',
             'order' => 'required|integer|min:0',
             'is_active' => 'required|boolean',
         ]);
+        $data['is_active'] = $request->boolean('is_active');
+        return $data;
     }
+
+    private const EMPLOYMENT_TYPES = [
+        'full-time',
+        'part-time',
+        'contract',
+        'volunteer',
+        'internship',
+        'consultancy',
+    ];
+
+    private const EXPERIENCE_LEVELS = [
+        'entry',
+        'mid',
+        'senior',
+    ];
 }

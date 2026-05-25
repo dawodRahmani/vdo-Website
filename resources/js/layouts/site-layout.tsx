@@ -17,7 +17,7 @@ export default function SiteLayout({
     children,
 }: PropsWithChildren<SiteLayoutProps>) {
     const { pageBackground } = usePage<PageWithBackground>().props
-    const bgColor = pageBackground ?? 'rgb(189,191,193)'
+    const bgColor = pageBackground ?? 'rgb(245,245,245)'
 
     return (
         <>

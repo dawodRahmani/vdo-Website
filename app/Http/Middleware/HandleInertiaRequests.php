@@ -57,6 +57,8 @@ class HandleInertiaRequests extends Middleware
             'siteSettings' => [
                 'logo_url' => $settings->logoUrl(),
                 'logo_height' => $settings->logo_height,
+                'logo_offset_x' => $settings->logo_offset_x,
+                'logo_offset_y' => $settings->logo_offset_y,
                 'contact_phone' => $settings->contact_phone,
                 'contact_email' => $settings->contact_email,
                 'social_facebook_url' => $settings->social_facebook_url,

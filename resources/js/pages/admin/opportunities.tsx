@@ -1,13 +1,21 @@
+import RichTextEditor from '@/components/rich-text-editor'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AppLayout from '@/layouts/app-layout'
 import { dashboard } from '@/routes'
 import { type BreadcrumbItem } from '@/types'
 import { Head, router, usePage } from '@inertiajs/react'
-import { Plus, Trash2, Upload } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { Pencil, Plus, Trash2, Upload } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
 
 interface Category {
     id: number
@@ -23,11 +31,19 @@ interface Category {
 interface Listing {
     id: number
     category_id: number
+    slug: string | null
     title: string
     ref: string | null
     summary: string
+    description: string | null
+    responsibilities: string | null
+    requirements: string | null
+    employment_type: string | null
+    experience_level: string | null
     location: string | null
     deadline: string | null
+    posted_at: string | null
+    deadline_at: string | null
     order: number
     is_active: boolean
 }
@@ -41,6 +57,21 @@ interface PageProps {
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: dashboard().url },
     { title: 'Opportunities', href: '/admin/opportunities' },
+]
+
+const EMPLOYMENT_TYPES: { value: string; label: string }[] = [
+    { value: 'full-time', label: 'Full-time' },
+    { value: 'part-time', label: 'Part-time' },
+    { value: 'contract', label: 'Contract' },
+    { value: 'volunteer', label: 'Volunteer' },
+    { value: 'internship', label: 'Internship' },
+    { value: 'consultancy', label: 'Consultancy' },
+]
+
+const EXPERIENCE_LEVELS: { value: string; label: string }[] = [
+    { value: 'entry', label: 'Entry level' },
+    { value: 'mid', label: 'Mid level' },
+    { value: 'senior', label: 'Senior' },
 ]
 
 interface CategoryDraft {
@@ -65,9 +96,31 @@ function categoryDraft(c: Category): CategoryDraft {
     }
 }
 
+function emptyListing(categories: Category[], order: number): Listing {
+    return {
+        id: 0,
+        category_id: categories[0]?.id ?? 0,
+        slug: null,
+        title: '',
+        ref: '',
+        summary: '',
+        description: '',
+        responsibilities: '',
+        requirements: '',
+        employment_type: 'full-time',
+        experience_level: null,
+        location: '',
+        deadline: '',
+        posted_at: null,
+        deadline_at: null,
+        order,
+        is_active: true,
+    }
+}
+
 export default function AdminOpportunities() {
     const { props } = usePage<PageProps>()
-    const [categories, setCategories] = useState<Category[]>(props.categories)
+    const [categories] = useState<Category[]>(props.categories)
     const [listings, setListings] = useState<Listing[]>(props.listings)
     const [categoryDrafts, setCategoryDrafts] = useState<
         Record<number, CategoryDraft>
@@ -77,19 +130,13 @@ export default function AdminOpportunities() {
         return out
     })
     const [savingCategoryId, setSavingCategoryId] = useState<number | null>(null)
-    const [savingListingId, setSavingListingId] = useState<number | null>(null)
-    const [creating, setCreating] = useState(false)
-    const [newListing, setNewListing] = useState<Omit<Listing, 'id'>>({
-        category_id: props.categories[0]?.id ?? 0,
-        title: '',
-        ref: '',
-        summary: '',
-        location: '',
-        deadline: '',
-        order: listings.length + 1,
-        is_active: true,
-    })
+    const [editing, setEditing] = useState<Listing | null>(null)
     const fileInputs = useRef<Record<number, HTMLInputElement | null>>({})
+
+    const categoryById = useMemo(
+        () => Object.fromEntries(categories.map((c) => [c.id, c])),
+        [categories],
+    )
 
     const updateCategoryDraft = (id: number, patch: Partial<CategoryDraft>) => {
         setCategoryDrafts((d) => ({ ...d, [id]: { ...d[id], ...patch } }))
@@ -156,31 +203,6 @@ export default function AdminOpportunities() {
         })
     }
 
-    const updateListingField = (id: number, patch: Partial<Listing>) => {
-        setListings((xs) => xs.map((l) => (l.id === id ? { ...l, ...patch } : l)))
-    }
-
-    const saveListing = (l: Listing) => {
-        setSavingListingId(l.id)
-        router.patch(
-            `/admin/opportunities/listings/${l.id}`,
-            {
-                category_id: l.category_id,
-                title: l.title,
-                ref: l.ref ?? '',
-                summary: l.summary,
-                location: l.location ?? '',
-                deadline: l.deadline ?? '',
-                order: l.order,
-                is_active: l.is_active,
-            },
-            {
-                preserveScroll: true,
-                onFinish: () => setSavingListingId(null),
-            },
-        )
-    }
-
     const destroyListing = (l: Listing) => {
         if (!confirm(`Delete listing "${l.title}"?`)) return
         router.delete(`/admin/opportunities/listings/${l.id}`, {
@@ -191,25 +213,12 @@ export default function AdminOpportunities() {
         })
     }
 
-    const createListing = () => {
-        setCreating(true)
-        router.post('/admin/opportunities/listings', newListing, {
-            preserveScroll: true,
-            onFinish: () => setCreating(false),
-            onSuccess: () => {
-                setNewListing({
-                    category_id: props.categories[0]?.id ?? 0,
-                    title: '',
-                    ref: '',
-                    summary: '',
-                    location: '',
-                    deadline: '',
-                    order: listings.length + 2,
-                    is_active: true,
-                })
-                router.reload({ only: ['listings'] })
-            },
-        })
+    const startNew = () =>
+        setEditing(emptyListing(categories, listings.length + 1))
+
+    const handleSaved = () => {
+        setEditing(null)
+        router.reload({ only: ['listings'] })
     }
 
     return (
@@ -374,10 +383,7 @@ export default function AdminOpportunities() {
                                                     onCheckedChange={(v) =>
                                                         updateCategoryDraft(
                                                             cat.id,
-                                                            {
-                                                                is_active:
-                                                                    !!v,
-                                                            },
+                                                            { is_active: !!v },
                                                         )
                                                     }
                                                 />
@@ -405,341 +411,442 @@ export default function AdminOpportunities() {
 
                 {/* Listings */}
                 <section>
-                    <div className="mb-3">
-                        <h1 className="text-2xl font-semibold">
-                            Current Listings
-                        </h1>
-                        <p className="text-muted-foreground text-sm">
-                            Individual job, bid, volunteer, or participation
-                            postings.
-                        </p>
+                    <div className="mb-3 flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-semibold">
+                                Job postings
+                            </h1>
+                            <p className="text-muted-foreground text-sm">
+                                Individual job, bid, volunteer, or
+                                participation postings. Click a row to edit.
+                            </p>
+                        </div>
+                        <Button onClick={startNew}>
+                            <Plus className="mr-1 h-4 w-4" />
+                            New posting
+                        </Button>
                     </div>
 
-                    {/* New listing form */}
-                    <div className="border-border bg-card mb-4 space-y-3 rounded-xl border p-4 shadow-sm">
-                        <h2 className="text-sm font-semibold">Add listing</h2>
-                        <div className="grid gap-3 md:grid-cols-2">
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-category">Category</Label>
-                                <select
-                                    id="new-category"
-                                    value={newListing.category_id}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            category_id: parseInt(
-                                                e.target.value,
-                                            ),
-                                        }))
-                                    }
-                                    className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
-                                >
-                                    {categories.map((c) => (
-                                        <option key={c.id} value={c.id}>
-                                            {c.title}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-title">Title</Label>
-                                <Input
-                                    id="new-title"
-                                    value={newListing.title}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            title: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Programs Coordinator"
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-ref">Reference</Label>
-                                <Input
-                                    id="new-ref"
-                                    value={newListing.ref ?? ''}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            ref: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="VDO-HR-2026-014"
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-location">Location</Label>
-                                <Input
-                                    id="new-location"
-                                    value={newListing.location ?? ''}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            location: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Kabul, Afghanistan"
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-deadline">Deadline</Label>
-                                <Input
-                                    id="new-deadline"
-                                    value={newListing.deadline ?? ''}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            deadline: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Closes 15 May 2026"
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="new-order">Order</Label>
-                                <Input
-                                    id="new-order"
-                                    type="number"
-                                    value={newListing.order}
-                                    onChange={(e) =>
-                                        setNewListing((n) => ({
-                                            ...n,
-                                            order: parseInt(e.target.value) || 0,
-                                        }))
-                                    }
-                                />
-                            </div>
-                        </div>
-                        <div className="space-y-1.5">
-                            <Label htmlFor="new-summary">Summary</Label>
-                            <textarea
-                                id="new-summary"
-                                value={newListing.summary}
-                                onChange={(e) =>
-                                    setNewListing((n) => ({
-                                        ...n,
-                                        summary: e.target.value,
-                                    }))
-                                }
-                                rows={3}
-                                className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
-                            />
-                        </div>
-                        <div className="flex justify-end">
-                            <Button
-                                type="button"
-                                onClick={createListing}
-                                disabled={
-                                    creating ||
-                                    !newListing.title ||
-                                    !newListing.summary ||
-                                    !newListing.category_id
-                                }
-                            >
-                                <Plus className="mr-1 h-4 w-4" />
-                                {creating ? 'Adding…' : 'Add listing'}
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Listings list */}
-                    <div className="space-y-3">
-                        {listings.map((l) => {
-                            const saving = savingListingId === l.id
-                            return (
-                                <div
-                                    key={l.id}
-                                    className="border-border bg-card space-y-3 rounded-xl border p-4 shadow-sm"
-                                >
-                                    <div className="grid gap-3 md:grid-cols-2">
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-cat-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Category
-                                            </Label>
-                                            <select
-                                                id={`l-cat-${l.id}`}
-                                                value={l.category_id}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        category_id: parseInt(
-                                                            e.target.value,
-                                                        ),
-                                                    })
-                                                }
-                                                className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
-                                            >
-                                                {categories.map((c) => (
-                                                    <option
-                                                        key={c.id}
-                                                        value={c.id}
-                                                    >
-                                                        {c.title}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-title-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Title
-                                            </Label>
-                                            <Input
-                                                id={`l-title-${l.id}`}
-                                                value={l.title}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        title: e.target.value,
-                                                    })
-                                                }
-                                            />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-ref-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Reference
-                                            </Label>
-                                            <Input
-                                                id={`l-ref-${l.id}`}
-                                                value={l.ref ?? ''}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        ref: e.target.value,
-                                                    })
-                                                }
-                                            />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-loc-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Location
-                                            </Label>
-                                            <Input
-                                                id={`l-loc-${l.id}`}
-                                                value={l.location ?? ''}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        location:
-                                                            e.target.value,
-                                                    })
-                                                }
-                                            />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-dl-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Deadline
-                                            </Label>
-                                            <Input
-                                                id={`l-dl-${l.id}`}
-                                                value={l.deadline ?? ''}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        deadline:
-                                                            e.target.value,
-                                                    })
-                                                }
-                                            />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label
-                                                htmlFor={`l-order-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Order
-                                            </Label>
-                                            <Input
-                                                id={`l-order-${l.id}`}
-                                                type="number"
-                                                value={l.order}
-                                                onChange={(e) =>
-                                                    updateListingField(l.id, {
-                                                        order:
-                                                            parseInt(
-                                                                e.target.value,
-                                                            ) || 0,
-                                                    })
-                                                }
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <Label
-                                            htmlFor={`l-sum-${l.id}`}
-                                            className="text-xs"
+                    <div className="border-border overflow-hidden rounded-xl border bg-card shadow-sm">
+                        <table className="w-full text-sm">
+                            <thead className="border-b border-border bg-muted/40 text-left text-xs text-muted-foreground">
+                                <tr>
+                                    <th className="px-4 py-2 font-medium">
+                                        Title
+                                    </th>
+                                    <th className="px-4 py-2 font-medium">
+                                        Category
+                                    </th>
+                                    <th className="px-4 py-2 font-medium">
+                                        Type
+                                    </th>
+                                    <th className="px-4 py-2 font-medium">
+                                        Deadline
+                                    </th>
+                                    <th className="px-4 py-2 font-medium">
+                                        Status
+                                    </th>
+                                    <th className="px-4 py-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {listings.length === 0 && (
+                                    <tr>
+                                        <td
+                                            colSpan={6}
+                                            className="px-4 py-8 text-center text-sm text-muted-foreground"
                                         >
-                                            Summary
-                                        </Label>
-                                        <textarea
-                                            id={`l-sum-${l.id}`}
-                                            value={l.summary}
-                                            onChange={(e) =>
-                                                updateListingField(l.id, {
-                                                    summary: e.target.value,
-                                                })
-                                            }
-                                            rows={3}
-                                            className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center gap-2">
-                                            <Checkbox
-                                                id={`l-active-${l.id}`}
-                                                checked={l.is_active}
-                                                onCheckedChange={(v) =>
-                                                    updateListingField(l.id, {
-                                                        is_active: !!v,
-                                                    })
-                                                }
-                                            />
-                                            <Label
-                                                htmlFor={`l-active-${l.id}`}
-                                                className="text-xs"
-                                            >
-                                                Active
-                                            </Label>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() =>
-                                                    destroyListing(l)
-                                                }
-                                                className="text-destructive hover:text-destructive"
-                                            >
-                                                <Trash2 className="mr-1 h-3.5 w-3.5" />
-                                                Delete
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                onClick={() => saveListing(l)}
-                                                disabled={saving}
-                                            >
-                                                {saving ? 'Saving…' : 'Save'}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                            No postings yet. Click "New posting"
+                                            to add one.
+                                        </td>
+                                    </tr>
+                                )}
+                                {listings.map((l) => {
+                                    const cat = categoryById[l.category_id]
+                                    return (
+                                        <tr
+                                            key={l.id}
+                                            className="border-b border-border last:border-b-0 hover:bg-muted/20"
+                                        >
+                                            <td className="px-4 py-2 font-medium">
+                                                {l.title}
+                                                {l.ref && (
+                                                    <span className="ml-2 text-xs text-muted-foreground">
+                                                        {l.ref}
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-2 text-muted-foreground">
+                                                {cat?.title ?? '—'}
+                                            </td>
+                                            <td className="px-4 py-2 capitalize text-muted-foreground">
+                                                {l.employment_type ?? '—'}
+                                            </td>
+                                            <td className="px-4 py-2 text-muted-foreground">
+                                                {l.deadline_at ??
+                                                    l.deadline ??
+                                                    '—'}
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                {l.is_active ? (
+                                                    <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+                                                        Active
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
+                                                        Hidden
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-4 py-2 text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() =>
+                                                            setEditing(l)
+                                                        }
+                                                    >
+                                                        <Pencil className="mr-1 h-3.5 w-3.5" />
+                                                        Edit
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() =>
+                                                            destroyListing(l)
+                                                        }
+                                                        className="text-destructive hover:text-destructive"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 </section>
             </div>
+
+            {editing && (
+                <ListingDialog
+                    listing={editing}
+                    categories={categories}
+                    onClose={() => setEditing(null)}
+                    onSaved={handleSaved}
+                />
+            )}
         </AppLayout>
+    )
+}
+
+function ListingDialog({
+    listing,
+    categories,
+    onClose,
+    onSaved,
+}: {
+    listing: Listing
+    categories: Category[]
+    onClose: () => void
+    onSaved: () => void
+}) {
+    const [draft, setDraft] = useState<Listing>(listing)
+    const [saving, setSaving] = useState(false)
+    const isNew = listing.id === 0
+
+    const set = (patch: Partial<Listing>) =>
+        setDraft((d) => ({ ...d, ...patch }))
+
+    const handleSubmit = () => {
+        setSaving(true)
+        const payload = {
+            category_id: draft.category_id,
+            title: draft.title,
+            ref: draft.ref ?? '',
+            summary: draft.summary,
+            description: draft.description ?? '',
+            responsibilities: draft.responsibilities ?? '',
+            requirements: draft.requirements ?? '',
+            employment_type: draft.employment_type ?? '',
+            experience_level: draft.experience_level ?? '',
+            location: draft.location ?? '',
+            deadline: draft.deadline ?? '',
+            posted_at: draft.posted_at ?? '',
+            deadline_at: draft.deadline_at ?? '',
+            order: draft.order,
+            is_active: draft.is_active ? 1 : 0,
+        }
+
+        const opts = {
+            preserveScroll: true,
+            onFinish: () => setSaving(false),
+            onSuccess: () => onSaved(),
+        }
+
+        if (isNew) {
+            router.post('/admin/opportunities/listings', payload, opts)
+        } else {
+            router.patch(
+                `/admin/opportunities/listings/${listing.id}`,
+                payload,
+                opts,
+            )
+        }
+    }
+
+    const canSave = draft.title.trim() && draft.summary.trim() && draft.category_id
+
+    return (
+        <Dialog open onOpenChange={(v) => !v && onClose()}>
+            <DialogContent className="flex max-h-[92vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
+                <DialogHeader className="border-b border-border px-6 py-4">
+                    <DialogTitle>
+                        {isNew ? 'New posting' : draft.title || 'Edit posting'}
+                    </DialogTitle>
+                </DialogHeader>
+
+                <div className="flex-1 space-y-6 overflow-y-auto px-6 py-4">
+                    {/* Basics */}
+                    <div className="grid gap-3 md:grid-cols-2">
+                        <div className="space-y-1.5 md:col-span-2">
+                            <Label htmlFor="d-title">Title</Label>
+                            <Input
+                                id="d-title"
+                                value={draft.title}
+                                onChange={(e) => set({ title: e.target.value })}
+                                placeholder="Programs Coordinator"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-category">Category</Label>
+                            <select
+                                id="d-category"
+                                value={draft.category_id}
+                                onChange={(e) =>
+                                    set({
+                                        category_id: parseInt(e.target.value),
+                                    })
+                                }
+                                className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
+                            >
+                                {categories.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                        {c.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-ref">
+                                Reference{' '}
+                                <span className="text-muted-foreground">
+                                    (optional)
+                                </span>
+                            </Label>
+                            <Input
+                                id="d-ref"
+                                value={draft.ref ?? ''}
+                                onChange={(e) => set({ ref: e.target.value })}
+                                placeholder="VDO-HR-2026-014"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-emp">Employment type</Label>
+                            <select
+                                id="d-emp"
+                                value={draft.employment_type ?? ''}
+                                onChange={(e) =>
+                                    set({
+                                        employment_type: e.target.value || null,
+                                    })
+                                }
+                                className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
+                            >
+                                <option value="">—</option>
+                                {EMPLOYMENT_TYPES.map((t) => (
+                                    <option key={t.value} value={t.value}>
+                                        {t.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-exp">Experience level</Label>
+                            <select
+                                id="d-exp"
+                                value={draft.experience_level ?? ''}
+                                onChange={(e) =>
+                                    set({
+                                        experience_level: e.target.value || null,
+                                    })
+                                }
+                                className="border-input bg-background h-9 w-full rounded-md border px-3 text-sm"
+                            >
+                                <option value="">—</option>
+                                {EXPERIENCE_LEVELS.map((t) => (
+                                    <option key={t.value} value={t.value}>
+                                        {t.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-loc">Location</Label>
+                            <Input
+                                id="d-loc"
+                                value={draft.location ?? ''}
+                                onChange={(e) =>
+                                    set({ location: e.target.value })
+                                }
+                                placeholder="Kabul, Afghanistan"
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-posted">Posted on</Label>
+                            <Input
+                                id="d-posted"
+                                type="date"
+                                value={draft.posted_at ?? ''}
+                                onChange={(e) =>
+                                    set({ posted_at: e.target.value || null })
+                                }
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-deadline-at">Deadline</Label>
+                            <Input
+                                id="d-deadline-at"
+                                type="date"
+                                value={draft.deadline_at ?? ''}
+                                onChange={(e) =>
+                                    set({
+                                        deadline_at: e.target.value || null,
+                                    })
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Summary */}
+                    <div className="space-y-1.5">
+                        <Label htmlFor="d-summary">Card summary</Label>
+                        <p className="text-xs text-muted-foreground">
+                            Short pitch shown on the listing card (1–2
+                            sentences).
+                        </p>
+                        <textarea
+                            id="d-summary"
+                            value={draft.summary}
+                            onChange={(e) => set({ summary: e.target.value })}
+                            rows={3}
+                            className="border-input bg-background w-full rounded-md border px-3 py-2 text-sm"
+                        />
+                    </div>
+
+                    {/* Rich text fields */}
+                    <div className="space-y-1.5">
+                        <Label>Description</Label>
+                        <p className="text-xs text-muted-foreground">
+                            Full description of the role.
+                        </p>
+                        <RichTextEditor
+                            value={draft.description ?? ''}
+                            onChange={(html) => set({ description: html })}
+                            placeholder="About this role…"
+                            minHeight={180}
+                        />
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <Label>Responsibilities</Label>
+                        <p className="text-xs text-muted-foreground">
+                            Use bullet lists for duties.
+                        </p>
+                        <RichTextEditor
+                            value={draft.responsibilities ?? ''}
+                            onChange={(html) =>
+                                set({ responsibilities: html })
+                            }
+                            placeholder="Key duties…"
+                            minHeight={140}
+                        />
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <Label>Requirements</Label>
+                        <p className="text-xs text-muted-foreground">
+                            Qualifications, education, experience.
+                        </p>
+                        <RichTextEditor
+                            value={draft.requirements ?? ''}
+                            onChange={(html) => set({ requirements: html })}
+                            placeholder="Qualifications and experience…"
+                            minHeight={140}
+                        />
+                    </div>
+
+                    {/* Footer fields */}
+                    <div className="grid gap-3 md:grid-cols-3">
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-order">Order</Label>
+                            <Input
+                                id="d-order"
+                                type="number"
+                                value={draft.order}
+                                onChange={(e) =>
+                                    set({
+                                        order: parseInt(e.target.value) || 0,
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="d-deadline">
+                                Deadline label{' '}
+                                <span className="text-muted-foreground">
+                                    (optional)
+                                </span>
+                            </Label>
+                            <Input
+                                id="d-deadline"
+                                value={draft.deadline ?? ''}
+                                onChange={(e) =>
+                                    set({ deadline: e.target.value })
+                                }
+                                placeholder="Closes 15 May 2026"
+                            />
+                        </div>
+                        <div className="flex items-end gap-2">
+                            <Checkbox
+                                id="d-active"
+                                checked={draft.is_active}
+                                onCheckedChange={(v) =>
+                                    set({ is_active: !!v })
+                                }
+                            />
+                            <Label htmlFor="d-active" className="text-sm">
+                                Active (show on site)
+                            </Label>
+                        </div>
+                    </div>
+                </div>
+
+                <DialogFooter className="border-t border-border px-6 py-3">
+                    <Button variant="ghost" onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        disabled={!canSave || saving}
+                    >
+                        {saving ? 'Saving…' : isNew ? 'Create' : 'Save changes'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

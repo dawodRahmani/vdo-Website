@@ -28,27 +28,6 @@ const navItems: NavItem[] = [
     {
         title: 'Strategic Priorities',
         items: [
-            {
-                title: 'Target Group',
-                items: [
-                    {
-                        title: "VDO's Primary Beneficiaries",
-                        href: '/strategic-priorities/target-group',
-                    },
-                    {
-                        title: "VDO's Secondary Beneficiaries",
-                        href: '/strategic-priorities/secondary-beneficiaries',
-                    },
-                    {
-                        title: 'Tertiary Audience',
-                        href: '/strategic-priorities/tertiary-audience',
-                    },
-                ],
-            },
-            {
-                title: "VDO's Cross Cutting Areas",
-                href: '/strategic-priorities/cross-cutting-areas',
-            },
             { title: 'Education', href: '/strategic-priorities/education' },
             {
                 title: 'Economic Growth',
@@ -65,6 +44,28 @@ const navItems: NavItem[] = [
             {
                 title: 'Emergency Response',
                 href: '/strategic-priorities/emergency-response',
+            },
+            {
+                title: 'Target Group',
+                href: '/strategic-priorities/target-group',
+                items: [
+                    {
+                        title: "VDO's Primary Beneficiaries",
+                        href: '/strategic-priorities/target-group#primary',
+                    },
+                    {
+                        title: "VDO's Secondary Beneficiaries",
+                        href: '/strategic-priorities/target-group#secondary',
+                    },
+                    {
+                        title: 'Tertiary Audience',
+                        href: '/strategic-priorities/target-group#tertiary',
+                    },
+                ],
+            },
+            {
+                title: "VDO's Cross Cutting Areas",
+                href: '/strategic-priorities/cross-cutting-areas',
             },
         ],
     },
@@ -168,17 +169,30 @@ export default function Header() {
         setDrawerExpanded(new Set())
     }
 
+    const logoHeight = settings.logo_height ?? 72
+    const logoOffsetX = settings.logo_offset_x ?? 0
+    const logoOffsetY = settings.logo_offset_y ?? 0
+    const logoSlotWidth = Math.round(logoHeight * 1.4)
+
     return (
-        <header className="sticky top-0 z-50 w-full bg-gray-100 py-3">
+        <header className="sticky top-0 z-50 w-full bg-[rgb(245,245,245)] py-3">
             <div className="mx-auto flex w-full max-w-[1360px] items-start gap-4 px-4 md:px-6 lg:px-8">
-                {/* Logo sits outside nav container */}
-                <Link href="/" className="flex-shrink-0">
+                {/* Logo slot — fixed width keeps the nav bar from reflowing as offsets change */}
+                <Link
+                    href="/"
+                    className="relative z-10 flex-shrink-0"
+                    style={{
+                        width: `${logoSlotWidth}px`,
+                        height: `${logoHeight}px`,
+                    }}
+                >
                     <img
                         src={settings.logo_url ?? '/svg/logo.png'}
                         alt="VDO Vision"
                         className="w-auto object-contain"
                         style={{
-                            height: `${settings.logo_height ?? 72}px`,
+                            transform: `translate(${logoOffsetX}px, ${logoOffsetY}px)`,
+                            height: `${logoHeight}px`,
                         }}
                     />
                 </Link>

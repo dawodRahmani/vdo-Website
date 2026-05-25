@@ -93,7 +93,7 @@ export default function Donate({ items = [] }: DonateProps) {
             <PhotoStrip photos={photos} />
 
             {/* Intro */}
-            <section className="bg-gray-100 pt-10 pb-6">
+            <section className="bg-[rgb(245,245,245)] pt-10 pb-6">
                 <div className="mx-auto max-w-[1240px] px-6 text-center md:px-10 lg:px-14">
                     <div className="mb-3 flex items-center justify-center gap-3">
                         <HandHeart className="h-8 w-8 text-[rgb(0,175,239)]" />
@@ -109,7 +109,7 @@ export default function Donate({ items = [] }: DonateProps) {
 
             {/* Donation Categories */}
             {causes.length > 0 && (
-                <section className="bg-gray-100 py-8">
+                <section className="bg-[rgb(245,245,245)] py-8">
                     <div className="mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                             Where Your Donation Goes:
@@ -142,7 +142,7 @@ export default function Donate({ items = [] }: DonateProps) {
             {/* How to Donate */}
             {methods.length > 0 && (
                 <section
-                    className="relative bg-gray-100 py-10"
+                    className="relative bg-[rgb(245,245,245)] py-10"
                     style={{
                         backgroundImage: 'url(/svg/Map.svg)',
                         backgroundSize: 'cover',
@@ -150,7 +150,7 @@ export default function Donate({ items = [] }: DonateProps) {
                         backgroundRepeat: 'no-repeat',
                     }}
                 >
-                    <div className="absolute inset-0 bg-gray-100/80" />
+                    <div className="absolute inset-0 bg-[rgb(245,245,245)]/80" />
                     <div className="relative z-10 mx-auto max-w-[1240px] px-6 md:px-10 lg:px-14">
                         <h2 className="mb-6 text-xl font-semibold text-[rgb(62,64,149)] md:text-2xl">
                             Ways to Donate:
